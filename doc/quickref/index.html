@@ -1,0 +1,1119 @@
+<!doctype html public "-//W30//DTD W3 HTML 2.0//EN">
+
+<HTML>
+
+<!-- This file was generated using SDF 2.000 by
+     Ian Clatworthy (ianc@mincom.com). SDF is freely
+     available from http://www.mincom.com/mtr/sdf. -->
+
+<HEAD>
+<TITLE>SDF 2.000: SDF Quick Reference</TITLE>
+</HEAD>
+<BODY BGCOLOR="ffffff">
+
+<P ALIGN="Center"><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+<P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
+<H1>SDF Quick Reference</H1>
+<ADDRESS>MTR-SDF-0003.001 (Final)</ADDRESS>
+<ADDRESS>Ian Clatworthy</ADDRESS>
+<ADDRESS>1 March 1998</ADDRESS>
+<BR CLEAR="All">
+<!-- TOC -->
+<HR>
+<H2>Table of Contents</H2>
+<UL>
+<A HREF="#Overview">1. Overview</A><UL>
+<A HREF="#Purpose">1.1. Purpose</A>
+<BR>
+<A HREF="#Basic Concepts">1.2. Basic Concepts</A>
+<BR>
+<A HREF="#Naming Conventions">1.3. Naming Conventions</A>
+<BR>
+<A HREF="#Conversion Commands">1.4. Conversion Commands</A></UL>
+<BR>
+<A HREF="#Simple Document Format">2. Simple Document Format</A><UL>
+<A HREF="#Initialisation">2.1. Initialisation</A>
+<BR>
+<A HREF="#Loading Configuration Information">2.2. Loading Configuration Information</A>
+<BR>
+<A HREF="#Document Registers">2.3. Document Registers</A>
+<BR>
+<A HREF="#Document Titles">2.4. Document Titles</A>
+<BR>
+<A HREF="#Paragraph Styles">2.5. Paragraph Styles</A>
+<BR>
+<A HREF="#Phrase Styles">2.6. Phrase Styles</A>
+<BR>
+<A HREF="#Macros">2.7. Macros</A>
+<BR>
+<A HREF="#Filters">2.8. Filters</A>
+<BR>
+<A HREF="#Tables">2.9. Tables</A></UL></UL>
+<!-- ENDTOC -->
+<HR>
+<H1><A NAME="Overview">1. Overview</A></H1>
+<H2><A NAME="Purpose">1.1. Purpose</A></H2>
+<P>This guide provides a quick reference to the most commonly used aspects of <A HREF="http://www.mincom.com/mtr/sdf/">SDF</A> 2.000. The following manuals may also be useful:</P>
+<UL>
+<LI><A HREF="../user/ug_sdf.html">SDF User Guide</A> - a tutorial-style introduction to SDF
+<LI><A HREF="../ref/re_sdf.html">SDF Reference</A> - detailed reference information on most SDF features.</UL>
+<P>Everything the average SDF user needs to know for 90% of his or her documents should be provided by this document. Nevertheless, as <A HREF="http://www.mincom.com/mtr/sdf/">SDF</A> is highly configurable, your workgroup might regularly use additional commands/styles/etc. to those given below. See your system administrator for details of any local extensions.</P>
+<H2><A NAME="Basic Concepts">1.2. Basic Concepts</A></H2>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Term</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+paragraph
+</TD>
+<TD>
+the basic building block of documents
+</TD>
+</TR>
+<TR>
+<TD>
+phrase
+</TD>
+<TD>
+a section of text delimited by {{ and }} within a paragraph
+</TD>
+</TR>
+<TR>
+<TD>
+style
+</TD>
+<TD>
+the type of a document, paragraph, phrase or table (e.g. H1)
+</TD>
+</TR>
+<TR>
+<TD>
+attribute
+</TD>
+<TD>
+a property of a paragraph or phrase (e.g. jump)
+</TD>
+</TR>
+<TR>
+<TD>
+macro
+</TD>
+<TD>
+a command embedded in a document (e.g. !define)
+</TD>
+</TR>
+<TR>
+<TD>
+variable
+</TD>
+<TD>
+a named value (e.g. DOC_NAME)
+</TD>
+</TR>
+<TR>
+<TD>
+block
+</TD>
+<TD>
+a section of text enclosed by <A HREF="../ref/mblock.html">block</A> and <A HREF="../ref/mendbloc.html">endblock</A> macros
+</TD>
+</TR>
+<TR>
+<TD>
+filter
+</TD>
+<TD>
+a rule to use when processing blocks or files (e.g. table)
+</TD>
+</TR>
+<TR>
+<TD>
+module
+</TD>
+<TD>
+a file containing reusable information
+</TD>
+</TR>
+<TR>
+<TD>
+library
+</TD>
+<TD>
+a directory containing modules
+</TD>
+</TR>
+</TABLE>
+
+<H2><A NAME="Naming Conventions">1.3. Naming Conventions</A></H2>
+<P>For files, the following extensions should be used:</P>
+<UL>
+<LI><EM>sdf</EM> - for normal <A HREF="http://www.mincom.com/mtr/sdf/">SDF</A> files
+<LI><EM>sdm</EM> - for <A HREF="http://www.mincom.com/mtr/sdf/">SDF</A> modules
+<LI><EM>reg</EM> - a register of documents.</UL>
+<P>For variables, the general conventions are:</P>
+<UL>
+<LI>lower-case for special characters (e.g. tm)
+<LI>edit-case for commonly used objects (e.g. Mincom)
+<LI>upper-case for other variables (e.g. DOC_NAME).</UL>
+<P>The general conventions for other symbols are:</P>
+<UL>
+<LI>upper-case for paragraph and phrase styles
+<LI>lower-case for other names.</UL>
+<H2><A NAME="Conversion Commands">1.4. Conversion Commands</A></H2>
+<P>The <A HREF="../ref/sdf.html">sdf</A> program is typically invoked as follows:</P>
+<PRE>
+   sdf -2<EM>format</EM> [options] files
+</PRE>
+<P>Supported <EM>format</EM> values are given below.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Format</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+ps
+</TD>
+<TD>
+a <A HREF="http://www.adobe.com">PostScript</A> document
+</TD>
+</TR>
+<TR>
+<TD>
+html
+</TD>
+<TD>
+a <A HREF="http://www.w3.org/hypertext/WWW/MarkUp/">HTML</A> document
+</TD>
+</TR>
+<TR>
+<TD>
+hlp
+</TD>
+<TD>
+<A HREF="http://www.microsoft.com">Microsoft</A> Windows help input files
+</TD>
+</TR>
+<TR>
+<TD>
+doc
+</TD>
+<TD>
+a <A HREF="http://www.frame.com/PRODUCTS/Products.doc.html">FrameMaker</A> binary file
+</TD>
+</TR>
+<TR>
+<TD>
+fvo
+</TD>
+<TD>
+a <A HREF="http://www.frame.com">FrameViewer</A> file
+</TD>
+</TR>
+<TR>
+<TD>
+txt
+</TD>
+<TD>
+a plain text document
+</TD>
+</TR>
+<TR>
+<TD>
+rtf
+</TD>
+<TD>
+an <A HREF="http://www.microsoft.com">RTF</A> document
+</TD>
+</TR>
+<TR>
+<TD>
+pod
+</TD>
+<TD>
+a pod document (the standard for <A HREF="http://www.perl.com/perl/index.html">Perl</A> documentation)
+</TD>
+</TR>
+<TR>
+<TD>
+book
+</TD>
+<TD>
+a <A HREF="http://www.adobe.com">PostScript</A> document via a <A HREF="http://www.frame.com/PRODUCTS/Products.doc.html">FrameMaker</A> book
+</TD>
+</TR>
+</TABLE>
+
+<P>If the <A HREF="../ref/sdf.html">sdf</A> command is given without any parameters, a concise list of the available options is displayed. The -h option outputs a brief description of each option.</P>
+<HR>
+<H1><A NAME="Simple Document Format">2. Simple Document Format</A></H1>
+<H2><A NAME="Initialisation">2.1. Initialisation</A></H2>
+<P>Variables can be initialised on the top line of a document via the <A HREF="../ref/minit.html">init</A> macro. For example:</P>
+<PRE>
+   !init OPT_STYLE=&quot;manual&quot;; OPT_LOOK=&quot;infomap&quot;
+</PRE>
+<P>The supported styles are given below.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Style</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+document
+</TD>
+<TD>
+normal document (default)
+</TD>
+</TR>
+<TR>
+<TD>
+manual
+</TD>
+<TD>
+user manual
+</TD>
+</TR>
+<TR>
+<TD>
+paper
+</TD>
+<TD>
+technical paper
+</TD>
+</TR>
+<TR>
+<TD>
+memo
+</TD>
+<TD>
+memorandum
+</TD>
+</TR>
+<TR>
+<TD>
+fax
+</TD>
+<TD>
+fascimile
+</TD>
+</TR>
+<TR>
+<TD>
+minutes
+</TD>
+<TD>
+minutes of a meeting
+</TD>
+</TR>
+<TR>
+<TD>
+newslettr
+</TD>
+<TD>
+newsletter
+</TD>
+</TR>
+</TABLE>
+
+<P>The default value for <EM>OPT_LOOK</EM> is specified in the <TT>sdf.ini</TT> file. The <A HREF="../ref/minit.html">init</A> macro can be used to override the default. <A HREF="../ref/sdf.html">sdf</A>'s -k option overrides both values.</P>
+<H2><A NAME="Loading Configuration Information">2.2. Loading Configuration Information</A></H2>
+<P>The following macros can be used to load configuration information:</P>
+<UL>
+<LI><A HREF="../ref/minherit.html">inherit</A> - load a library
+<LI><A HREF="../ref/muse.html">use</A> - load a module.</UL>
+<P>A library is a directory (under <EM>sdf/home</EM>) which contains one or more modules. The <A HREF="../ref/minherit.html">inherit</A> macro does the following:</P>
+<OL>
+<LI>it adds the directory to <A HREF="../ref/sdf.html">sdf</A>'s search path
+<LI>it loads a module of the same name from that directory.</OL>
+<P>Typically, each project has a configuration library which is loaded into each document via the <A HREF="../ref/minherit.html">inherit</A> macro.</P>
+<H2><A NAME="Document Registers">2.3. Document Registers</A></H2>
+<P>Each project should have a document register which is stored in <A HREF="../ref/fmt_tbl.html">TBL</A> format and included into the project configuration library. The fields in the register are given below.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Field</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+Reference
+</TD>
+<TD>
+the document code
+</TD>
+</TR>
+<TR>
+<TD>
+Document
+</TD>
+<TD>
+the document title
+</TD>
+</TR>
+<TR>
+<TD>
+Jump
+</TD>
+<TD>
+the filename of the document
+</TD>
+</TR>
+<TR>
+<TD>
+Version
+</TD>
+<TD>
+the document version number
+</TD>
+</TR>
+<TR>
+<TD>
+Status
+</TD>
+<TD>
+the document status (e.g. Draft, Review or Final)
+</TD>
+</TR>
+</TABLE>
+
+<P>The register is useful for several reasons:</P>
+<OL>
+<LI>an online document catalog can be generated from it
+<LI>hypertext jumps to documents can be generated from it
+<LI>it simplifies the building of title pages (see below).</OL>
+<H2><A NAME="Document Titles">2.4. Document Titles</A></H2>
+<P>For normal documents, the title page is generated by the <A HREF="../ref/mbuild_t.html">build_title</A> macro. The following variables can be defined before <A HREF="../ref/mbuild_t.html">build_title</A> is called.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Variable</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+<STRONG>Recommended:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+DOC_NAME
+</TD>
+<TD>
+e.g. SDF
+</TD>
+</TR>
+<TR>
+<TD>
+DOC_TYPE
+</TD>
+<TD>
+e.g. Quick Reference
+</TD>
+</TR>
+<TR>
+<TD>
+<STRONG>Optional:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+DOC_AUTHOR
+</TD>
+<TD>
+primary author or document owner
+</TD>
+</TR>
+<TR>
+<TD>
+DOC_APPROVE
+</TD>
+<TD>
+position of person approving document, if any
+</TD>
+</TR>
+</TABLE>
+
+<P>Additional authors and approvers can be specified using DOC_AUTHOR2, DOC_AUTHOR3, DOC_APPROVE2 and DOC_APPROVE3. The macros below are also optionally used.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Macro</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+DOC_RECIPIENTS
+</TD>
+<TD>
+table of people, if any, receiving controlled copies
+</TD>
+</TR>
+<TR>
+<TD>
+DOC_TRADEMARKS
+</TD>
+<TD>
+trademark information
+</TD>
+</TR>
+</TABLE>
+
+<P>The code, status and version of a document are found from the document register. Alternatively, they can be explicitly specified via the DOC_CODE, DOC_STATUS and DOC_VERSION variables.</P>
+<H2><A NAME="Paragraph Styles">2.5. Paragraph Styles</A></H2>
+<P>Normal styles are terminated by a colon (:) or left bracket ([). Special styles are implicitly terminated.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Tag</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+<STRONG>Normal styles:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+H1 .. H6
+</TD>
+<TD>
+normal heading at level 1..6
+</TD>
+</TR>
+<TR>
+<TD>
+A1 .. A6
+</TD>
+<TD>
+appendix heading at level 1..6
+</TD>
+</TR>
+<TR>
+<TD>
+P1 .. P6
+</TD>
+<TD>
+plain heading at level 1..6
+</TD>
+</TR>
+<TR>
+<TD>
+Note
+</TD>
+<TD>
+a single paragraph note
+</TD>
+</TR>
+<TR>
+<TD>
+<STRONG>Special styles:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+. .. ......
+</TD>
+<TD>
+paragraph (or plain list item) at level 1..6
+</TD>
+</TR>
+<TR>
+<TD>
+* .. ******
+</TD>
+<TD>
+unordered list at level 1..6
+</TD>
+</TR>
+<TR>
+<TD>
+- .. -----
+</TD>
+<TD>
+unordered list at level 2..6
+</TD>
+</TR>
+<TR>
+<TD>
+^ .. ^^^^^^
+</TD>
+<TD>
+first entry in an ordered list at level 1..6
+</TD>
+</TR>
+<TR>
+<TD>
++ .. ++++++
+</TD>
+<TD>
+next entry in an ordered list at level 1..6
+</TD>
+</TR>
+</TABLE>
+
+<H2><A NAME="Phrase Styles">2.6. Phrase Styles</A></H2>
+<P>Phrases are enclosed in {{ and }}. Like paragraphs styles, phrase styles are terminated by a colon (:) or left bracket ([). Styles <EM>emphasize</EM> and/or <EM>logically type</EM> phrases - hypertext is automatically generated for many of the logically typed phrases.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Tag</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+<TD>
+<STRONG>Sample Output</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+<STRONG>Emphasis:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+1
+</TD>
+<TD>
+1st level emphasis
+</TD>
+<TD>
+<EM>emphasis 1</EM>
+</TD>
+</TR>
+<TR>
+<TD>
+2
+</TD>
+<TD>
+2nd level emphasis
+</TD>
+<TD>
+<STRONG>emphasis 2</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+3
+</TD>
+<TD>
+3rd level emphasis
+</TD>
+<TD>
+<U>emphasis 3</U>
+</TD>
+</TR>
+<TR>
+<TD>
+A
+</TD>
+<TD>
+as-is
+</TD>
+<TD>
+some as-is text
+</TD>
+</TR>
+<TR>
+<TD>
+B
+</TD>
+<TD>
+bold
+</TD>
+<TD>
+<B>some bold text</B>
+</TD>
+</TR>
+<TR>
+<TD>
+E
+</TD>
+<TD>
+example
+</TD>
+<TD>
+<E>some example text</E>
+</TD>
+</TR>
+<TR>
+<TD>
+I
+</TD>
+<TD>
+italic
+</TD>
+<TD>
+<I>some italics text</I>
+</TD>
+</TR>
+<TR>
+<TD>
+N
+</TD>
+<TD>
+normal
+</TD>
+<TD>
+some normal text
+</TD>
+</TR>
+<TR>
+<TD>
+U
+</TD>
+<TD>
+underline
+</TD>
+<TD>
+<U>some underline text</U>
+</TD>
+</TR>
+<TR>
+<TD>
+<STRONG>Types:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+CMD
+</TD>
+<TD>
+Command
+</TD>
+<TD>
+<A HREF="../ref/sdf.html">sdf</A>
+</TD>
+</TR>
+<TR>
+<TD>
+DOC
+</TD>
+<TD>
+Document
+</TD>
+<TD>
+<A HREF="../user/ug_sdf.html">SDF User Guide</A>
+</TD>
+</TR>
+<TR>
+<TD>
+EMAIL
+</TD>
+<TD>
+email address
+</TD>
+<TD>
+<A HREF="mailto:ianc@mincom.com">ianc@mincom.com</A>
+</TD>
+</TR>
+<TR>
+<TD>
+FILE
+</TD>
+<TD>
+Filename
+</TD>
+<TD>
+<TT>myfile.sdf</TT>
+</TD>
+</TR>
+<TR>
+<TD>
+ORG
+</TD>
+<TD>
+Organisation
+</TD>
+<TD>
+<A HREF="http://www.mincom.com">Mincom</A>
+</TD>
+</TR>
+<TR>
+<TD>
+PRD
+</TD>
+<TD>
+Product
+</TD>
+<TD>
+<A HREF="http://www.mincom.com/mims">MIMS</A>
+</TD>
+</TR>
+<TR>
+<TD>
+REF
+</TD>
+<TD>
+Reference
+</TD>
+<TD>
+<A HREF="../quickref/qr_sdf.html">MTR-SDF-0003</A>
+</TD>
+</TR>
+<TR>
+<TD>
+SECT
+</TD>
+<TD>
+Section
+</TD>
+<TD>
+<A HREF="#Paragraph Styles">Paragraph Styles</A>
+</TD>
+</TR>
+<TR>
+<TD>
+URL
+</TD>
+<TD>
+Uniform Resource Locator
+</TD>
+<TD>
+<A HREF="http://www.mincom.com">http://www.mincom.com</A>
+</TD>
+</TR>
+</TABLE>
+
+<H2><A NAME="Macros">2.7. Macros</A></H2>
+<P>Macros begin with an exclamation mark (!).</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Macro</STRONG>
+</TD>
+<TD>
+<STRONG>Arguments</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/minit.html">init</A>
+</TD>
+<TD>
+<EM>variables</EM>
+</TD>
+<TD>
+initialise variables (on top line)
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/minherit.html">inherit</A>
+</TD>
+<TD>
+<EM>library</EM>
+</TD>
+<TD>
+load a library
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/muse.html">use</A>
+</TD>
+<TD>
+<EM>file</EM> [; <EM>filter</EM>]
+</TD>
+<TD>
+load a library module
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/mdefine.html">define</A>
+</TD>
+<TD>
+<EM>variable</EM> [<EM>expr</EM>]
+</TD>
+<TD>
+set a variable
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/mdefault.html">default</A>
+</TD>
+<TD>
+<EM>variable</EM> [<EM>expr</EM>]
+</TD>
+<TD>
+define a variable if it is undefined
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/mbuild_t.html">build_title</A>
+</TD>
+<TD>
+&nbsp;
+</TD>
+<TD>
+build a title page
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/mblock.html">block</A>
+</TD>
+<TD>
+<EM>filter</EM>
+</TD>
+<TD>
+begin a block of text
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/mendbloc.html">endblock</A>
+</TD>
+<TD>
+&nbsp;
+</TD>
+<TD>
+end a block of text
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/minclude.html">include</A>
+</TD>
+<TD>
+<EM>file</EM> [; <EM>filter</EM>]
+</TD>
+<TD>
+include another file
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/mimport.html">import</A>
+</TD>
+<TD>
+<EM>file</EM> [; <EM>params</EM>]
+</TD>
+<TD>
+import a figure
+</TD>
+</TR>
+</TABLE>
+
+<H2><A NAME="Filters">2.8. Filters</A></H2>
+<P>Filters are named rules for processing blocks or included text.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Filter</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/ftable.html">table</A>
+</TD>
+<TD>
+tabular data
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/fexample.html">example</A>
+</TD>
+<TD>
+fixed-width text (e.g. source code)
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="../ref/ftitle.html">title</A>
+</TD>
+<TD>
+define a title block for memos, faxes, etc.
+</TD>
+</TR>
+</TABLE>
+
+<H2><A NAME="Tables">2.9. Tables</A></H2>
+<P>Tables are usually defined using blocks. The first &quot;record&quot; specifies:</P>
+<UL>
+<LI>the column headings
+<LI>the input format - either <EM>delimited</EM> or <EM>fixed-width</EM>.</UL>
+<P><HR WIDTH="80%" ALIGN="Left">
+<STRONG>Note: </STRONG>If the first &quot;non-word&quot; character in the column headings is a space or tab, the columns are assumed to be fixed-width. Otherwise, the character found is used as the delimiter character.
+<HR WIDTH="80%" ALIGN="Left"></P>
+<P>Commonly used parameters are given below.</P>
+<TABLE BORDER>
+<TR>
+<TD>
+<STRONG>Attribute</STRONG>
+</TD>
+<TD>
+<STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+style
+</TD>
+<TD>
+type of table (e.g. columns, rows, grid, plain, shade)
+</TD>
+</TR>
+<TR>
+<TD>
+format
+</TD>
+<TD>
+output format of columns in 10% units
+</TD>
+</TR>
+<TR>
+<TD>
+coltags
+</TD>
+<TD>
+comma separated list of phrase styles for columns
+</TD>
+</TR>
+<TR>
+<TD>
+groups
+</TD>
+<TD>
+records ending with : are group headings
+</TD>
+</TR>
+<TR>
+<TD>
+title
+</TD>
+<TD>
+title for the table
+</TD>
+</TR>
+</TABLE>
+
+<P>A sample table (and its result) is given below.</P>
+<PRE>
+!block table; format=55; style=&quot;grid&quot;; groups; title=&quot;Diary&quot;
+Time_of_day     Appointment
+Morning:
+10:00           Dentist
+12:00           Lunch with friends
+Afternoon:
+15:00           Meeting on SDF
+!endblock
+</PRE>
+<TABLE BORDER>
+<CAPTION ALIGN=top>Diary</CAPTION>
+<TR>
+<TD>
+<STRONG>Time of day</STRONG>
+</TD>
+<TD>
+<STRONG>Appointment</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+<STRONG>Morning:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+10:00
+</TD>
+<TD>
+Dentist
+</TD>
+</TR>
+<TR>
+<TD>
+12:00
+</TD>
+<TD>
+Lunch with friends
+</TD>
+</TR>
+<TR>
+<TD>
+<STRONG>Afternoon:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+15:00
+</TD>
+<TD>
+Meeting on SDF
+</TD>
+</TR>
+</TABLE>
+
+<HR>
+<P ALIGN="Center"><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,25 @@
+SUMMARY:
+133/154 links ok - 21 bad (%13.64)
+
+BAD LINKS:
+parse.html line 131: parse.html#parse_SdfSystem.
+parse.html line 133: parse.html#parse_SdfBatch.
+parse.html line 135: parse.html#parse_SdfDelete.
+parse.html line 137: parse.html#parse_SdfBookClean.
+parse.html line 139: parse.html#parse_SdfRenamePS.
+parse.html line 26: parse.html#parse_SDF_IMAGE_EXTS.
+parse.html line 42: parse.html#parse_sdf_if_start.
+parse.html line 44: parse.html#parse_sdf_if_now.
+parse.html line 46: parse.html#parse_sdf_if_yet.
+parse.html line 48: parse.html#parse_sdf_if_else.
+parse.html line 50: parse.html#parse_sdf_block_start.
+parse.html line 52: parse.html#parse_sdf_block_type.
+parse.html line 54: parse.html#parse_sdf_block_text.
+parse.html line 56: parse.html#parse_sdf_block_param.
+parse.html line 58: parse.html#parse_sdf_tbl_start.
+parse.html line 60: parse.html#parse_sdf_tbl_state.
+parse.html line 62: parse.html#parse_sdf_end.
+parse.html line 64: parse.html#parse_sdf_cutting.
+parse.html line 66: parse.html#parse_sdf_sections.
+parse.html line 68: parse.html#parse_sdf_book_files.
+parse.html line 70: parse.html#parse_sdf_report_names.

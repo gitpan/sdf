@@ -1,0 +1,24 @@
+# $Id$
+#
+# >>Title::     English (United Kingdom) Locale
+#
+# >>History::
+# -----------------------------------------------------------------------
+# Date      Who     Change
+# 19-Aug-97 ianc
+# -----------------------------------------------------------------------
+#
+
+# Generated list titles
+!define DOC_TOC_TITLE           "Table of Contents"
+!define DOC_LOF_TITLE           "List of Figures"
+!define DOC_LOT_TITLE           "List of Tables"
+
+# Navigation strings
+!define HTML_TEXT_CONTENTS      "Contents"
+!define HTML_TEXT_PARENT        "Parent Topic"
+!define HTML_TEXT_PREVIOUS      "Previous Topic"
+!define HTML_TEXT_NEXT          "Next Topic"
+!define HTML_TEXT_HOME          "Home"
+!define HTML_TEXT_CATALOG       "Catalog"
+!define HTML_TEXT_SEARCH        "Search"

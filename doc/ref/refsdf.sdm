@@ -1,0 +1,32 @@
+# $Id$
+#
+# >>Copyright::
+# Copyright (c) 1992-1996, Ian Clatworthy (ianc@mincom.com).
+# You may distribute under the terms specified in the LICENSE file.
+#
+# >>History::
+# -----------------------------------------------------------------------
+# Date      Who     Change
+# 29-Feb-96 ianc    SDF 2.000
+# -----------------------------------------------------------------------
+#
+
+# Define variables
+!define DOC_NAME    "SDF"
+!define DOC_TYPE    "Reference"
+!define DOC_AUTHOR  "Ian Clatworthy"
+
+# For HTML, only put the chapter headings in the contents
+!if $var{'OPT_TARGET'} eq 'html'
+!define DOC_TOC     1
+!endif
+
+!macro DOC_TRADEMARKS
+!SDF_TRADEMARKS
+!endmacro
+
+# Build the title page
+!build_title
+
+# Make all level 3 headings plain and remove them from the table of contents
+!on paragraph '[HAP]3';; $style = 'P3'; $attr{'notoc'} = 1

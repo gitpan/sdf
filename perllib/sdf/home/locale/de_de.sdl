@@ -1,0 +1,25 @@
+# $Id$
+#
+# >>Title::     Deutsch
+#
+# >>History::
+# -----------------------------------------------------------------------
+# Date      Who     Change
+# 19-Aug-97 ianc
+# 12.Nov 97 alo
+# -----------------------------------------------------------------------
+#
+
+# Generated list titles
+!define DOC_TOC_TITLE           "Inhaltsverzeichnis"
+!define DOC_LOF_TITLE           "Abbildungsverzeichnis"
+!define DOC_LOT_TITLE           "Verzeichnis der Tabellen"
+
+# Navigation strings
+!define HTML_TEXT_CONTENTS      "Inhalt"
+!define HTML_TEXT_PARENT        "Zurück"
+!define HTML_TEXT_PREVIOUS      "Voriger Eintrag"
+!define HTML_TEXT_NEXT          "Nächster Eintrag"
+!define HTML_TEXT_HOME          "Home"
+!define HTML_TEXT_CATALOG       "Katalog"
+!define HTML_TEXT_SEARCH        "Suchen"

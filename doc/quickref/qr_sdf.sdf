@@ -1,0 +1,318 @@
+# $Id$
+#
+# >>Copyright::
+# Copyright (c) 1992-1996, Ian Clatworthy (ianc@mincom.com).
+# You may distribute under the terms specified in the LICENSE file.
+#
+# >>History::
+# -----------------------------------------------------------------------
+# Date      Who     Change
+# 29-Feb-96 ianc    SDF 2.000
+# -----------------------------------------------------------------------
+#
+
+# Load the configuration
+!define SDF_ROOT "../"
+!inherit "sdf"
+
+# Define variables
+!define DOC_NAME    "SDF"
+!define DOC_TYPE    "Quick Reference"
+!define DOC_AUTHOR  "Ian Clatworthy"
+
+# Build the title page
+!build_title
+
+H1: Overview
+
+H2: Purpose
+
+This guide provides a quick reference to the most commonly used aspects
+of [[SDF]] 2.000. The following manuals may also be useful:
+
+* {{DOC:SDF User Guide}} - a tutorial-style introduction to SDF
+* {{DOC:SDF Reference}} - detailed reference information on most SDF features.
+
+Everything the average SDF user needs to know for 90% of his or her
+documents should be provided by this document. Nevertheless,
+as [[SDF]] is highly configurable, your workgroup might regularly
+use additional commands/styles/etc. to those given below.
+See your system administrator for details of any local extensions.
+
+H2: Basic Concepts
+
+!block table; format=28
+Term        Description
+paragraph   the basic building block of documents
+phrase      a section of text delimited by E<2{> and E<2}> within a paragraph
+style       the type of a document, paragraph, phrase or table (e.g. H1)
+attribute   a property of a paragraph or phrase (e.g. jump)
+macro       a command embedded in a document (e.g. !define)
+variable    a named value (e.g. DOC_NAME)
+block       a section of text enclosed by {{MAC:block}} and {{MAC:endblock}} macros
+filter      a rule to use when processing blocks or files (e.g. table)
+module      a file containing reusable information
+library     a directory containing modules
+!endblock
+
+H2: Naming Conventions
+
+For files, the following extensions should be used:
+
+* {{sdf}} - for normal [[SDF]] files
+* {{sdm}} - for [[SDF]] modules
+* {{reg}} - a register of documents.
+
+For variables, the general conventions are:
+
+* lower-case for special characters (e.g. tm)
+* edit-case for commonly used objects (e.g. Mincom)
+* upper-case for other variables (e.g. DOC_NAME).
+
+The general conventions for other symbols are:
+
+* upper-case for paragraph and phrase styles
+* lower-case for other names.
+
+H2: Conversion Commands
+
+The {{CMD:sdf}} program is typically invoked as follows:
+
+E:   sdf -2{{format}} [options] files
+
+Supported {{format}} values are given below.
+
+!block table
+Format  Description
+ps      a [[PostScript]] document
+html    a [[HTML]] document
+hlp     [[Microsoft]] Windows help input files
+doc     a [[FrameMaker]] binary file
+fvo     a {{PRD:FrameViewer}} file
+txt     a plain text document
+rtf     an [[RTF]] document
+pod     a pod document (the standard for [[Perl]] documentation)
+book    a [[PostScript]] document via a [[FrameMaker]] book
+!endblock
+
+If the {{CMD:sdf}} command is given without any parameters,
+a concise list of the available options is displayed.
+The -h option outputs a brief description of each option.
+
+
+H1: Simple Document Format
+
+H2: Initialisation
+
+Variables can be initialised on the top line of a document via
+the {{MAC:init}} macro. For example:
+
+E:   !init OPT_STYLE="manual"; OPT_LOOK="infomap"
+
+The supported styles are given below.
+
+!block table
+Style       Description
+document    normal document (default)
+manual      user manual
+paper       technical paper
+memo        memorandum
+fax         fascimile
+minutes     minutes of a meeting
+newslettr   newsletter
+!endblock
+
+The default value for {{VAR:OPT_LOOK}} is specified in the
+{{FILE:sdf.ini}} file. The {{MAC:init}} macro can be used
+to override the default. {{CMD:sdf}}'s -k option overrides both values.
+
+H2: Loading Configuration Information
+
+The following macros can be used to load configuration information:
+
+* {{MAC:inherit}} - load a library
+* {{MAC:use}} - load a module.
+
+A library is a directory (under {{sdf/home}}) which contains
+one or more modules. The {{MAC:inherit}} macro does the following:
+
+^ it adds the directory to {{CMD:sdf}}'s search path
++ it loads a module of the same name from that directory.
+
+Typically, each project has a configuration library
+which is loaded into each document via the {{MAC:inherit}} macro.
+
+H2: Document Registers
+
+Each project should have a document register which is stored in
+{{FMT:TBL}} format and included into the project configuration library.
+The fields in the register are given below.
+
+!block table
+Field     Description
+Reference the document code
+Document  the document title
+Jump      the filename of the document
+Version   the document version number
+Status    the document status (e.g. Draft, Review or Final)
+!endblock
+
+The register is useful for several reasons:
+
+^ an online document catalog can be generated from it
++ hypertext jumps to documents can be generated from it
++ it simplifies the building of title pages (see below).
+
+H2: Document Titles
+
+For normal documents, the title page is generated by the
+{{MAC:build_title}} macro. The following variables can
+be defined before {{MAC:build_title}} is called.
+
+!block table; groups; format=46
+Variable            Description
+Recommended:
+DOC_NAME            e.g. SDF
+DOC_TYPE            e.g. Quick Reference
+Optional:
+DOC_AUTHOR          primary author or document owner
+DOC_APPROVE         position of person approving document, if any
+!endblock
+
+Additional authors and approvers can be specified using
+DOC_AUTHOR2, DOC_AUTHOR3, DOC_APPROVE2 and DOC_APPROVE3.
+The macros below are also optionally used.
+
+!block table; format=46
+Macro               Description
+DOC_RECIPIENTS      table of people, if any, receiving controlled copies
+DOC_TRADEMARKS      trademark information
+!endblock
+
+The code, status and version of a document are found from
+the document register. Alternatively, they can be explicitly
+specified via the DOC_CODE, DOC_STATUS and DOC_VERSION variables.
+
+H2: Paragraph Styles
+
+Normal styles are terminated by a colon (:) or left bracket ([).
+Special styles are implicitly terminated.
+
+!block table; groups; tags="PSTYLE"
+Tag             Description
+Normal styles:
+H1 .. H6        normal heading at level 1..6
+A1 .. A6        appendix heading at level 1..6
+P1 .. P6        plain heading at level 1..6
+Note            a single paragraph note
+Special styles:
+. .. ......     paragraph (or plain list item) at level 1..6
+* .. ******     unordered list at level 1..6
+- .. -----      unordered list at level 2..6
+^ .. ^^^^^^     first entry in an ordered list at level 1..6
++ .. ++++++     next entry in an ordered list at level 1..6
+!endblock
+
+H2: Phrase Styles
+
+Phrases are enclosed in E<2{> and E<2}>. Like paragraphs styles,
+phrase styles are terminated by a colon (:) or left bracket ([).
+Styles {{emphasize}} and/or {{logically type}} phrases - hypertext is
+automatically generated for many of the logically typed phrases.
+
+!block table; format=244; groups; tags="OSTYLE"
+Tag         Description                 Sample_Output
+Emphasis:
+1           1st level emphasis          {{1:emphasis 1}}
+2           2nd level emphasis          {{2:emphasis 2}}
+3           3rd level emphasis          {{3:emphasis 3}}
+A           as-is                       {{A:some as-is text}}
+B           bold                        {{B:some bold text}}
+E           example                     {{E:some example text}}
+I           italic                      {{I:some italics text}}
+N           normal                      {{N:some normal text}}
+U           underline                   {{U:some underline text}}
+Types:
+CMD         Command                     {{CMD:sdf}}
+DOC         Document                    {{DOC:SDF User Guide}}
+EMAIL       email address               {{EMAIL:ianc@mincom.com}}
+FILE        Filename                    {{FILE:myfile.sdf}}
+ORG         Organisation                {{ORG:Mincom}}
+PRD         Product                     {{PRD:MIMS}}
+REF         Reference                   {{REF:MTR-SDF-0003}}
+SECT        Section                     {{SECT:Paragraph Styles}}
+URL         Uniform Resource Locator    {{URL:http://www.mincom.com}}
+!endblock
+
+H2: Macros
+
+Macros begin with an exclamation mark (!).
+
+!block table; format=235; tags="MAC"
+Macro       Arguments               Description
+init        {{variables}}           initialise variables (on top line)
+inherit     {{library}}             load a library
+use         {{file}} [; {{filter}}] load a library module
+define      {{variable}} [{{expr}}] set a variable
+default     {{variable}} [{{expr}}] define a variable if it is undefined
+build_title                         build a title page
+block       {{filter}}              begin a block of text
+endblock                            end a block of text
+include     {{file}} [; {{filter}}] include another file
+import      {{file}} [; {{params}}] import a figure
+!endblock
+
+H2: Filters
+
+Filters are named rules for processing blocks or included text.
+
+!block table; tags="FILT"
+Filter      Description
+table       tabular data
+example     fixed-width text (e.g. source code)
+title       define a title block for memos, faxes, etc.
+!endblock
+
+H2: Tables
+
+Tables are usually defined using blocks. The first "record" specifies:
+
+* the column headings
+* the input format - either {{delimited}} or {{fixed-width}}.
+
+Note: If the first "non-word" character in the column headings is a space
+or tab, the columns are assumed to be fixed-width. Otherwise, the
+character found is used as the delimiter character.
+
+Commonly used parameters are given below.
+
+!block table
+Attribute   Description
+style       type of table (e.g. columns, rows, grid, plain, shade)
+format      output format of columns in 10% units
+coltags     comma separated list of phrase styles for columns
+groups      records ending with : are group headings
+title       title for the table
+!endblock
+
+A sample table (and its result) is given below.
+
+!block example; pure
+!block table; format=55; style="grid"; groups; title="Diary"
+Time_of_day     Appointment
+Morning:
+10:00           Dentist
+12:00           Lunch with friends
+Afternoon:
+15:00           Meeting on SDF
+!endblock
+!endblock
+
+!block table; format=55; style="grid"; groups; title="Diary"
+Time_of_day     Appointment
+Morning:
+10:00           Dentist
+12:00           Lunch with friends
+Afternoon:
+15:00           Meeting on SDF
+!endblock
