@@ -2,23 +2,29 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: Generating HTML Using SDF</TITLE>
+<TITLE>SDF 2.001: Generating HTML Using SDF</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
+<DIV CLASS="title">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
-<H1>Generating HTML Using SDF</H1>
-<ADDRESS>MTR-SDF-0011.001 (Final)</ADDRESS>
-<ADDRESS>Ian Clatworthy (<A HREF="mailto:ianc@mincom.com">ianc@mincom.com</A>), Research Architect, <A HREF="http://www.mincom.com">Mincom Pty Ltd</A></ADDRESS>
-<ADDRESS>27 October 1998</ADDRESS>
+<H1 CLASS="doc-title">Generating HTML Using SDF</H1>
+<ADDRESS><SPAN CLASS="doc-id">MTR-SDF-0011.001</SPAN> <SPAN CLASS="doc-status">(Final)</SPAN></ADDRESS>
+<ADDRESS CLASS="doc-author">Ian Clatworthy (<A HREF="mailto:ianc@mincom.com">ianc@mincom.com</A>), Research Architect, <A HREF="http://www.mincom.com">Mincom Pty Ltd</A></ADDRESS>
+<ADDRESS CLASS="doc-modified">25 May 1999</ADDRESS>
 <BR CLEAR="All">
-<!-- TOC -->
+</DIV>
+<DIV CLASS="contents">
 <HR>
 <H2>Table of Contents</H2>
 <UL>
@@ -76,7 +82,8 @@
 <A HREF="#Inline HTML">7. Inline HTML</A>
 <BR>
 <A HREF="#Feedback">8. Feedback</A></UL>
-<!-- ENDTOC -->
+</DIV>
+<DIV CLASS="main">
 <HR>
 <H1><A NAME="Introduction">1. Introduction</A></H1>
 <P>SDF is a useful tool for generating HTML documents for several reasons:</P>
@@ -134,8 +141,8 @@
 <HR>
 <H1><A NAME="Customising the Generated HTML">3. Customising the Generated HTML</A></H1>
 <P>The following files are used to convert SDF to HTML:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>File</STRONG>
 </TD>
@@ -192,8 +199,8 @@ output driver for HTML generation
 <HR WIDTH="80%" ALIGN="Left"></P>
 <H2><A NAME="Topics Mode Variables">3.4. Topics Mode Variables</A></H2>
 <P>When customising the generated HTML, it is occasionally necessary to know whether a single document or set of topics is being generated. The following variables can be tested to determine this.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Variable</STRONG>
 </TD>
@@ -224,8 +231,8 @@ the actual sub-topics are being generated
 <H1><A NAME="Colours, Logos, Backgrounds and Separators">4. Colours, Logos, Backgrounds and Separators</A></H1>
 <H2><A NAME="Colours">4.1. Colours</A></H2>
 <P>The following variables can be used to customise the colours used:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Variable</STRONG>
 </TD>
@@ -273,8 +280,8 @@ the colour of visited links
   !define HTML_LINK_COLOR '00ff00'
 </PRE>
 <P>The value of each variable is the hexidecimal number representing the required RGB (Red Green Blue) combination. For convenience, the following set of color variables are provided:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Variable</STRONG>
 </TD>
@@ -358,8 +365,8 @@ COLOR_GREY
 
 <H2><A NAME="Logos">4.2. Logos</A></H2>
 <P>The following variables can be used to add a logo:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Variable</STRONG>
 </TD>
@@ -396,8 +403,8 @@ the logo to use at the top of each topic
 <P>To add a logo to the main document and all its topics, simply set the DOC_LOGO variable. Alternatively, different logos can be specified by using the DOC_HTML_LOGO and/or the DOC_TOPIC_LOGO variables.</P>
 <H2><A NAME="Background Images">4.3. Background Images</A></H2>
 <P>The following variables can be used to customise the background image, if any:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Variable</STRONG>
 </TD>
@@ -542,8 +549,8 @@ Catalog
 Search</UL>
 <H2><A NAME="Customising the Navigation Macros">6.3. Customising the Navigation Macros</A></H2>
 <P>Instead of simply overriding the HTML_NAVIGATE and HTML_TOPIC_NAVIGATE macros, it is also possible to customise their output by defining the variables below:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Variable</STRONG>
 </TD>
@@ -585,8 +592,8 @@ URL of the search page
 <P>If one or more of these variables are set, the default navigate macros will output a second line containing jumps to the respective pages.</P>
 <H2><A NAME="Customising Navigation Text">6.4. Customising Navigation Text</A></H2>
 <P>If you are generally happy with the default headers and footers but want to change the text to another language, say, you can set the following variables:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Variable</STRONG>
 </TD>
@@ -687,8 +694,12 @@ Search
 <HR>
 <H1><A NAME="Feedback">8. Feedback</A></H1>
 <P>If you have any feedback on SDF or this tutorial, please let me know.</P>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

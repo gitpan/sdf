@@ -62,8 +62,8 @@ As SDF is essentially a superset of POD, the SDF output
 is almost the same as the POD input, except that verbatim lines
 are marked with a leading >. For example, the following POD:
 
-!block box
-!block example
+#!block box
+!block example; listitem
 =head1 NAME
 
 abc - output the alphabet
@@ -78,12 +78,12 @@ This program displays the alphabet like this:
 
 Pretty simple, eh?
 !endblock
-!endblock
+#!endblock
 
 gets converted to:
 
-!block box
-!block example
+#!block box
+!block example; listitem
 =head1 NAME
 
 abc - output the alphabet
@@ -98,7 +98,7 @@ This program displays the alphabet like this:
 
 Pretty simple, eh?
 !endblock
-!endblock
+#!endblock
 
 Note that it isn't actually necessary to use {{CMD:pod2sdf}}
 unless you intend migrating to SDF format - the {{CMD:sdf}}

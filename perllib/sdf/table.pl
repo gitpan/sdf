@@ -140,6 +140,25 @@ sub TableParse {
 
 #
 # >>Description::
+# {{Y:TableParseUsingParams}} converts a list of strings into a table
+# using the nominated parameters. No parameters are supported yet.
+#
+sub TableParseUsingParams {
+    local($ref_to_strings, %params) = @_;
+    local(@records);
+    local(@strings);
+
+    # Read in the data
+    @strings = @$ref_to_strings;
+    &_TableReadText(*strings, *records, %params);
+#printf STDERR "records are:\n%s<\n", join("<\n", @records);
+
+    # Return result
+    return @records;
+}
+
+#
+# >>Description::
 # {{Y:TableValidate}} validates {{@table}} against {{@rules}}.
 #
 sub TableValidate {
@@ -709,11 +728,13 @@ sub _TableRecordCheck {
 
 #
 # >>_Description::
-# {{Y:_TableReadText}} parses {{@strings}} as {{TBL}} format data.
+# {{Y:_TableReadText}} parses {{@strings}} as {{TBL}} format data using
+# the nominated parameters.
 # The table is returned in {{@table}}.
+# See TableParseUsingParams() for details on the supported parameters.
 #
 sub _TableReadText {
-    local(*strings, *table) = @_;
+    local(*strings, *table, %params) = @_;
 #   local();
     local($i, $linenum, $_);
     local($format);
@@ -721,6 +742,7 @@ sub _TableReadText {
     local($unpackfmt);
     local(@fields, $field_count, $sep_re);
     local($record, $field);
+    local($leading_indent_size);
 
     # Preprocess text:
     # * expand tabs
@@ -780,6 +802,8 @@ sub _TableReadText {
 
         # get the format specification, if we haven't already
         if ($format eq '') {
+            $_ =~ s/^(\s*)//;
+            $leading_indent_size = length($1);
             $format = $_;
             push(@table, $format);
             ($sep) = $format =~ /(\W)/;
@@ -829,6 +853,7 @@ sub _TableReadText {
         }
 
         # If we reach here, the record can be saved
+        $record = substr($record, $leading_indent_size) if $leading_indent_size;
         push(@table, &_TableBuildRec($record, $sep, $linenum, $unpackfmt,
           $sep_re, $field_count));
     }

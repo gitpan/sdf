@@ -736,6 +736,33 @@ sub CommandMacro {
 
 #
 # >>Description::
+# {{Y:CommandFilter}} is the common processing for filters which
+# execute a command on text.
+#
+sub CommandFilter {
+    local(*text, $cmd, $filter) = @_;
+#   local();
+
+    # For now, assume the text came from FILE_PATH
+    my $tmp_file = $var{'FILE_PATH'};
+
+    # When the above assumption is no good, we need to do something like ..
+    #unless (open(TMPFILE, ">$tmp_file")) {
+    #    &'AppMsg("warning", "unable to open tmp file '$tmp_file' in filter '$filter'");
+    #}
+    #for my $line (@text) {
+    #    print TMPFILE "$line\n";
+    #}
+
+    # Execute the command
+    @text = ();
+    unless (&FileFetch(*text, "$cmd < $tmp_file |")) {
+        &'AppMsg("warning", "unable to execute command '$cmd' in filter '$filter'");
+    }
+}
+
+#
+# >>Description::
 # {{Y:Related}} handles the related function.
 #
 sub Related {

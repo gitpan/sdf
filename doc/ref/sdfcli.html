@@ -2,18 +2,23 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF Reference: sdfcli - Command Line Interface Utility</TITLE>
+<TITLE>SDF 2.001: SDF Reference: sdfcli - Command Line Interface Utility</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="re_sdf.html">Contents</A> | <A HREF="in_prog.html">Parent Topic</A> | <A HREF="sdfbatch.html">Previous Topic</A> | <A HREF="sdfget.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
 <BR CLEAR="Right">
+</DIV>
+<DIV CLASS="main">
 <H1><A NAME="sdfcli">11.5. sdfcli - Command Line Interface Utility</A></H1>
 <HR>
 <H2><A NAME="Purpose">Purpose</A></H2>
@@ -22,13 +27,14 @@
 <H2><A NAME="Usage">Usage</A></H2>
 <PRE>
 usage  : sdfcli [-h[help]] [-o[out_ext]]
-         [-l[log_ext]] [-w wrap] utility ...
+         [-l[log_ext]] [-O[out_dir]] [-w wrap]
+         utility ...
 purpose: format a utility's command line interface into SDF
-version: 2.000    (SDF 2.001beta1)
+version: 2.000    (SDF 2.001)
 </PRE>
 <P>The options are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Option</STRONG>
 </TD>
@@ -62,6 +68,14 @@ log file extension
 </TR>
 <TR>
 <TD>
+<A HREF="#sdfcli_O">-O</A>
+</TD>
+<TD>
+output to input file's (or explicit) directory
+</TD>
+</TR>
+<TR>
+<TD>
 <A HREF="#sdfcli_w">-w</A>
 </TD>
 <TD>
@@ -75,6 +89,7 @@ column at which to wrap option specifications
 <P><A NAME="sdfcli_h">The -h option provides help. If it is specified without a parameter, a brief description of each option is displayed. To display the attributes for an option, specify the option letter as a parameter.</A></P>
 <P><A NAME="sdfcli_o">By default, generated output goes to standard output. To direct output to a file per input file, use the -o option to specify an extension for output files. If the -o option is specified without a parameter, an extension of <EM>out</EM> is assumed.</A></P>
 <P><A NAME="sdfcli_l">Likewise, error messages go to standard error by default. Use the -l option to create a log file per input file. If the -l option is specified without a parameter, an extension of <EM>log</EM> is assumed.</A></P>
+<P><A NAME="sdfcli_O">By default, generated output and log files are created in the current directory. Use the -O option to specify an explicit output directory. If the -O option is specified without a parameter, the input file's directory is used.</A></P>
 <P><A HREF="../ref/sdfcli.html">sdfcli</A> executes each argument with a -h flag and converts the resultant output to nicely formatted <A HREF="http://www.mincom.com/mtr/sdf/">SDF</A>. An argument of &quot;-&quot; specifies that the help should be read from standard input.</P>
 <P>Formatting is done as follows:</P>
 <OL>
@@ -88,8 +103,12 @@ column at which to wrap option specifications
 <HR>
 <H2><A NAME="Limitations and future directions">Limitations and future directions</A></H2>
 <P>The table formats used are hard coded.</P>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="re_sdf.html">Contents</A> | <A HREF="in_prog.html">Parent Topic</A> | <A HREF="sdfbatch.html">Previous Topic</A> | <A HREF="sdfget.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

@@ -21,6 +21,10 @@ $VERSION{''.__FILE__} = '$Revision$';
 # >>Description::
 # !SDF_OPT_STD
 #
+# The -f option can be used to specify a filename to use when
+# formatting the output. This is useful when the text is coming from
+# the standard input stream.
+#
 # The {{get-rule}} nominates the formatting of the embedded
 # documentation to be extracted. All currently defined get-rules
 # assume the documentation is in comment blocks in one of the
@@ -51,7 +55,7 @@ $VERSION{''.__FILE__} = '$Revision$';
 #
 # The -g option specifies the {{get-rule}} to use.
 # The available get-rules differ on the prefix expected at the front
-# of each line as shown below. {{perl}} is the default get-rule.
+# of each line as shown below.
 #
 # !block table
 # Rule          Prefix
@@ -60,6 +64,7 @@ $VERSION{''.__FILE__} = '$Revision$';
 # c             * or /*
 # fortran       c (with 5 preceding spaces)
 # eiffel        --
+# bat           rem
 # !endblock
 #
 # Within C code, a trailing space is required after the characters above.
@@ -75,8 +80,24 @@ $VERSION{''.__FILE__} = '$Revision$';
 # V:  * to commonly used network services.
 # V:  */
 #
-# A report can be specified using the -r option. Reports provide
-# a mechanism for:
+# If the -g option is not specified,
+# {{perl}} is the default get-rule. If the -g option is specified
+# without a parameter, the extension in lowercase of the filename
+# (or the {{formatting filename}} if the text is coming from standard input)
+# is used to guess the get_rule as shown below.
+#
+# !block table
+# Rule          Extensions
+# cpp           cpp, c++, cc, hpp, hpp, h, java, idl
+# c             c
+# fortran       fortran, for, f77, f
+# eiffel        eiffel, ada
+# bat           bat, cmd
+# !endblock
+#
+# A report filename can be specified using the -r option.
+# If the name doesn't include an extension, sdg is assumed.
+# Reports provide a mechanism for:
 #
 # * selectively extracting sections, and
 # * rudimentary reformatting (e.g. to [[SDF]])
@@ -108,6 +129,9 @@ $VERSION{''.__FILE__} = '$Revision$';
 #
 # Note: The -r option is ignored if -i is specified.
 #
+# The -v option enables verbose mode. This is useful for seeing
+# which rule is being used for each file.
+#
 # >>Examples::
 #
 # To extract the user documentation from a [[SDF]] application
@@ -118,6 +142,11 @@ $VERSION{''.__FILE__} = '$Revision$';
 # >>Resources::
 #
 # >>Limitations::
+# It would be nicer if the get-rule was always guessed from the
+# filename extension but changing the default from perl could
+# break existing scripts. Therefore, get-rule guessing must be
+# explicitly enabled by specifging the -g option without a
+# parameter.
 #
 # >>Implementation::
 #
@@ -127,6 +156,33 @@ require "sdf/dict.pl";
 require "sdf/sdfget.pl";
 
 ########## Initialisation ##########
+
+#
+# >>_Description::
+# {{Y:_SDFGET_RULES}} is the lookup table used to guess the get_rule.
+# The key is the (lowercase) filename extension and the
+# value is the get_rule to use. If a get_rule isn't specified and
+# the filename extension isn't in this table, the get_rule is assumed
+# to be 'perl'.
+#
+%_SDFGET_RULES = (
+    'cpp',      'cpp',
+    'c++',      'cpp',
+    'cc',       'cpp',
+    'hpp',      'cpp',
+    'h',        'cpp',
+    'java',     'cpp',
+    'idl',      'cpp',
+    'c',        'c',
+    'fortran',  'fortran',
+    'for',      'fortran',
+    'f77',      'fortran',
+    'f',        'fortran',
+    'eiffel',   'eiffel',
+    'ada',      'eiffel',
+    'bat',      'bat',
+    'cmd',      'bat',
+);
 
 #
 # >>_Description::
@@ -151,12 +207,14 @@ require "sdf/sdfget.pl";
     'fortran >>     ::\s*   >>END:: [ ]{5}c[ ]?     FORTRAN source code',
     'eiffel  >>     ::\s*   >>END:: \s*\-\-[ ]?     Eiffel/Ada source code',
     'table   >>     ::\s*   >>END:: \s*\/\*[ ]?     Mincom TP table files',
+    'bat     >>     ::\s*   >>END:: \s*rem[ ]?      batch source code',
 );
 
 # Index into the rules table - we don't mind duplicates
 @_get_rules_dupl = ();
 %_GET_RULES_INDEX = &TableIndex(*_GET_RULES, *_get_rules_dupl, 'Name');
 @_RULE_IDS = keys %_GET_RULES_INDEX;
+push(@_RULE_IDS, '-');
 
 # valid scope values
 @_SDFGET_SCOPE = ('PUBLIC','PROTECTED','PRIVATE');
@@ -169,21 +227,28 @@ require "sdf/sdfget.pl";
 # define options
 push(@app_option, (
     #'Name|Spec|Help',
-    'get_rule|STR-@_RULE_IDS;perl|rule to use to get documentation',
+    'formatting_filename|STR|filename to use when formatting the output',
+    'get_rule|STR-@_RULE_IDS;perl;-|rule to use to get documentation',
     'rpt_file|STR;;default.sdg|report file',
     'scope|STR-@_SDFGET_SCOPE;PUBLIC|scope of documentation to be extracted',
     'inverse|BOOL|only output lines not extracted',
+    'verbose|INT;;1|verbose mode',
 ));
 
 # handle options
 &AppInit('file ...', 'extract documentation embedded in source code', 'SDF') ||
   &AppExit();
 
+# Initialise trace levels
+$app_trace_level{"user"} = $verbose if $verbose > $app_trace_level{"user"};
+
 # If supplied, fetch the report file.
 @report = ();
 if ($rpt_file) {
     local($rpt, $rpt_dir);
 
+    my $rpt_ext = (&NameSplit($rpt_file))[2];
+    $rpt_file = &NameJoin('', $rpt_file, 'sdg') if $rpt_ext eq '';
     $rpt_dir = "$app_lib_dir/stdlib";
     unless ($rpt = &NameFind($rpt_file, ".", $rpt_dir)) {
             &AppExit('fatal', "cannot find report-file '$rpt_file'");
@@ -191,9 +256,6 @@ if ($rpt_file) {
     ($all_ok, @report) = &TableFetch($rpt);
     $all_ok || &AppExit('fatal', "error opening report-file '$rpt': $!");
 }
-
-# Get the rule parameters
-%rule = &TableLookup(*_GET_RULES, *_GET_RULES_INDEX, $get_rule);
 
 ########## Processing ##########
 
@@ -202,6 +264,20 @@ sub argProcess {
 #   local();
     local($success, $buflistref);
     local($level) = 0;
+
+    # Get the file extension
+    my $filename = $ARGV eq '-' ? $formatting_filename : $ARGV;
+    my $ext = (&'NameSplit($filename))[2];
+
+    # Use the current file extension to guess the rule, if necessary
+    my $rule = $get_rule;
+    if ($rule eq '-') {
+        $rule = $_SDFGET_RULES{"\L$ext"} || 'perl';
+        &AppTrace("user", 1, "derived get_rule for filename '$ARGV' is '$rule'");
+    }
+
+    # Get the rule parameters
+    my %rule = &TableLookup(*_GET_RULES, *_GET_RULES_INDEX, $rule);
 
     # Fetch the data
     ($success, $buflistref) = &DictFetch($ARGV,
@@ -216,6 +292,8 @@ sub argProcess {
         print grep(! /^$rule{"Prefix"}$/, @dict_rest);
     }
     else {
+        # Patch $ARGV to the formatting filename if requested
+        $ARGV = $formatting_filename if $formatting_filename ne '';
         &DictPrint(STDOUT, 0, 'main', $buflistref, @report);
     }
 }

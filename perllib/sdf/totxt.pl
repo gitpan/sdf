@@ -149,6 +149,7 @@ $_TXT_DEFAULT_MARGIN = 70;
     'inline',           '_TxtHandlerInline',
     'output',           '_TxtHandlerOutput',
     'object',           '_TxtHandlerObject',
+    'stylesheet',       '',
 );
 
 # Phrase directive mapping table
@@ -234,7 +235,7 @@ sub _TxtFormatSection {
                 &$directive(*result, $para_text, %para_attrs);
             }
             else {
-                &AppMsg("warning", "ignoring internal directive '$1' in TXT driver");
+                &AppTrace("txt", 5, "ignoring internal directive '$1'");
             }
             next;
         }
@@ -612,7 +613,7 @@ sub _TxtHandlerCell {
 #
 sub _TxtFinishCell {
     local(*outbuffer) = @_;
-    $_txt_cell_current =~ s/\s+/ /g;
+    $_txt_cell_current =~ s/(\S)\s+/$1 /g;
     local @lines = split(/\n/,
         &MiscTextWrap($_txt_cell_current, $_txt_cell_width,"",'',1));
     local $tmp;

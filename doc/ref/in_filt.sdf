@@ -48,6 +48,7 @@ topics          include a set of sub-topics
 inline          embed text into target format (e.g. [[HTML]])
 script          execute text as a [[Perl]] script
 end             process text at the end
+get             extract embedded documentation
 Configuration:
 langdefs        define vgrind-like language definitions
 define          define a block of variables
@@ -90,6 +91,7 @@ filters/fdefine
 filters/fend
 filters/fexample
 filters/ffront
+filters/fget
 filters/fhlp_hea
 filters/fhlp_win
 filters/finline

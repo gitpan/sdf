@@ -92,6 +92,7 @@ $VERSION{''.__FILE__} = '$Revision$';
     'inline',           '_SgmlHandlerInline',
     'output',           '_SgmlHandlerOutput',
     'object',           '_SgmlHandlerObject',
+    'stylesheet',       '',
 );
 
 # Phrase directive mapping table
@@ -159,7 +160,7 @@ sub _SgmlFormatSection {
                 &$directive(*result, $para_text, %para_attrs);
             }
             else {
-                &AppMsg("warning", "ignoring internal directive '$1' in SGML driver");
+                &AppTrace("sgml", 5, "ignoring internal directive '$1'");
             }
             next;
         }

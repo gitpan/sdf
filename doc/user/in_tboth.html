@@ -2,18 +2,61 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF User Guide: Other Table Goodies</TITLE>
+<TITLE>SDF 2.001: SDF User Guide: Other Table Goodies</TITLE>
+<STYLE TYPE="text/css">
+<!--
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+-->
+</STYLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="ug_sdf.html">Contents</A> | <A HREF="in_tb.html">Parent Topic</A> | <A HREF="in_tbrow.html">Previous Topic</A> | <A HREF="in_tbss.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
 <BR CLEAR="Right">
+</DIV>
+<DIV CLASS="main">
 <H1>5.7. Other Table Goodies</H1>
 <HR>
 <H2><A NAME="Column alignment">5.7.1. Column alignment</A></H2>
@@ -26,8 +69,8 @@ X       Hello dear world    Y           10.2
 !endblock
 </PRE>
 <P>The output is:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD ALIGN='Left'>
 <STRONG>Name</STRONG>
 </TD>
@@ -98,8 +141,8 @@ Bug reporting   sdf-users@mincom.com
 !endblock
 </PRE>
 <P>The result is:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Purpose</STRONG>
 </TD>
@@ -129,8 +172,8 @@ Bug reporting   sdf-users@mincom.com
 <H2><A NAME="Table filtering and sorting">5.7.3. Table filtering and sorting</A></H2>
 <P>Tables can be filtered and sorted by using the <EM>where</EM> and <EM>sort</EM> attributes of the <A HREF="../ref/ftable.html">table</A> filter. These attributes are also supported by the class filters (e.g. terms, references). In either case, filtering is done before sorting.</P>
 <P>The <EM>where</EM> attribute takes an expression which is evaluated for each record. Special symbols available are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Symbol</STRONG>
 </TD>
@@ -210,8 +253,8 @@ SOS     Save our souls
 <HR>
 <H2><A NAME="Landscape tables">5.7.6. Landscape tables</A></H2>
 <P>Landscape tables are supported via the <EM>landscape</EM> parameter of the <A HREF="../ref/ftable.html">table</A> filter. The value is the height allocated to the area in which the table is placed. If a unit is not specified, the value is assumed to be a percentage of the text column height. For convenience, a value of 1 implies a full page table. Some examples are given below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Value</STRONG>
 </TD>
@@ -275,8 +318,8 @@ X       Hello dear world    Y           [bgcolor=Red]10.2
 !endblock
 </PRE>
 <P>The output is:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD ALIGN='Left'>
 <STRONG>Name</STRONG>
 </TD>
@@ -321,8 +364,8 @@ Y
 </TABLE>
 
 <P>The cell attributes supported are given below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -330,7 +373,7 @@ Y
 <STRONG>Value</STRONG>
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>General:</STRONG>
 </TD>
@@ -378,7 +421,7 @@ bgcolor
 background colour of cell (see below)
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>PS only:</STRONG>
 </TD>
@@ -434,7 +477,7 @@ angle
 angle of text (0, 90, 180, 270)
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>HTML only:</STRONG>
 </TD>
@@ -450,7 +493,7 @@ nowrap
 disable word wrap for this cell
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Special:</STRONG>
 </TD>
@@ -496,8 +539,12 @@ paragraph style to apply to cell text
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG><EM>paratag</EM> is not yet implemented.
 <HR WIDTH="80%" ALIGN="Left"></P>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="ug_sdf.html">Contents</A> | <A HREF="in_tb.html">Parent Topic</A> | <A HREF="in_tbrow.html">Previous Topic</A> | <A HREF="in_tbss.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

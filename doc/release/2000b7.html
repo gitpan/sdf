@@ -2,22 +2,27 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF Release Notes: 2.000beta7</TITLE>
+<TITLE>SDF 2.001: SDF Release Notes: 2.000beta7</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="rn_sdf.html">Contents</A> | <A HREF="rn_sdf.html">Parent Topic</A> | <A HREF="2000b7a.html">Previous Topic</A> | <A HREF="2000b6c.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
 <BR CLEAR="Right">
-<H1>13. 2.000beta7</H1>
+</DIV>
+<DIV CLASS="main">
+<H1>14. 2.000beta7</H1>
 <P ALIGN="Left"><A HREF="#2.000beta7 - Enhancements">Enhancements</A> | <A HREF="#2.000beta7 - Fixes">Fixes</A> | <A HREF="#2.000beta7 - Incompatibilities">Incompatibilities</A></P>
 <HR>
-<H2><A NAME="2.000beta7 - Enhancements">13.1. Enhancements</A></H2>
+<H2><A NAME="2.000beta7 - Enhancements">14.1. Enhancements</A></H2>
 <P>There are lots of new things in this version including:</P>
 <UL>
 <A HREF="2000b7.html#Topics mode for HTML">Topics mode for HTML</A>
@@ -38,7 +43,7 @@
 <BR>
 <A HREF="2000b7.html#Other goodies">Other goodies</A></UL>
 <P>Details are given below.</P>
-<H3><A NAME="Topics mode for HTML">13.1.1. Topics mode for HTML</A></H3>
+<H3><A NAME="Topics mode for HTML">14.1.1. Topics mode for HTML</A></H3>
 <P>SDF can now generate a set of HTML topics, rather than a single HTML file. The command is:</P>
 <PRE>
    sdf -2topics myfile.sdf
@@ -55,7 +60,7 @@
 <LI>parent topic
 <LI>previous topic
 <LI>next topic.</UL>
-<H3><A NAME="HTML headers and footers">13.1.2. HTML headers and footers</A></H3>
+<H3><A NAME="HTML headers and footers">14.1.2. HTML headers and footers</A></H3>
 <P>These macros give you total control over the headers and footers used:</P>
 <UL>
 <LI>HTML_HEADER - header on a HTML document (or main topic)
@@ -67,7 +72,7 @@
 <LI>HTML_URL_HOME - URL of the home page
 <LI>HTML_URL_CATALOG - URL of the catalog
 <LI>HTML_URL_SEARCH - URL of the search facilities.</UL>
-<H3><A NAME="HTML control variables">13.1.3. HTML control variables</A></H3>
+<H3><A NAME="HTML control variables">14.1.3. HTML control variables</A></H3>
 <P>To fine tune HTML output, the following variables are useful:</P>
 <UL>
 <LI>HTML_BG_COLOR - the background colour of the page
@@ -100,7 +105,7 @@ COLOR_MAGENTA.</UL>
 <PRE>
    !define HTML_BG_COLOR COLOR_WHITE
 </PRE>
-<H3><A NAME="Macros inside tables">13.1.4. Macros inside tables</A></H3>
+<H3><A NAME="Macros inside tables">14.1.4. Macros inside tables</A></H3>
 <P>Macros can now be used inside tables. In particular:</P>
 <UL>
 <LI>rows can now be conditionally included or excluded
@@ -118,9 +123,9 @@ SOS     Save our souls
 !endif
 !endblock
 </PRE>
-<H3><A NAME="Wide tables">13.1.5. Wide tables</A></H3>
+<H3><A NAME="Wide tables">14.1.5. Wide tables</A></H3>
 <P>The <A HREF="../ref/ftable.html">table</A> filter now supports a new attribute called <EM>wide</EM>. When it is used, the table spans the side-head in addition to the text column.</P>
-<H3><A NAME="Figure enhancements">13.1.6. Figure enhancements</A></H3>
+<H3><A NAME="Figure enhancements">14.1.6. Figure enhancements</A></H3>
 <P>The <A HREF="../ref/mimport.html">import</A> macro now supports an <EM>align</EM> attribute, which is passed into the generated HTML. This can be used in combination with the <A HREF="../ref/mclear.html">clear</A> macro to control how figures are aligned with text in HTML.</P>
 <P>For example:</P>
 <PRE>
@@ -129,14 +134,14 @@ Some text.
 !clear
 </PRE>
 <P>HTML's <EM>alt</EM> attribute is now also supported by the <A HREF="../ref/mimport.html">import</A> macro.</P>
-<H3><A NAME="Special characters">13.1.7. Special characters</A></H3>
+<H3><A NAME="Special characters">14.1.7. Special characters</A></H3>
 <P>Special characters can now be entered using {{CHAR:xxx}} where <EM>xxx</EM> is either:</P>
 <UL>
 <LI>a symbolic name
 <LI>a character code (HTML only).</UL>
 <P>The symbolic names supported are given below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -289,14 +294,14 @@ yen
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG>Some target formats do not yet support all of these characters. For example, HTML does not yet support Em or En spaces. In these cases, <A HREF="../ref/sdf.html">sdf</A> will do the best it can (e.g. use a normal space for enpsace and emspace).
 <HR WIDTH="80%" ALIGN="Left"></P>
-<H3><A NAME="Cross-references">13.1.8. Cross-references</A></H3>
+<H3><A NAME="Cross-references">14.1.8. Cross-references</A></H3>
 <P>Cross-references are now supported via the <EM>xref</EM> phrase attribute. For example:</P>
 <PRE>
  Refer to page {{N[xref=&quot;pagenum&quot;] Samples}} for more samples.
 </PRE>
 <P>The value specifies the cross-reference style to use. The phrase text is used to find the target location. The predefined styles are given below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -358,7 +363,7 @@ section <EM>paranumonly</EM>, <EM>paratext</EM>, on page <EM>pagenum</EM>
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG>Other than <A HREF="http://www.adobe.com">PostScript</A>, most targets ignore cross-references.
 <HR WIDTH="80%" ALIGN="Left"></P>
-<H3><A NAME="Other goodies">13.1.9. Other goodies</A></H3>
+<H3><A NAME="Other goodies">14.1.9. Other goodies</A></H3>
 <P>New macros include:</P>
 <UL>
 <LI><A HREF="../ref/moutput.html">output</A> - dynamically change the output file used</UL>
@@ -373,19 +378,23 @@ section <EM>paranumonly</EM>, <EM>paratext</EM>, on page <EM>pagenum</EM>
 <LI><A HREF="../ref/fascii_g.html">ascii_graphic</A> - format an ASCII graphic.</UL>
 <P>The current directory is now searched first for the configuration library, i.e. if OPT_CONFIG is <EM>abc</EM>, <A HREF="../ref/sdf.html">sdf</A> first looks for <EM>./abc.sdm</EM> before searching for <EM>abc.sdm</EM> in a directory called <EM>abc</EM> on the search path.</P>
 <HR>
-<H2><A NAME="2.000beta7 - Fixes">13.2. Fixes</A></H2>
+<H2><A NAME="2.000beta7 - Fixes">14.2. Fixes</A></H2>
 <P>The copy number field on the mincom cover page has been fixed.</P>
 <P>The <EM>Limitations &amp; Future Directions</EM> heading in <TT>sdfget.sdm</TT> has been changed to <EM>Limitations and future directions</EM>.</P>
 <HR>
-<H2><A NAME="2.000beta7 - Incompatibilities">13.3. Incompatibilities</A></H2>
+<H2><A NAME="2.000beta7 - Incompatibilities">14.3. Incompatibilities</A></H2>
 <P>The <EM>objects</EM> attribute of the <A HREF="../ref/ftable.html">table</A> filter is now called <EM>tags</EM>.</P>
 <P>The <A HREF="../ref/fsection.html">sections</A> filter now generates SECT jumps for each paragraph within the block, provided the output is html or hlp. To include sub-topics (sub-sections), use the new <A HREF="../ref/ftopics.html">topics</A> filter.</P>
 <P>When pretty-printing files using <A HREF="../ref/sdf.html">sdf</A>, use the -N option to control line numbering. The -n option is now used to specify the level when autosplitting into <A HREF="http://www.w3.org/hypertext/WWW/MarkUp/">HTML</A> topics.</P>
 <P>The <A HREF="../ref/mmessage.html">message</A> macro has been simplified - the message type is now an optional second parameter.</P>
 <P>The <EM>obj*</EM> configuration filters have been renamed to <EM>phrase*</EM> to better reflect their purpose. (This shouldn't affect normal documents.)</P>
 <P>The <EM>cfg_lang</EM> configuration filter has been renamed to <A HREF="../ref/flangdef.html">langdefs</A>.</P>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="rn_sdf.html">Contents</A> | <A HREF="rn_sdf.html">Parent Topic</A> | <A HREF="2000b7a.html">Previous Topic</A> | <A HREF="2000b6c.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

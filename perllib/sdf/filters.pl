@@ -4,7 +4,7 @@ $VERSION{''.__FILE__} = '$Revision$';
 # >>Title::     SDF Filters Library
 #
 # >>Copyright::
-# Copyright (c) 1992-1996, Ian Clatworthy (ianc@mincom.com).
+# Copyright (c) 1992-1999, Ian Clatworthy (ianc@mincom.com).
 # You may distribute under the terms specified in the LICENSE file.
 #
 # >>History::
@@ -108,6 +108,15 @@ package SDF_USER;
     'M',    'Middle',
     'B',    'Bottom',
     'L',    'Baseline',
+);
+
+# These are the built-in table aliases
+%_TABLE_ALIASES = (
+    'Columns',  'columns',
+    'Rows',     'rows',
+    'Grid',     'grid',
+    'Plain',    'plain',
+    'Shade',    'shade',
 );
 
 ##### Variables #####
@@ -698,6 +707,7 @@ sub note_Filter {
     'format         string',
     'groups         string',
     'headings       integer',
+    'keepindents    boolean',
     'landscape      string',
     'listitem       integer',
     'lmargin        integer',
@@ -740,10 +750,12 @@ sub table_Filter {
     local(%cover, $hidden, $rowspan, $colspan, $i, $j);
     local($wrap, $wrap_counter);
     local($actual_cols);
+    local($keepindents);
 
     # Get the table style (type is supported for backwards compatibility)
     $style = $param{'style'} ne '' ? $param{'style'} : $param{'type'};
     delete $param{'type'};
+    $style = $_TABLE_ALIASES{$style} if $_TABLE_ALIASES{$style};
     $style = &Var('DEFAULT_TABLE_STYLE') if $style eq '';
     $param{'style'} = $style;
 
@@ -829,6 +841,10 @@ sub table_Filter {
     # Get the niceheadings flag
     $nice_hdgs = defined($param{'niceheadings'}) ? $param{'niceheadings'} : 1;
     delete $param{'niceheadings'};
+
+    # Get the keepindents flag
+    $keepindents = $param{'keepindents'};
+    delete $param{'keepindents'};
 
     # Get the background colour
     $bgcolor = $param{'bgcolor'};
@@ -1040,6 +1056,12 @@ sub table_Filter {
                 delete $cell{"sdf"};
             }
             else {
+                # Replace leading whitespace with
+                # non-breaking spaces if requested
+                if ($keepindents) {
+                    $cell =~ s/^([ ]+)/'E<nbspace>' x length($1)/eg;
+                    #print STDERR "cell is $cell<\n";
+                }
                 if ($cell{'tag'} ne '') {
                     $cell = "{{" . $cell{'tag'} . ":$cell}}";
                 }
@@ -1088,9 +1110,15 @@ sub abstract_Filter {
 sub quote_Filter {
     local(*text, %param) = @_;
 
-    # indent margins (18 pts = 1/4 inch) and emphasise the text
-    unshift(@text, '!on paragraph \'\'; __quote; ' .
-        '@attr{"left", "right", "first", "obj"} = (18, 18, 18, 1)');
+    if ($var{'OPT_DRIVER'} eq 'html') {
+        # emphasise the text
+        unshift(@text, '!on paragraph \'\'; __quote; $attr{"obj"} = 1');
+    }
+    else {
+        # indent margins (18 pts = 1/4 inch) and emphasise the text
+        unshift(@text, '!on paragraph \'\'; __quote; ' .
+            '@attr{"left", "right", "first", "obj"} = (18, 18, 18, 1)');
+    }
     push(@text, '!off paragraph __quote');
 }
 
@@ -1483,6 +1511,29 @@ sub pod_Filter {
     @text = pod2sdf(\@text, \%param);
 }
 
+# get - get embedded documentation (sdfget format)
+@_get_FilterParams = (
+    'Name       Type        Rule',
+    'report     string',
+    'rule       string',
+    'filename   string',
+    'inverse    boolean',
+);
+sub get_Filter {
+    local(*text, %param) = @_;
+
+    # Guess the filename. We need to do this because sdfget is getting
+    # it's input from stdin
+    $param{'filename'} ||= $var{'FILE_PATH'};
+
+    # Build the options
+    my $opts = "-g$param{'rule'} -f$param{'filename'} ";
+    $opts .= $param{'inverse'} ? "-i" : "-r$param{'report'}";
+
+    # Get the documentation
+    &CommandFilter(*text, "sdfget $opts -", "get");
+}
+
 # inline - embedded target code
 @_inline_FilterParams = (
     'Name       Type        Rule',
@@ -1499,7 +1550,7 @@ sub inline_Filter {
     # Prefix each line with the appropriate style
     for $line (@text) {
         if ($param{'expand'}) {
-            next if $line =~ /\s*\!/;
+            next if $line =~ /^\s*\!/;
             $line = &main::_SdfParaExpand($line);
         }
         $line = "__inline[target='$target']$line";
@@ -1536,7 +1587,7 @@ sub toc_html_Filter {
     $toc_text = 'Table of Contents' unless $toc_text;
     $toc_tag = $parastyles_to{'TOCT'};
     $toc_tag = "P2" unless $toc_tag;
-    unshift(@text, "!HTML_PRE_SECTION", $toc_tag . "[notoc]$toc_text");
+    unshift(@text, "!HTML_PRE_SECTION", $toc_tag . "[noevents;notoc]$toc_text");
 }
 
 # offices - format a set of office locations
@@ -2221,6 +2272,71 @@ sub datestrings_Filter {
         $strings = [ split(/\s+/, eval $values{'Values'}) ];
         $main::misc_date_strings{$values{'Symbol'}} = $strings;
     }
+}
+
+# meta - meta information about a document
+@_meta_FilterParams = (
+);
+@_meta_FilterModel = (
+    'Field      Category    Rule',
+    'Name       key',
+    'Content    optional',
+);
+sub meta_Filter {
+    local(*text, %param) = @_;
+    local(@tbl, @flds, $rec, %values);
+
+    # Parse and validate the data
+    @tbl = &'TableParse(@text);
+    @text = ();
+    &_FilterValidate(*tbl, *_meta_FilterModel) if $validate;
+
+    # Process the data
+    (@flds) = &'TableFields(shift @tbl);
+    for $rec (@tbl) {
+        %values = &'TableRecSplit(*flds, $rec);
+        push(@text, &'SdfJoin("__object", "meta", %values));
+    }
+}
+
+# links - links for a document
+@_links_FilterParams = (
+);
+@_links_FilterModel = (
+    'Field              Category    Rule',
+    'Jump               key',
+    'Type               optional',
+    'Relationship       optional',
+);
+sub links_Filter {
+    local(*text, %param) = @_;
+    local(@tbl, @flds, $rec, %values);
+
+    # Parse and validate the data
+    @tbl = &'TableParse(@text);
+    @text = ();
+    &_FilterValidate(*tbl, *_links_FilterModel) if $validate;
+
+    # Process the data
+    (@flds) = &'TableFields(shift @tbl);
+    for $rec (@tbl) {
+        %values = &'TableRecSplit(*flds, $rec);
+        $values{'Type'} = 'text/css' if $values{'Type'} eq '';
+        $values{'Relationship'} = 'stylesheet' if $values{'Relationship'} eq '';
+        push(@text, &'SdfJoin("__object", "link", %values));
+    }
+}
+
+# stylesheet - stylesheet rules for a document
+@_stylesheet_FilterParams = (
+);
+@_stylesheet_FilterModel = (
+);
+sub stylesheet_Filter {
+    local(*text, %param) = @_;
+
+    # Process the data
+    @text = (&'SdfJoin("__stylesheet", join("\n", @text), %param));
 }
 
 # package return value

@@ -2,22 +2,28 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF for POD Users</TITLE>
+<TITLE>SDF 2.001: SDF for POD Users</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
+<DIV CLASS="title">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
-<H1>SDF for POD Users</H1>
-<ADDRESS>Ian Clatworthy (<A HREF="mailto:ianc@mincom.com">ianc@mincom.com</A>), Research Architect, <A HREF="http://www.mincom.com">Mincom Pty Ltd</A></ADDRESS>
-<ADDRESS>27 October 1998</ADDRESS>
+<H1 CLASS="doc-title">SDF for POD Users</H1>
+<ADDRESS CLASS="doc-author">Ian Clatworthy (<A HREF="mailto:ianc@mincom.com">ianc@mincom.com</A>), Research Architect, <A HREF="http://www.mincom.com">Mincom Pty Ltd</A></ADDRESS>
+<ADDRESS CLASS="doc-modified">25 May 1999</ADDRESS>
 <BR CLEAR="All">
-<!-- TOC -->
+</DIV>
+<DIV CLASS="contents">
 <HR>
 <H2>Table of Contents</H2>
 <UL>
@@ -49,7 +55,8 @@
 <A HREF="#What\'s wrong with SDF">9. What's wrong with SDF?</A>
 <BR>
 <A HREF="#Credits">10. Credits</A></UL>
-<!-- ENDTOC -->
+</DIV>
+<DIV CLASS="main">
 <HR>
 <H1><A NAME="Overview">1. Overview</A></H1>
 <P>Over the last few years, Perl's POD format has proven itself as a useful tool for documenting Perl's functionality and its library modules. POD is easy to learn, easy to read and easy to embed.</P>
@@ -72,51 +79,37 @@
   pod2sdf perlrun.pod &gt; perlrun.sdf
 </PRE>
 <P>As SDF is essentially a superset of POD, the SDF output is almost the same as the POD input, except that verbatim lines are marked with a leading &gt;. For example, the following POD:</P>
-<TABLE BORDER>
-<TR>
-<TD>
 <PRE>
-=head1 NAME
-&nbsp;
-abc - output the alphabet
-&nbsp;
-=head1 DESCRIPTION
-&nbsp;
-This program displays the alphabet like this:
-&nbsp;
-  ABCDEFGHIJ
-  KLMNOPQRST
-  UVWXYZ
-&nbsp;
-Pretty simple, eh?
+    =head1 NAME
+    
+    abc - output the alphabet
+    
+    =head1 DESCRIPTION
+    
+    This program displays the alphabet like this:
+    
+      ABCDEFGHIJ
+      KLMNOPQRST
+      UVWXYZ
+    
+    Pretty simple, eh?
 </PRE>
-</TD>
-</TR>
-</TABLE>
-
 <P>gets converted to:</P>
-<TABLE BORDER>
-<TR>
-<TD>
 <PRE>
-=head1 NAME
-&nbsp;
-abc - output the alphabet
-&nbsp;
-=head1 DESCRIPTION
-&nbsp;
-This program displays the alphabet like this:
-&nbsp;
-&gt;  ABCDEFGHIJ
-&gt;  KLMNOPQRST
-&gt;  UVWXYZ
-&nbsp;
-Pretty simple, eh?
+    =head1 NAME
+    
+    abc - output the alphabet
+    
+    =head1 DESCRIPTION
+    
+    This program displays the alphabet like this:
+    
+    &gt;  ABCDEFGHIJ
+    &gt;  KLMNOPQRST
+    &gt;  UVWXYZ
+    
+    Pretty simple, eh?
 </PRE>
-</TD>
-</TR>
-</TABLE>
-
 <P>Note that it isn't actually necessary to use <CMD>pod2sdf</CMD> unless you intend migrating to SDF format - the <A HREF="../ref/sdf.html">sdf</A> program can be used on a POD file directly like this:</P>
 <PRE>
   sdf -2html perlrun.pod
@@ -209,8 +202,8 @@ Some examples are:</UL>
 <UL>
 <LI>Except for lines within a multi-line macro call or a <A HREF="../ref/mblock.html">block</A>/<A HREF="../ref/mendbloc.html">endblock</A> macro pair, each line may begin a new paragraph or macro. So, if you have a special character or pattern at the start of a line, you will need to escape it by placing a backslash character (\) before it.
 <LI>To maximise convenience and readability, list items can be tagged using the special characters below:
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Tag</STRONG>
 </TD>
@@ -312,8 +305,8 @@ SDF     Simple Document Format
 !endblock
 </PRE>
 <P>The result is:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -361,8 +354,8 @@ Simple Document Format
   !import &quot;mylogo&quot;; align=Right
 </PRE>
 <P>It is generally best <EM>not</EM> to specify an extension for the filename containing the figure, as SDF will then use the best format it can find. The search rules are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>When generating</STRONG>
 </TD>
@@ -435,8 +428,8 @@ bmp
 <LI>the HTML URL searching/generation rule</UL>
 <P>This flexibility is important for non-English documentation and non-Perl documentation.</P>
 <P>To change the text expansion rules, define one of more of the variables below:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Variable</STRONG>
 </TD>
@@ -517,8 +510,12 @@ sub BuildLinkUrl  {
 <H1><A NAME="Credits">10. Credits</A></H1>
 <P>Thanks to the many people who have used and contributed to SDF over the years, particularly David Cox, Tim Hudson and Chris Moran. Likewise, thanks to Larry Wall for inventing Perl and to everyone who has contributed to Perl over the years. Without it, SDF wouldn't exist.</P>
 <P>Finally, I'd like to thank the people who encouraged me to merge POD and SDF, including Kenneth Albanowski, Brad Appleton, Achim Bohnet, Jim Esten, Chaim Frenkel, Gerd Knops, Hugues Lafarge, Tuomas J. Lukka, Andy Wardley and Peter Wolfe. I hope the result is useful.</P>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

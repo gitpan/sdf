@@ -7,6 +7,7 @@
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 24-May-99 ianc    Minor updates for 2.001
 # 16-Oct-98 ianc    Improve feature coverage
 # 29-Feb-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
@@ -100,6 +101,7 @@ Option          Long_name       Description
 -c              --config        configuration library
 -d              --driver        format driver - default is expand
 -f              --flag          define flags (flag xxx maps to variable DOC_XXX)
+-g              --get_report    prefilter using sdfget with the report specified
 -h              --help          display help on options or a single option
 -k              --look          look library
 -l              --log_ext       log file extension (default is log)
@@ -117,8 +119,10 @@ Option          Long_name       Description
 -D              --variable      define variables
 -H              --head_level    initial heading level
 -I              --include_path  search path for include files, templates, etc.
+-K              --head_look     heading look (H, A or P)
 -L              --locale        locale
 -N              --line_numbers  number lines in pretty-printed source code
+-O              --out_dir       output to input file's (or explicit) directory
 -P              --plang         pre-filter as a programming language
 -S              --page_size     page size for paper documents
 -T              --trace_levels  debugging trace levels
@@ -217,16 +221,19 @@ html_fm         a HTML document via FrameMaker
 html_topics     HTML topics
 htx_            MIMS HTX format
 info_sgml       GNU info format via SGML
+latex_          LaTeX format
 latex_pod       LaTeX format via POD
 latex_sgml      LaTeX format via SGML
 lyx_sgml        a LyX file via SGML
 man_pod         Man page format via POD
 mf6_            MIMS F6 help format
 mif_            Frame MIF format
+pdf_html        PDF via HTMLDOC
 pdf_mif         PostScript and PDF via FrameMaker
 pod_            POD format
 ps_fm           PostScript via FrameMaker
 ps_fmbook       PostScript via a FrameMaker book
+ps_html         PostScript via HTMLDOC
 ps_pod          PostScript via POD
 ps_sgml         PostScript via SGML
 rtf_fm          RTF format via FrameMaker
@@ -334,7 +341,7 @@ H2: Paragraph Styles
 
 !block table; groups
 Tag             Description
-A1 .. A6        appendix heading at level 1..6
+A0 .. A6        appendix heading at level 0..6
 Addr            line in an address
 E               example
 E80             example at least 80 characters per line
@@ -344,7 +351,7 @@ FT              figure title
 GL              glossary entry (term and definition are tab separated)
 GLD             definition in a glossary
 GLT             term in a glossary
-H1 .. H6        normal heading at level 1..6
+H0 .. H6        normal heading at level 0..6
 HEADER          page header (in header/footer only)
 KN              normal paragraph - keep with next
 KP              normal paragraph - keep with previous
@@ -359,7 +366,7 @@ NB              note begin
 NE              note end
 NV              name value
 Note            a single paragraph note
-P1 .. P6        plain heading at level 1..6
+P0 .. P6        plain heading at level 0..6
 PB              page break
 Sign            signature
 V               verbatim (example with no embedded symbols)
@@ -468,10 +475,11 @@ H2: Phrase Attributes
 
 !block table
 Name        Type        Description
+bgcolor     string      background colour
 bold        boolean     enable bold
 changed     boolean     enable change bars
-color       string      text colour (Black, White, Red, Green, Blue, Yellow, Cyan, \
-                        Magenta)
+class       string      CSS class (for HTML documents)
+color       string      text colour
 doc         string      for SECT, the name of the document containing the section
 expand      boolean     expand object from short to long name
 family      string      font family
@@ -483,6 +491,7 @@ jump        string      URL to jump to
 short       string      text to display in header/footer when PARASHORT used
 shrink      boolean     shrink object from long to short name
 size        string      font size
+style       string      custom CSS style information (for HTML documents)
 text        string      display the value instead of the existing text
 underline   boolean     enable underline
 verbatim    boolean     ignore embedded symbols within this paragraph
@@ -598,12 +607,14 @@ continued           continue a heading from a previous page
 cut                 ignore text until an = is found at the start of a line (from POD)
 default             set a variable (if not already set)
 define              set a variable
+div                 begin a division
 else                begin alternative section
 elseif              same as elsif
 elsif               begin a conditional section
 end                 end target-specific output (from POD)
 end_topic           mark the end of a topic
 endblock            end a block of text
+enddiv              end a division
 endif               end conditional text
 endmacro            end a macro definition
 execute             include output from a command
@@ -659,11 +670,14 @@ define          define a block of variables
 end             process text at the end
 example         fixed-width text (e.g. source code)
 front           front section of a document
+get             extract embedded documentation
 glossary        glossary section of document (alias for plain)
 hlp_header      table of jumps at the top of a help topic
 hlp_window      contents of a help popup window
 inline          embed text into target format (e.g. [[HTML]])
 langdefs        define vgrind-like language definitions
+links           define external links for a document (including stylesheets)
+meta            define meta information for a document
 namevalues      format a set of name-value pairs (e.g. as used in a title block)
 nofill          a set of lines
 note            a note
@@ -674,6 +688,7 @@ script          execute text as a [[Perl]] script
 sdf             apply arbitrary phrase attributes to text
 sections        paragraphs are sections
 simple          generic filter for building others
+stylesheet      define a stylesheet which should be inline in the HTML output
 table           tabular data
 template        alias for inline with {{expand}} set to true
 title           title block for a memo, fax or minutes
@@ -752,6 +767,7 @@ format        a comma-separated list of column width specifications; \
               10% of the space available to the table
 groups        pattern of group-style rows (default is /:$/)
 headings      the number of heading rows at the top of the table
+keepindents   keep leading whitespace in cells
 landscape     display the table in landscape mode (MIF only)
 listitem      the list indent level (e.g. 1) of this table
 lmargin       default left margin for table cells (MIF only)
@@ -913,6 +929,7 @@ DOC_COVER                   string      logical name of the cover page to use \
 DOC_DISTRIBUTION            string      document distribution
 DOC_HTML_LOGO               string      logo to use in HTML output
 DOC_HTML_LOGO_BASE          string      base directory for HTML_LOGO
+DOC_ID_SEP                  string      separator used within DOC_ID
 DOC_IX                      boolean     build an index
 DOC_LOF                     boolean     build a list of figures
 DOC_LOF_TITLE               string      list of figures title
@@ -963,10 +980,10 @@ DOC_DIR                     string      the directory of the current document
 DOC_EXT                     string      the extension of the current document
 DOC_FULL_WIDTH              integer     width of text area including the side-head (in points)
 DOC_ID                      string      combination of DOC_CODE and DOC_VERSION
-DOC_ID_SEP                  string      separator used within DOC_ID
 DOC_MODIFIED                datetime    the most recent modification time of files visited so far
 DOC_PAGE_HEIGHT             integer     height of page (in points)
 DOC_PAGE_WIDTH              integer     width of page (in points)
+DOC_PAGED                   boolean     output is paged, not continuous
 DOC_PATH                    string      the full pathname of the current document
 DOC_SHORT                   string      the base and extension of the current document
 DOC_START                   datetime    the time document conversion started
@@ -995,6 +1012,7 @@ OPT_CONFIG                  string      configuration library (*)
 OPT_DRIVER                  string      name of driver used to convert documents
 OPT_EXT                     string      output extension
 OPT_HEAD_LEVEL              integer     level to start headings at
+OPT_HEAD_LOOK               string      look for headings
 OPT_LOCALE                  string      locale
 OPT_LOOK                    string      look (*)
 OPT_NOBARS                  boolean     disable change bars (*)
@@ -1118,6 +1136,10 @@ FORMAT_LINK_PAGE            string      default is: the $page manpage
 FORMAT_LINK_PAGE_ENTRY      string      default is: the $entry entry in the $page manpage
 FORMAT_LINK_PAGE_SECTION    string      default is: the section on "$sect" in the $page manpage
 FORMAT_LINK_SECTION         string      default is: the section on "$sect"
+
+HTMLDOC generation:
+HTMLDOC                     boolean     generate HTML ready for HTMLDOC
+HTMLDOC_OPTS                string      tuning options to pass to HTMLDOC
 !endblock
 
 P3: Information
@@ -1134,8 +1156,10 @@ SDF_VERSION                 string      product version string (e.g. 2.000 beta1
 SDF_WWW                     string      URL for SDF's home page
 
 Macros for default.sdg:
-SDF_DESCRIPTION_POST        macro       finalisation after {{Description}}
-SDF_DESCRIPTION_PRE         macro       initialisation before {{Description}}
+SDG_DESCRIPTION_POST        macro       finalisation after {{Description}}
+SDG_DESCRIPTION_PRE         macro       initialisation before {{Description}}
+SDG_BEGIN                   macro       hook for things before extracted text
+SDG_END                     macro       hook for things after extracted text
 SDF_OPT_HELP                macro       text explaining help option
 SDF_OPT_STD                 macro       text explaining standard options
 
@@ -1144,6 +1168,8 @@ BUILD_TITLE                 string      provided for backwards-compatibility
 END_TOPIC                   string      provided for backwards-compatibility
 SLIDE_DOWN                  string      provided for backwards-compatibility
 SLIDE_UP                    string      provided for backwards-compatibility
+SDF_DESCRIPTION_POST        macro       provided for backwards-compatibility
+SDF_DESCRIPTION_PRE         macro       provided for backwards-compatibility
 !endblock
 
 H2: Programming Languages
@@ -1220,6 +1246,7 @@ Name            Description
 bugtrack        extensions for bug tracking
 defines         simplified product declaration/definition
 delphi          extensions for delphi 1.x documentation
+homepage        extensions for making SDF-like home pages easier to author
 misc            miscellaneous goodies
 objects         IT-related objects
 testcase        extensions for test case documentation

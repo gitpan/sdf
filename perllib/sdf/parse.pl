@@ -119,6 +119,7 @@ $_SDF_PHRASE_SPECIAL = "\003";
     'Name       key',
     'Library    mandatory',
     'Subroutine mandatory',
+    'Paged      optional',
 );
 
 # Page size validation rules
@@ -155,6 +156,7 @@ $_SDF_PHRASE_SPECIAL = "\003";
 # driver lookup tables
 %_sdf_driver_library = ();
 %_sdf_driver_subroutine = ();
+#%_sdf_driver_paged = ();
 
 # List of sections for the current paragraph
 @_sdf_section_list = ();
@@ -259,6 +261,7 @@ $SDF_USER'prev_text = '';
 # * {{Name}} - the driver name
 # * {{Library}} - the library containing the subroutine
 # * {{Subroutine}} - the subroutine name.
+## * {{Paged}} - a non-blank value if paged-based output is produced by default.
 #
 # Call this routine before calling {{Y:SdfConvert}}.
 #
@@ -279,10 +282,7 @@ sub SdfLoadDrivers {
         $sdf_driver{$fmt} = 1;
         $_sdf_driver_library{$fmt} = $values{'Library'};
         $_sdf_driver_subroutine{$fmt} = $values{'Subroutine'};
-
-        # Is this still needed?
-        #$fmt =~ tr/a-z/A-Z/;
-        #$SDF_USER'restricted{$fmt} = 1;
+        #$_sdf_driver_paged{$fmt} = $values{'Paged'};
     }
 }
 
@@ -299,7 +299,7 @@ sub SdfLoadPageSizes {
     # Validate the table
     &TableValidate(*table, *_SDF_PAGESIZE_RULES) if $'verbose;
 
-    # Load the drivers
+    # Load the page sizes
     @flds = &TableFields(shift(@table));
     for $rec (@table) {
         %values = &TableRecSplit(*flds, $rec);
@@ -386,16 +386,12 @@ sub SdfConvert {
 
     # Load the standard stuff.
     # Notes:
-    # 1. We 'use' rather than 'inherit' stdlib as the stdlib directory
+    # *  We 'use' rather than 'inherit' stdlib as the stdlib directory
     #    is explicitly placed last on the search list - inherit would
     #    put it first (or towards the front, at least).
-    # 2. Some of this is currently based on the (target) driver name.
-    #    It should really be controlled by driver and/or format
-    #    "flags" configured in sdf.ini. :-(
     @sdf = ("!use 'stdlib/stdlib'");
-    push(@sdf, "!_load_look_")     if     $target eq 'mif';
+    push(@sdf, "!_load_look_");
     push(@sdf, "!readonly 'OPT'");
-    #push(@sdf, "!_load_tuning_") unless $target eq 'raw';
     push(@sdf, "!_load_tuning_");
     push(@sdf, "!_load_config_");
 
@@ -406,10 +402,20 @@ sub SdfConvert {
 
     # Adjust the initial heading level, if requested
     $init_level = $convert_var{'OPT_HEAD_LEVEL'};
-    if ($init_level ne '') {
+    if ($init_level > 1) {
         for ($i = 1; $i < $init_level; $i++) {
             push(@sdf, "!slide_down");
         }
+    }
+    elsif ($init_level eq '0') {
+        push(@sdf, "!slide_up");
+    }
+
+    # Adjust the heading look, if requested
+    if ($convert_var{'OPT_HEAD_LOOK'} ne '') {
+        my $ohl_macro = "!on paragraph '[HAP]\\d';; " .
+          '$style = $var{"OPT_HEAD_LOOK"} . substr($style, 1)';
+        push(@sdf, $ohl_macro);
     }
 
     # Do the init macro, if any, for the file first
@@ -591,7 +597,7 @@ $igc_cnt++;
 
             # Process the macro - if this macro starts a block, set the
             # nested count and starting character accordingly
-            unshift(@sdf, &SDF_USER'ExecMacro($macro, $parameters, 'error'));
+            unshift(@sdf, &SDF_USER'ExecMacro($macro, $parameters, 'warning'));
             if (@sdf_end) {
                 push(@sdf, @sdf_end);
                 @sdf_end = ();
@@ -616,10 +622,18 @@ $igc_cnt++;
         # If we reach here, we have the start of the next paragraph
         $app_context = 'para. on ' unless $sdf_sections;
         ($lines, $ok, $style, $text, %attr) = &_SdfFetchPara($_, *sdf);
-        $_sdf_next_lineno = $app_lineno + $lines;
+
+        # Convert level 0 headings to the build_title macro
+        if ($style =~ /^[HAP]0$/) {
+            $SDF_USER'var{'DOC_NAME'} = $text;
+            unshift(@sdf, "!build_title");
+            $_sdf_next_lineno--;
+            next;
+        }
 
         # Prepended text causes a failure, triggering re-processing.
         # Likewise, we return nothing if a report is running.
+        $_sdf_next_lineno = $app_lineno + $lines;
         next unless $ok;
         next if @sdf_report_names;
 
@@ -771,6 +785,7 @@ sub _SdfFetchPara {
             @_append,
             "!_eos_ $'app_lineno;$'app_context") if @_append;
         if (@_prepend) {
+#printf STDERR "prepending \n\t%s<\n", join("<\n\t", @_prepend);
             $attr{'noevents'} = 1;
             unshift(@'rest,
                 "!_bos_ $'app_lineno;text prepended to ",
@@ -780,6 +795,10 @@ sub _SdfFetchPara {
             return ();
         }
     }
+
+    # I'm not yet sure why, but occasionally we reach here with noevents
+    # defined. If this happens, delete it.
+    delete $attr{'noevents'};
 
     # Remove target-specific attributes for other targets
     &SdfAttrClean(*attr) if %attr;
@@ -792,6 +811,12 @@ sub _SdfFetchPara {
     # Check the attributes are legal
     for $name (keys %attr) {
         &_SdfAttrCheck($name, $attr{$name}, "paragraph");
+    }
+
+    # Add units to size, if necessary
+    # (might be better to do this as a measure type oneday?)
+    if ($attr{'size'} =~ /^[\d\.]+$/) {
+        $attr{'size'} .= 'pt';
     }
 
     # Return result
@@ -1334,6 +1359,12 @@ sub _SdfPhraseProcess {
         $attr{'index'} = $text;
     }
 
+    # Add units to size, if necessary
+    # (might be better to do this as a measure type oneday?)
+    if ($attr{'size'} =~ /^[\d\.]+$/) {
+        $attr{'size'} .= 'pt';
+    }
+
     # Check the style is legal
     if ($style !~ /^__/) {
         unless (defined($SDF_USER'phrasestyles_name{$style})) {
@@ -1555,7 +1586,7 @@ sub SdfAttrSplit {
     $attrs =~ s/^\s*;\s*//;
     @attrs = ();
     $append = 0;
-    for $attr (split(/\s*;\s*/, $attrs)) {
+    for $attr (split(/;/, $attrs)) {
         if ($attr eq '') {
             $attrs[$#attrs] .= ';';
             $append = 1;
@@ -1565,7 +1596,9 @@ sub SdfAttrSplit {
             $append = 0;
         }
         else {
-            push(@attrs, $attr);
+            $attr =~ s/^\s+//;
+            $attr =~ s/\s+$//;
+            push(@attrs, $attr) if $attr ne '';
         }
     }
 
@@ -2012,6 +2045,34 @@ sub SdfSystem {
     return $exit_code;
 }
 
+# execute a system command quietly (i.e. only show output if an error
+# occurred on verbose mode was enabled)
+sub SdfQuietSystem {
+    local($cmd) = @_;
+    local($exit_code);
+
+    # Save the output in a temporary file
+    my $tmp_file = "/tmp/sdf$$";
+    $cmd .= " > $tmp_file";
+    $cmd .= " 2>&1" if $'NAME_OS eq 'unix';
+
+    # Execute the command
+    $exit_code = &SdfSystem($cmd);
+
+    # If verbose mode is on, or something went wrong, show the output
+    if ($verbose || $exit_code) {
+        unless (open(TMPFILE, $tmp_file)) {
+            &'AppMsg("app_warning", "unable to open tmp file '$tmp_file'");
+        }
+        else {
+            print <TMPFILE>;
+            close(TMPFILE);
+        }
+    }
+    unlink($tmp_file);
+    return $exit_code;
+}
+
 # execute sdfbatch
 sub SdfBatch {
     local($flags) = @_;
@@ -2020,7 +2081,7 @@ sub SdfBatch {
     local($tmp_file);
 
     # Check the file exists
-    $file = "$short.$out_ext";
+    $file = "$long.$out_ext";
     unless (-f $file) {
         &'AppMsg("error", "cannot execute sdfbatch on nonexistent file '$file'");
         return;
@@ -2031,39 +2092,59 @@ sub SdfBatch {
     #$cmd = "$Config::Config{installscript}/sdfbatch $flags $short.$out_ext";
     # IGC 23/Feb/98: assume sdfbatch is on the path rather than in the
     # same place Perl is installed.
-    $cmd = "sdfbatch $flags $short.$out_ext";
+    &SdfQuietSystem("sdfbatch $flags $long.$out_ext");
+}
 
-    # Save the output in a temporary file
-    $tmp_file = "/tmp/sdf$$";
-    $cmd .= " > $tmp_file 2>&1";
+# execute htmldoc
+sub SdfHtmldoc {
+    local($infile, $outfile) = @_;
+#   local();
+
+    # Check the input file exists
+    unless (-f $infile) {
+        &'AppMsg("error", "cannot execute htmldoc on nonexistent file '$infile'");
+        return;
+    }
+
+    # Build up the flags using the document variables
+    my $toc_level = $var{'DOC_TOC'};
+    my $flags = $toc_level ? "--toclevels $toc_level" : "--no-toc";
+    my $title = $var{'DOC_TITLE'};
+    $flags .= " --no-title" if $title eq '';
+    my $two_sides = $var{'DOC_TWO_SIDES'};
+    $flags .= " --duplex" if $two_sides;
+    my $page_size = $var{'DOC_PAGE_WIDTH'} . 'x' . $var{'DOC_PAGE_HEIGHT'};
+    $flags .= " --size $page_size";
+    $flags .= " --left $var{'OPT_MARGIN_INNER'}";
+    $flags .= " --right $var{'OPT_MARGIN_OUTER'}";
+    $flags .= " --top $var{'OPT_MARGIN_TOP'}";
+    $flags .= " --bottom $var{'OPT_MARGIN_BOTTOM'}";
+    my $hf = &SdfHtmldocHFOpts();
+    $flags .= " $hf" if $hf;
+    my $tuning = $var{'HTMLDOC_OPTS'};
+    $flags .= " $tuning" if $tuning;
 
     # Execute the command
-    $exit_code = &SdfSystem($cmd);
+    &SdfQuietSystem("htmldoc $flags -f $outfile $infile");
+}
 
-    # If verbose mode is on, or something went wrong, show the output
-    if ($verbose || $exit_code) {
-        unless (open(TMPFILE, $tmp_file)) {
-            &AppExit("app_warning", "unable to open tmp file '$tmp_file'");
-        }
-        else {
-            print <TMPFILE>;
-            close(TMPFILE);
-        }
-    }
-    unlink($tmp_file);
+# Build the header/footer options for HTMLDOC
+sub SdfHtmldocHFOpts {
+
+    return "";
 }
 
 # delete a file
 sub SdfDelete {
     local($file) = @_;
 #   local();
-    local($cmd);
 
-    # Build the command
-    $cmd = "rm -f $file";
-
-    # Execute the command
-    &SdfSystem($cmd) if -f $file;
+    if (-f $file) {
+        &'AppMsg("object", "deleting '$file'") if $'verbose >= 1;
+        unless (unlink($file)) {
+            &'AppMsg("object", "delete of '$file' failed: $!");
+        }
+    }
 }
 
 # delete a set of files after a book build

@@ -9,6 +9,7 @@
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 30-Oct-98 ianc    Added local mode
 # 29-Feb-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
 #
@@ -39,15 +40,17 @@ $DOC_ROOT = cwd();
 
 # Check the usage
 unless (@ARGV) {
-    print "usage: build [-l] list_of_docs\n";
+    print "usage: build all          - all the documents\n";
+    print "       build list_of_docs - some documents\n";
+    print "       build local        - just home & catalog for local use\n";
     exit 1;
 }
 
-# Check for the local flag
-$local_docs = '';
-if ($ARGV[0] eq '-l') {
-    $local_docs = '-DLOCAL_DOCS';
-    shift;
+# Check for local mode
+if ($ARGV[0] eq 'local') {
+    print "EXECUTING: sdf -2html -DLOCAL_DOCS home catalog\n";
+    system("sdf -2html -DLOCAL_DOCS home catalog");
+    exit();
 }
 
 # Generate the documents
@@ -78,10 +81,10 @@ while (defined($doc = shift(@ARGV))) {
     }
 }
 
-# Update the document catalog and INSTALL notes
+# Update the home page, document catalog and INSTALL notes
 chdir $DOC_ROOT;
 print "CHANGED TO: ", `pwd`;
-print "EXECUTING: sdf -2html $local_docs catalog\n";
-system("sdf -2html $local_docs catalog");
+print "EXECUTING: sdf -2html home catalog\n";
+system("sdf -2html home catalog");
 print "EXECUTING: sdf -2txt -o- -csdf user/in_insta.sdf > ../INSTALL\n";
 system("sdf -2txt -o- -csdf user/in_insta.sdf > ../INSTALL");

@@ -1328,6 +1328,39 @@ sub targetobject_Macro {
     # Return result (efficiently)
     return ("__object[Name='$name';Parent='$parent';$attrs]$type");
 }
+
+# div - begin a division
+@_div_MacroArgs = (
+    'Name       Type        Default     Rule',
+    'name       symbol',
+);
+sub div_Macro {
+    local(%arg) = @_;
+    local(@text);
+
+    # Update the parser state
+    # to do ...
+
+    # Return result
+    return (&'SdfJoin("__div", $arg{'name'}, ()));
+}
+
+# enddiv - end a macro definition
+@_enddiv_MacroArgs = ();
+sub enddiv_Macro {
+    local(%arg) = @_;
+    local(@text);
+
+    ## Check the state
+    #if ($'sdf_block_type ne 'macro') {
+    #    &'AppMsg("warning", "enddiv macro not expected");
+    #    return ();
+    #}
+
+    # Return result
+    return (&'SdfJoin("__enddiv", "", ()));
+}
+
 
 ##### Conditional Text Macros #####
 
@@ -1747,7 +1780,7 @@ sub getdoc_Macro {
     local(@text);
 
     # Return result
-    return &CommandMacro('sdfget -r', %arg);
+    return &CommandMacro("sdfget -r -g", %arg);
 }
 
 # getcode - get source code (i.e. non-documentation) from a file
@@ -1757,17 +1790,32 @@ sub getcode_Macro {
     local(@text);
 
     # Return result
-    return &CommandMacro('sdfget -i', %arg);
+    return &CommandMacro("sdfget -i -g", %arg);
 }
 
 # getusage - get the Command Line Interface for a script
-@_getusage_MacroArgs = @_include_MacroArgs;
+@_getusage_MacroArgs = (
+    'Name       Type        Default     Rule',
+    'command    string',
+    'filter     filter      _NULL_',
+    'params     rest        _NULL_',
+);
 sub getusage_Macro {
     local(%arg) = @_;
     local(@text);
 
+    # Execute the command
+    my $command = $arg{'command'};
+    unless (&FileFetch(*text, "sdfcli $command|")) {
+        &'AppMsg("warning", "unable to execute sdfcli on '$command'");
+        return ();
+    }
+
+    # Filter the text
+    &ExecFilter($arg{'filter'}, *text, $arg{'params'});
+
     # Return result
-    return &CommandMacro('sdfcli', %arg);
+    return ("!_bof_ 'sdfcli $command'", @text, "!_eof_");
 }
 
 # perlapi - get the Application Programming Interface for a Perl library
@@ -2380,15 +2428,19 @@ sub _load_look__Macro {
         $var{'OPT_STYLE'} = $style;
     }
 
-    # Init the page size,
-    # load the look library,
-    # load the style module, and
-    # calculate the layout variables.
-    @text = (
-        "!_init_page_size_",
-        "!inherit 'look/$look'",
-        "!use '$style.sds'",
-        "!_calc_layout_vars_");
+    # If paged output is being generated:
+    # * Init the page size,
+    # * load the look library,
+    # * load the style module, and
+    # * calculate the layout variables.
+    @text = ();
+    if ($var{'DOC_PAGED'}) {
+        push(@text,
+            "!_init_page_size_",
+            "!inherit 'look/$look'",
+            "!use '$style.sds'",
+            "!_calc_layout_vars_");
+    }
 
     # Return result
     return @text;

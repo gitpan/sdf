@@ -2,23 +2,29 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF Quick Reference</TITLE>
+<TITLE>SDF 2.001: SDF Quick Reference</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
+<DIV CLASS="title">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
-<H1>SDF Quick Reference</H1>
-<ADDRESS>MTR-SDF-0003.002 (Draft)</ADDRESS>
-<ADDRESS>Ian Clatworthy</ADDRESS>
-<ADDRESS>27 October 1998</ADDRESS>
+<H1 CLASS="doc-title">SDF Quick Reference</H1>
+<ADDRESS><SPAN CLASS="doc-id">MTR-SDF-0003.002</SPAN> <SPAN CLASS="doc-status">(Draft)</SPAN></ADDRESS>
+<ADDRESS CLASS="doc-author">Ian Clatworthy</ADDRESS>
+<ADDRESS CLASS="doc-modified">25 May 1999</ADDRESS>
 <BR CLEAR="All">
-<!-- TOC -->
+</DIV>
+<DIV CLASS="contents">
 <HR>
 <H2>Table of Contents</H2>
 <UL>
@@ -86,12 +92,13 @@
 <A HREF="#Book Components">3.20. Book Components</A>
 <BR>
 <A HREF="#Event Processing">3.21. Event Processing</A></UL></UL>
-<!-- ENDTOC -->
+</DIV>
+<DIV CLASS="main">
 <HR>
 <H1><A NAME="SDF - The Package">1. SDF - The Package</A></H1>
 <H2><A NAME="Programs">1.1. Programs</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -190,8 +197,8 @@ convert Windows PostScript to Unix PostScript
 </TABLE>
 
 <P>Environment variables used are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -218,8 +225,8 @@ options always used by <A HREF="../ref/sdf.html">sdf</A> (e.g. -Yc:\mysdflib)
 </TABLE>
 
 <H2><A NAME="File Extension Conventions">1.2. File Extension Conventions</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Ext.</STRONG>
 </TD>
@@ -364,8 +371,8 @@ SDF template
 <HR>
 <H1><A NAME="sdf - The Program">2. sdf - The Program</A></H1>
 <H2><A NAME="Command-line Options">2.1. Command-line Options</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Option</STRONG>
 </TD>
@@ -429,6 +436,17 @@ format driver - default is expand
 </TD>
 <TD>
 define flags (flag xxx maps to variable DOC_XXX)
+</TD>
+</TR>
+<TR>
+<TD>
+-g
+</TD>
+<TD>
+--get_report
+</TD>
+<TD>
+prefilter using sdfget with the report specified
 </TD>
 </TR>
 <TR>
@@ -620,6 +638,17 @@ search path for include files, templates, etc.
 </TR>
 <TR>
 <TD>
+-K
+</TD>
+<TD>
+--head_look
+</TD>
+<TD>
+heading look (H, A or P)
+</TD>
+</TR>
+<TR>
+<TD>
 -L
 </TD>
 <TD>
@@ -638,6 +667,17 @@ locale
 </TD>
 <TD>
 number lines in pretty-printed source code
+</TD>
+</TR>
+<TR>
+<TD>
+-O
+</TD>
+<TD>
+--out_dir
+</TD>
+<TD>
+output to input file's (or explicit) directory
 </TD>
 </TR>
 <TR>
@@ -732,8 +772,8 @@ path to search for libraries and modules
 <LI><EM>xxx_</EM> - generate format xxx directly.</UL>
 <P><A HREF="../ref/sdf.html">sdf</A>'s -2 option is used to specify the target format.</P>
 <H3><A NAME="Logical Formats">2.3.1. Logical Formats</A></H3>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Format</STRONG>
 </TD>
@@ -910,8 +950,8 @@ txt_
 </TABLE>
 
 <H3><A NAME="Explicit Formats">2.3.2. Explicit Formats</A></H3>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Format</STRONG>
 </TD>
@@ -1001,6 +1041,14 @@ GNU info format via SGML
 </TR>
 <TR>
 <TD>
+latex_
+</TD>
+<TD>
+LaTeX format
+</TD>
+</TR>
+<TR>
+<TD>
 latex_pod
 </TD>
 <TD>
@@ -1049,6 +1097,14 @@ Frame MIF format
 </TR>
 <TR>
 <TD>
+pdf_html
+</TD>
+<TD>
+PDF via HTMLDOC
+</TD>
+</TR>
+<TR>
+<TD>
 pdf_mif
 </TD>
 <TD>
@@ -1077,6 +1133,14 @@ ps_fmbook
 </TD>
 <TD>
 PostScript via a FrameMaker book
+</TD>
+</TR>
+<TR>
+<TD>
+ps_html
+</TD>
+<TD>
+PostScript via HTMLDOC
 </TD>
 </TR>
 <TR>
@@ -1170,8 +1234,8 @@ plain text format via POD
 </TABLE>
 
 <H2><A NAME="Document Styles">2.4. Document Styles</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Style</STRONG>
 </TD>
@@ -1244,8 +1308,8 @@ technical paper
 </TABLE>
 
 <H2><A NAME="Looks">2.5. Looks</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Style</STRONG>
 </TD>
@@ -1296,8 +1360,8 @@ look useful for normal documents
 </TABLE>
 
 <H2><A NAME="Page Sizes">2.6. Page Sizes</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -1412,8 +1476,8 @@ tabloid
 
 <P>Rotated sizes are named with an appended R (e.g. A4R).</P>
 <H2><A NAME="Reports">2.7. Reports</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -1433,8 +1497,8 @@ generate a directory tree of nested SDF documents
 
 <H2><A NAME="Pre-filters">2.8. Pre-filters</A></H2>
 <P>Files with extensions matching a pre-filter name or alias have the name filter applied.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -1481,8 +1545,8 @@ pm,PL
 <HR>
 <H1><A NAME="SDF - The Language">3. SDF - The Language</A></H1>
 <H2><A NAME="Concepts and Conventions">3.1. Concepts and Conventions</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Term</STRONG>
 </TD>
@@ -1582,8 +1646,8 @@ a directory containing modules
 <LI>upper-case for paragraph and phrase styles
 <LI>lower-case for other names.</UL>
 <H2><A NAME="Paragraph Styles">3.2. Paragraph Styles</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Tag</STRONG>
 </TD>
@@ -1593,10 +1657,10 @@ a directory containing modules
 </TR>
 <TR>
 <TD>
-A1 .. A6
+A0 .. A6
 </TD>
 <TD>
-appendix heading at level 1..6
+appendix heading at level 0..6
 </TD>
 </TR>
 <TR>
@@ -1673,10 +1737,10 @@ term in a glossary
 </TR>
 <TR>
 <TD>
-H1 .. H6
+H0 .. H6
 </TD>
 <TD>
-normal heading at level 1..6
+normal heading at level 0..6
 </TD>
 </TR>
 <TR>
@@ -1793,10 +1857,10 @@ a single paragraph note
 </TR>
 <TR>
 <TD>
-P1 .. P6
+P0 .. P6
 </TD>
 <TD>
-plain heading at level 1..6
+plain heading at level 0..6
 </TD>
 </TR>
 <TR>
@@ -1826,8 +1890,8 @@ verbatim (example with no embedded symbols)
 </TABLE>
 
 <P>Special styles (implicitly terminated) are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Tag</STRONG>
 </TD>
@@ -1894,8 +1958,8 @@ labelled list item at level 1..6
 </TABLE>
 
 <H2><A NAME="Paragraph Attributes">3.3. Paragraph Attributes</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -2152,8 +2216,8 @@ span the side-head
 
 <H2><A NAME="Phrase Styles">3.4. Phrase Styles</A></H2>
 <P>Leading whitespace is not removed for styles marked with (*).</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Tag</STRONG>
 </TD>
@@ -2396,8 +2460,8 @@ zero width character (ala POD)
 </TABLE>
 
 <P>The following styles are only supported in headers/footers:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Tag</STRONG>
 </TD>
@@ -2465,8 +2529,8 @@ paragraph text (e.g. Hardware requirements)
 
 <P>The <EM>PARA*</EM> tags require a comma separated list of paragraph styles to be nominated as the text of the phrase, e.g. {{PARATEXT:H1,A1,P1}}.</P>
 <H2><A NAME="Phrase Attributes">3.5. Phrase Attributes</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -2475,6 +2539,17 @@ paragraph text (e.g. Hardware requirements)
 </TD>
 <TD>
 <STRONG>Description</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+bgcolor
+</TD>
+<TD>
+string
+</TD>
+<TD>
+background colour
 </TD>
 </TR>
 <TR>
@@ -2501,13 +2576,24 @@ enable change bars
 </TR>
 <TR>
 <TD>
+class
+</TD>
+<TD>
+string
+</TD>
+<TD>
+CSS class (for HTML documents)
+</TD>
+</TR>
+<TR>
+<TD>
 color
 </TD>
 <TD>
 string
 </TD>
 <TD>
-text colour (Black, White, Red, Green, Blue, Yellow, Cyan, Magenta)
+text colour
 </TD>
 </TR>
 <TR>
@@ -2633,6 +2719,17 @@ font size
 </TR>
 <TR>
 <TD>
+style
+</TD>
+<TD>
+string
+</TD>
+<TD>
+custom CSS style information (for HTML documents)
+</TD>
+</TR>
+<TR>
+<TD>
 text
 </TD>
 <TD>
@@ -2678,8 +2775,8 @@ cross-referencing information (future)
 </TABLE>
 
 <H2><A NAME="Escapes">3.6. Escapes</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -3263,8 +3360,8 @@ yuml
 
 <P>For convenience, variables are provided for: amp, bullet, c, cent, dagger, doubledagger, emdash, endash, emspace, enspace, nbdash, nbspace, nbsp, nl, pound, r, reg, tab, tm, yen.</P>
 <H2><A NAME="Macros">3.7. Macros</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -3362,6 +3459,14 @@ set a variable
 </TR>
 <TR>
 <TD>
+div
+</TD>
+<TD>
+begin a division
+</TD>
+</TR>
+<TR>
+<TD>
 else
 </TD>
 <TD>
@@ -3406,6 +3511,14 @@ endblock
 </TD>
 <TD>
 end a block of text
+</TD>
+</TR>
+<TR>
+<TD>
+enddiv
+</TD>
+<TD>
+end a division
 </TD>
 </TR>
 <TR>
@@ -3675,8 +3788,8 @@ load a library module
 </TABLE>
 
 <H2><A NAME="Filters">3.8. Filters</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Filter</STRONG>
 </TD>
@@ -3814,6 +3927,14 @@ front section of a document
 </TR>
 <TR>
 <TD>
+get
+</TD>
+<TD>
+extract embedded documentation
+</TD>
+</TR>
+<TR>
+<TD>
 glossary
 </TD>
 <TD>
@@ -3850,6 +3971,22 @@ langdefs
 </TD>
 <TD>
 define vgrind-like language definitions
+</TD>
+</TR>
+<TR>
+<TD>
+links
+</TD>
+<TD>
+define external links for a document (including stylesheets)
+</TD>
+</TR>
+<TR>
+<TD>
+meta
+</TD>
+<TD>
+define meta information for a document
 </TD>
 </TR>
 <TR>
@@ -3934,6 +4071,14 @@ generic filter for building others
 </TR>
 <TR>
 <TD>
+stylesheet
+</TD>
+<TD>
+define a stylesheet which should be inline in the HTML output
+</TD>
+</TR>
+<TR>
+<TD>
 table
 </TD>
 <TD>
@@ -3977,8 +4122,8 @@ fixed-width text, ignoring embedded symbols
 <P><A HREF="#Classes">Classes</A> and <A HREF="#Programming Languages">Programming Languages</A> can also be used as filters.</P>
 <H2><A NAME="Figures">3.9. Figures</A></H2>
 <P>Extension search rules:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>When generating</STRONG>
 </TD>
@@ -4013,8 +4158,8 @@ bmp
 </TABLE>
 
 <P><A HREF="../ref/mimport.html">import</A> macro parameters:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -4129,8 +4274,8 @@ wrap text around a figure (ignored for HTML)
 </TABLE>
 
 <P>Default conversion rules (from <TT>sdf.ini</TT>):</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>When generating</STRONG>
 </TD>
@@ -4218,8 +4363,8 @@ prn2ps -ops $source; ps2epsi $base.ps $dest; rm $base.ps
 
 <H2><A NAME="Tables">3.10. Tables</A></H2>
 <P><A HREF="../ref/ftable.html">table</A> filter parameters:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -4329,6 +4474,14 @@ headings
 </TD>
 <TD>
 the number of heading rows at the top of the table
+</TD>
+</TR>
+<TR>
+<TD>
+keepindents
+</TD>
+<TD>
+keep leading whitespace in cells
 </TD>
 </TR>
 <TR>
@@ -4510,8 +4663,8 @@ the number of data rows to display in a physical row
 </TABLE>
 
 <P>Column width specifications:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Value</STRONG>
 </TD>
@@ -4595,8 +4748,8 @@ same as 1*
 
 <P>= can be used in place of - to get equalised column widths.</P>
 <P>Cell attributes:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -4729,8 +4882,8 @@ vertical alignment (Top, Middle, Bottom, Baseline)
 <P>Permitted ruling values: <EM>Vthin</EM>, <EM>Thin</EM>, <EM>Medium</EM>, <EM>Thick</EM>, <EM>Double</EM>.</P>
 <H2><A NAME="Classes">3.11. Classes</A></H2>
 <P>Data fields for the predefined classes are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Field</STRONG>
 </TD>
@@ -4741,7 +4894,7 @@ vertical alignment (Top, Middle, Bottom, Baseline)
 <STRONG>Description</STRONG>
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>organisations:</STRONG>
 </TD>
@@ -4785,7 +4938,7 @@ Jump
 URL for organisation
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>products:</STRONG>
 </TD>
@@ -4818,7 +4971,7 @@ Jump
 URL for product
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>references:</STRONG>
 </TD>
@@ -4884,7 +5037,7 @@ Status
 status (e.g. Draft, Review or Final)
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>terms:</STRONG>
 </TD>
@@ -4932,8 +5085,8 @@ URL for term
 
 <P>The REFNUMONLY tag can be used to mark a REF phrase where only the trailing number is output.</P>
 <P>Calculated fields for the <A HREF="../ref/creferen.html">references</A> class:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -4992,8 +5145,8 @@ alias for Printdoc
 </TABLE>
 
 <P>Parameters of class filters:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -5184,8 +5337,8 @@ number of logical rows to place on a physical row
 
 <H2><A NAME="Document Variables/Macros">3.12. Document Variables/Macros</A></H2>
 <H3><A NAME="Controls">Controls</A></H3>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -5359,6 +5512,17 @@ string
 </TD>
 <TD>
 base directory for HTML_LOGO
+</TD>
+</TR>
+<TR>
+<TD>
+DOC_ID_SEP
+</TD>
+<TD>
+string
+</TD>
+<TD>
+separator used within DOC_ID
 </TD>
 </TR>
 <TR>
@@ -5625,7 +5789,7 @@ string
 version number of document (*)
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Macros:</STRONG>
 </TD>
@@ -5695,8 +5859,8 @@ text specifying trademarks used in document
 
 <P>If the variables marked with (*) are not defined, <A HREF="../ref/mbuild_t.html">build_title</A> sets them using the references data, if possible.</P>
 <H3><A NAME="Information">Information</A></H3>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -5775,17 +5939,6 @@ combination of DOC_CODE and DOC_VERSION
 </TR>
 <TR>
 <TD>
-DOC_ID_SEP
-</TD>
-<TD>
-string
-</TD>
-<TD>
-separator used within DOC_ID
-</TD>
-</TR>
-<TR>
-<TD>
 DOC_MODIFIED
 </TD>
 <TD>
@@ -5815,6 +5968,17 @@ integer
 </TD>
 <TD>
 width of page (in points)
+</TD>
+</TR>
+<TR>
+<TD>
+DOC_PAGED
+</TD>
+<TD>
+boolean
+</TD>
+<TD>
+output is paged, not continuous
 </TD>
 </TR>
 <TR>
@@ -5894,7 +6058,7 @@ string
 alias for DATE:DOC_MODIFIED
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>File:</STRONG>
 </TD>
@@ -5964,8 +6128,8 @@ current pathname (e.g. <EM>/doc/sdf/mydoc.sdf</EM>)
 
 <H2><A NAME="Option Variables">3.13. Option Variables</A></H2>
 <P>These variables (except OPT_NOBARS) give the values of command-line options. Variables marked with a (*) can be set via the <A HREF="../ref/minit.html">init</A> macro on the top line of a document:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -6018,6 +6182,17 @@ integer
 </TD>
 <TD>
 level to start headings at
+</TD>
+</TR>
+<TR>
+<TD>
+OPT_HEAD_LOOK
+</TD>
+<TD>
+string
+</TD>
+<TD>
+look for headings
 </TD>
 </TR>
 <TR>
@@ -6144,8 +6319,8 @@ width for txt output (default is 70) (*)
 </TABLE>
 
 <P>These variables can only be set within look libraries:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -6348,8 +6523,8 @@ width of side-head
 <H2><A NAME="Page Layout Variables">3.14. Page Layout Variables</A></H2>
 <P>Page variables can only be set within look libraries.</P>
 <P>Page tags:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Page</STRONG>
 </TD>
@@ -6390,8 +6565,8 @@ the left hand side of double-sided documents; ignored for single-sided documents
 <LI><EM>COMPONENT</EM> is the name of the component in upper-case (refer to <A HREF="#Book Components">Book Components</A>)
 <LI><EM>FRL</EM> is FIRST, RIGHT or LEFT.</UL></UL>
 <P>If a component does not have a component-specific macro/variable defined, then the generic macro/variable is used.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -6557,8 +6732,8 @@ outer text of line n (1..2) of header
 <P>For <EM>top</EM>, <EM>bottom</EM> and <EM>box</EM>, the value of the attribute is the line width in points.</P>
 <H2><A NAME="Miscellaneous Variables/Macros">3.15. Miscellaneous Variables/Macros</A></H2>
 <H3><A NAME="Controls">Controls</A></H3>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -6569,7 +6744,7 @@ outer text of line n (1..2) of header
 <STRONG>Description</STRONG>
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Processing:</STRONG>
 </TD>
@@ -6635,7 +6810,7 @@ string
 default style for cross-references (initially <EM>sections</EM>)
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Link expansion formats:</STRONG>
 </TD>
@@ -6690,11 +6865,44 @@ string
 default is: the section on &quot;$sect&quot;
 </TD>
 </TR>
+<TR CLASS="group">
+<TD>
+<STRONG>HTMLDOC generation:</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+<TD>
+<STRONG>&nbsp;</STRONG>
+</TD>
+</TR>
+<TR>
+<TD>
+HTMLDOC
+</TD>
+<TD>
+boolean
+</TD>
+<TD>
+generate HTML ready for HTMLDOC
+</TD>
+</TR>
+<TR>
+<TD>
+HTMLDOC_OPTS
+</TD>
+<TD>
+string
+</TD>
+<TD>
+tuning options to pass to HTMLDOC
+</TD>
+</TR>
 </TABLE>
 
 <H3><A NAME="Information">Information</A></H3>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -6705,7 +6913,7 @@ default is: the section on &quot;$sect&quot;
 <STRONG>Description</STRONG>
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Package:</STRONG>
 </TD>
@@ -6793,7 +7001,7 @@ string
 URL for SDF's home page
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Macros for default.sdg:</STRONG>
 </TD>
@@ -6806,7 +7014,7 @@ URL for SDF's home page
 </TR>
 <TR>
 <TD>
-SDF_DESCRIPTION_POST
+SDG_DESCRIPTION_POST
 </TD>
 <TD>
 macro
@@ -6817,13 +7025,35 @@ finalisation after <EM>Description</EM>
 </TR>
 <TR>
 <TD>
-SDF_DESCRIPTION_PRE
+SDG_DESCRIPTION_PRE
 </TD>
 <TD>
 macro
 </TD>
 <TD>
 initialisation before <EM>Description</EM>
+</TD>
+</TR>
+<TR>
+<TD>
+SDG_BEGIN
+</TD>
+<TD>
+macro
+</TD>
+<TD>
+hook for things before extracted text
+</TD>
+</TR>
+<TR>
+<TD>
+SDG_END
+</TD>
+<TD>
+macro
+</TD>
+<TD>
+hook for things after extracted text
 </TD>
 </TR>
 <TR>
@@ -6848,7 +7078,7 @@ macro
 text explaining standard options
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Old macro names:</STRONG>
 </TD>
@@ -6903,11 +7133,33 @@ string
 provided for backwards-compatibility
 </TD>
 </TR>
+<TR>
+<TD>
+SDF_DESCRIPTION_POST
+</TD>
+<TD>
+macro
+</TD>
+<TD>
+provided for backwards-compatibility
+</TD>
+</TR>
+<TR>
+<TD>
+SDF_DESCRIPTION_PRE
+</TD>
+<TD>
+macro
+</TD>
+<TD>
+provided for backwards-compatibility
+</TD>
+</TR>
 </TABLE>
 
 <H2><A NAME="Programming Languages">3.16. Programming Languages</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Language</STRONG>
 </TD>
@@ -7025,8 +7277,8 @@ csh
 <H2><A NAME="Colours">3.17. Colours</A></H2>
 <P>For PS (i.e. MIF) generation, the supported colour values are <EM>Black</EM>, <EM>White</EM>, <EM>Red</EM>, <EM>Green</EM>, <EM>Blue</EM>, <EM>Yellow</EM>, <EM>Cyan</EM> and <EM>Magenta</EM>. If a different colour is specified, it is ignored.</P>
 <P>For HTML generation, any of the HTML colours names (including those supported for PS generation) or the &quot;#rrggbb&quot; form can be used. Useful variables are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -7107,8 +7359,8 @@ COLOR_GREY
 </TABLE>
 
 <H2><A NAME="Expression Formats">3.18. Expression Formats</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -7116,7 +7368,7 @@ COLOR_GREY
 <STRONG>Description</STRONG>
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Strings:</STRONG>
 </TD>
@@ -7156,7 +7408,7 @@ UPPER1
 convert the first character to uppercase
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Dates:</STRONG>
 </TD>
@@ -7224,8 +7476,8 @@ format to a 4-digit year
 
 <P>Expression format XXX can be changed/defined via the FORMAT_XXX variable.</P>
 <H2><A NAME="Modules">3.19. Modules</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -7255,6 +7507,14 @@ delphi
 </TD>
 <TD>
 extensions for delphi 1.x documentation
+</TD>
+</TR>
+<TR>
+<TD>
+homepage
+</TD>
+<TD>
+extensions for making SDF-like home pages easier to author
 </TD>
 </TR>
 <TR>
@@ -7292,8 +7552,8 @@ extensions for Use Case documentation
 </TABLE>
 
 <H2><A NAME="Book Components">3.20. Book Components</A></H2>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -7385,8 +7645,8 @@ the index
 
 <H2><A NAME="Event Processing">3.21. Event Processing</A></H2>
 <P>Supported symbols within actions:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Type</STRONG>
 </TD>
@@ -7437,8 +7697,8 @@ $style, %param
 </TABLE>
 
 <P>Special symbol meanings:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Symbol</STRONG>
 </TD>
@@ -7446,7 +7706,7 @@ $style, %param
 <STRONG>Meaning</STRONG>
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>paragraph:</STRONG>
 </TD>
@@ -7502,7 +7762,7 @@ the text of the previous paragraph
 the attributes of the previous paragraph
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>phrase:</STRONG>
 </TD>
@@ -7520,8 +7780,12 @@ text to append onto the end of the phrase
 </TR>
 </TABLE>
 
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

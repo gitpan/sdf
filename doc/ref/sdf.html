@@ -2,18 +2,23 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF Reference: sdf - SDF Conversion Utility</TITLE>
+<TITLE>SDF 2.001: SDF Reference: sdf - SDF Conversion Utility</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="re_sdf.html">Contents</A> | <A HREF="in_prog.html">Parent Topic</A> | <A HREF="in_prog.html">Previous Topic</A> | <A HREF="sdfapi.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
 <BR CLEAR="Right">
+</DIV>
+<DIV CLASS="main">
 <H1><A NAME="sdf">11.2. sdf - SDF Conversion Utility</A></H1>
 <HR>
 <H2><A NAME="Purpose">Purpose</A></H2>
@@ -22,24 +27,25 @@
 <H2><A NAME="Usage">Usage</A></H2>
 <PRE>
 usage  : sdf [+alias] [-h[help]] [-o[out_ext]]
-         [-l[log_ext]] [-2 format] [-D variable,..]
-         [-n split_level] [-f flag,..]
-         [-I include_path,..] [-p prefilter]
-         [-a parameters] [-P[plang]]
-         [-N[line_numbers]] [-r report] [-L locale]
-         [-k look] [-s style] [-S page_size]
-         [-c config] [-u uses,..] [-H head_level]
+         [-l[log_ext]] [-O[out_dir]] [-2 format]
+         [-D variable,..] [-n split_level]
+         [-f flag,..] [-I include_path,..]
+         [-p[prefilter]] [-a parameters] [-P[plang]]
+         [-N[line_numbers]] [-g[get_report]]
+         [-r report] [-L locale] [-k look]
+         [-s style] [-S page_size] [-c config]
+         [-u uses,..] [-H head_level] [-K head_look]
          [-d driver] [-y post_filter]
          [-z post_process,..] [-t target]
          [-v[verbose]] [-T trace_levels,..]
          [-w width] [-Y library_path,..]
          sdf_file ...
 purpose: convert an sdf file to another format
-version: 2.001beta1    (SDF 2.001beta1)
+version: 2.001    (SDF 2.001)
 </PRE>
 <P>The options are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Option</STRONG>
 </TD>
@@ -69,6 +75,14 @@ output file extension
 </TD>
 <TD>
 log file extension
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="#sdf_O">-O</A>
+</TD>
+<TD>
+output to input file's (or explicit) directory
 </TD>
 </TR>
 <TR>
@@ -145,10 +159,18 @@ number lines in pretty-printed source code
 </TR>
 <TR>
 <TD>
+<A HREF="#sdf_g">-g</A>
+</TD>
+<TD>
+pre-filter using sdfget with the report specified
+</TD>
+</TR>
+<TR>
+<TD>
 <A HREF="#sdf_r">-r</A>
 </TD>
 <TD>
-report to pre-filter the input with
+report to run on the SDF to transform it before formatting
 </TD>
 </TR>
 <TR>
@@ -205,6 +227,14 @@ modules to use
 </TD>
 <TD>
 initial heading level
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="#sdf_K">-K</A>
+</TD>
+<TD>
+heading look (H, A or P)
 </TD>
 </TR>
 <TR>
@@ -274,8 +304,8 @@ search path for libraries
 </TABLE>
 
 <P>The aliases are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Alias</STRONG>
 </TD>
@@ -389,6 +419,14 @@ generate GNU info format via SGML
 </TR>
 <TR>
 <TD>
+sdf2latex_
+</TD>
+<TD>
+generate LaTeX
+</TD>
+</TR>
+<TR>
+<TD>
 sdf2latex_pod
 </TD>
 <TD>
@@ -437,6 +475,14 @@ generate Frame MIF format
 </TR>
 <TR>
 <TD>
+sdf2pdf_html
+</TD>
+<TD>
+generate PDF via HTML
+</TD>
+</TR>
+<TR>
+<TD>
 sdf2pdf_mif
 </TD>
 <TD>
@@ -465,6 +511,14 @@ sdf2ps_fmbook
 </TD>
 <TD>
 generate PostScript via a FrameMaker book
+</TD>
+</TR>
+<TR>
+<TD>
+sdf2ps_html
+</TD>
+<TD>
+generate PostScript via HTML
 </TD>
 </TR>
 <TR>
@@ -562,6 +616,7 @@ generate plain text format via POD
 <P><A NAME="sdf_h">The -h option provides help. If it is specified without a parameter, a brief description of each option is displayed. To display the attributes for an option, specify the option letter as a parameter.</A></P>
 <P><A NAME="sdf_o">By default, generated output goes to standard output. To direct output to a file per input file, use the -o option to specify an extension for output files. If the -o option is specified without a parameter, an extension of <EM>out</EM> is assumed.</A></P>
 <P><A NAME="sdf_l">Likewise, error messages go to standard error by default. Use the -l option to create a log file per input file. If the -l option is specified without a parameter, an extension of <EM>log</EM> is assumed.</A></P>
+<P><A NAME="sdf_O">By default, generated output and log files are created in the current directory. Use the -O option to specify an explicit output directory. If the -O option is specified without a parameter, the input file's directory is used.</A></P>
 <P><A NAME="sdf_2">The -2 option is a convenient way of specifying the alias (collection of options) which generates the output you want. e.g.</A></P>
 <PRE>
      sdf -2html abc
@@ -598,10 +653,11 @@ generate plain text format via POD
 <PRE>
  !include &quot;mytable.pl&quot;; table
 </PRE>
-<P><A NAME="sdf_p">The -p option can be used to explicitly prefilter files or to override the default prefilter used. The -a option can be used to specify prefilter parameters. For example:</A></P>
-<PRE><A NAME="sdf_a">
+<P><A NAME="sdf_p">The -p option can be used to explicitly prefilter files or to override the default prefilter used. If a parameter is not provided, the prefilter is assumed to be <EM>table</EM>.</A></P>
+<P><A NAME="sdf_a">The -a option can be used to specify parameters for the prefilter. For example:</A></P>
+<PRE>
  sdf -aformat='15,75,10' mytable.tbl
-</A></PRE>
+</PRE>
 <P><A NAME="sdf_P">The -P option prefilters the input files as programming languages. The parameter is the language to use. If none is provided, the extension is assumed to be the language name. For example:</A></P>
 <PRE>
  sdf -P myapp.c
@@ -610,8 +666,16 @@ generate plain text format via POD
 <PRE>
  !include &quot;myapp.c&quot;; example; wide; lang='c'
 </PRE>
-<P><A NAME="sdf_N">The -N option adds line numbers at the frequency given. The default fequency is 1. i.e. every line.</A></P>
-<P><A NAME="sdf_r">The -r option pre-filters each input by running the nominated report. Reports are stored in <EM>sdr</EM> files and are searched for using the usual rules.</A></P>
+<P><A NAME="sdf_N">The -N option adds line numbers at the frequency given. The default frequency is 1. i.e. every line.</A></P>
+<P><A NAME="sdf_g"> </A>The -g option prefilters the input files by executing <A HREF="../ref/sdfget.html">sdfget</A> using the default report (default.sdg). To change the report used, specify the report name as the parameter. If the report name doesn't include an extension, sdg is assumed.</P>
+<P><HR WIDTH="80%" ALIGN="Left">
+<STRONG>Note: </STRONG><A HREF="../ref/sdfget.html">sdfget</A> searches for reports in the current directory, then in the <EM>stdlib</EM> directory within SDF's library directory.
+<HR WIDTH="80%" ALIGN="Left"></P>
+<P><A NAME="sdf_r">The -r option runs the nominated SDR report on each input before formatting. In other words, SDR reports provide a mechanism for:</A></P>
+<UL>
+<LI>analysing the SDF just before it would be formatted, and
+<LI>replacing that SDF with the output of the report (also SDF) so that the final output is a nicely formatted report.</UL>
+<P>For example, the <EM>sdf_dir</EM> report generates a directory (tree) of the components (files) included in an SDF document. Reports are stored in <EM>sdr</EM> files and are searched for using the usual rules.</P>
 <P><A NAME="sdf_L">The -L option can be used to specify a <EM>locale</EM>. The default locale name is specified in <TT>sdf.ini</TT>. Locale naming follows POSIX conventions (i.e. language_country), so the locale name for American english is <EM>en_us</EM>. The information for each locale is stored in the <TT>locale</TT> directory, so you'll need to have to look in there to see what locales are available. (As the default locale can be set in <TT>sdf.ini</TT>, this isn't as ugly as it first sounds.)</A></P>
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG>At the moment, a locale file simply contains a list of language specific strings. Ultimately, it should be extended to support localisation of date and time formats.
@@ -624,8 +688,8 @@ generate plain text format via POD
 <LI><EM>fax</EM> - a facsimile
 <LI><EM>minutes</EM> - minutes of a meeting.</UL>
 <P><A NAME="sdf_S">The -S option is used to specify the page size. Values supported include:</A></P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -774,7 +838,8 @@ tabloid
 <P>where <EM>width</EM> and <EM>height</EM> are the respective sizes in points.</P>
 <P><A NAME="sdf_c">The -c option is used to specify a configuration library.</A></P>
 <P><A NAME="sdf_u">A list of modules to use can be specified via the -u option.</A></P>
-<P><A NAME="sdf_H">The initial heading level to start on can be specified via the -H option. If is useful if you want to preview how a topic will be displayed without regenerating the complete document.</A></P>
+<P><A NAME="sdf_H"> </A>The initial heading level to start on can be specified via the -H option. This is useful if you want to preview how a topic will be displayed without regenerating the complete document. If a topic begins with a level 1 heading (e.g. H1) and you wish to format it as a document (i.e. the level 1 text becomes the DOC_NAME for <A HREF="../ref/mbuild_t.html">build_title</A>), use the -H option with a value of 0.</P>
+<P><A NAME="sdf_K">The look of headings can also be adjusted. By default, H-style headings are numbered, A-style headings are lettered and P-style headings are plain. To force a particular style for all headings, the -K option can be used. Sensible parameter values are H, A and P although other values may work depending on what paragraph styles are configured at your site.</A></P>
 <P><A NAME="sdf_d">The -d option is used to specify the format driver. Values supported include:</A></P>
 <UL>
 <LI><EM>expand</EM> - format as expanded text (the default)
@@ -833,8 +898,12 @@ tabloid
 <UL>
 <LI>only documents in the current directory can be converted
 <LI>all sub-topics must also be in the current directory.</UL>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="re_sdf.html">Contents</A> | <A HREF="in_prog.html">Parent Topic</A> | <A HREF="in_prog.html">Previous Topic</A> | <A HREF="sdfapi.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

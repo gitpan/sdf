@@ -14,8 +14,8 @@
 # -----------------------------------------------------------------------
 #
 
-#sdf="sdf"
-sdf="$1 -I../../blib/lib ../../blib/script/sdf"
+sdf="sdf"
+#sdf="$1 -I../../blib/lib ../../blib/script/sdf"
 echo "Using '$sdf' for the tests"
 cd general
 echo "TESTING GENERAL STUFF ..."

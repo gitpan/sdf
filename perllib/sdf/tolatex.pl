@@ -1,5 +1,5 @@
-# $Id$
-$VERSION{''.__FILE__} = '$Revision$';
+# $Id: tolatex.pl,v 1.1.1.2 1998/03/22 09:39:20 valerio Exp valerio $
+$VERSION{__FILE__} = '$Revision: 1.1.1.2 $';
 #
 # >>Title::     LaTeX Format Driver
 #
@@ -10,6 +10,10 @@ $VERSION{''.__FILE__} = '$Revision$';
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 30-Oct-98 valerio First Beta release.
+# 02-Apr-98 valerio Fixed List closing before Tables.
+# 14-Mar-98 valerio Wrote List code.
+# 20-Nov-97 valerio Initial rewriting for full use of LaTeX. 
 # 12-Aug-97 ianc    Initial writing for Apache Documentation Project
 # 14-May-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
@@ -26,7 +30,7 @@ $VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Implementation::
 #
-
+
 ##### Constants #####
 
 # Default right margin
@@ -34,33 +38,34 @@ $_LATEX_DEFAULT_MARGIN = 70;
 
 # Mapping of characters
 %_LATEX_CHAR = (
-    'bullet',       '.',
-    'c',            '(c)',
+    'backslash'.    '\\',
+    'bullet',       '$\bullet$',
+    'c',            '\copyright ',
     'cent',         'c',
-    'dagger',       '^',
-    'doubledagger', '#',
-    'emdash',       '-',
-    'endash',       '-',
-    'emspace',      ' ',
-    'enspace',      ' ',
+    'dagger',       '\dagger',
+    'doubledagger', '\ddagger',
+    'emdash',       '--',
+    'endash',       '---',
+    'emspace',      '\ \ ',
+    'enspace',      '\ ',
     'lbrace',       '{',
     'lbracket',     '[',
     'nbdash',       '-',
     'nbspace',      ' ',
     'nl',           "\n",
-    'pound',        'L',
+    'pound',        '\pounds ',
     'r',            '(r)',
     'rbrace',       '}',
     'rbracket',     ']',
     'tab',          "\t",
-    'tm',           '(tm) ',
+    'tm',           '$^{TM}$',
     'yen',          'y',
 
     # From pod2latex ...
 
-    'amp'	=>	'&',	#   ampersand
-    'lt'	=>	'<',	#   left chevron, less-than
-    'gt'	=>	'>',	#   right chevron, greater-than
+    'amp'	=>	'\\&',	#   ampersand
+    'lt'	=>	'$<$',	#   left chevron, less-than
+    'gt'	=>	'$>$',	#   right chevron, greater-than
     'quot'	=>	'"',	#   double quote
 
     "Aacute"	=>	"\\'{A}",	#   capital A, acute accent
@@ -149,10 +154,17 @@ $_LATEX_DEFAULT_MARGIN = 70;
     'variable',         '_LatexPhraseHandlerVariable',
 );
 
+# List states
+
+$_LATEX_LISTLEVEL  = 0;
+@_LATEX_LISTTYPES = ();
+
 # Table states
 $_LATEX_INTABLE = 1;
 $_LATEX_INROW   = 2;
 $_LATEX_INCELL  = 3;
+
+
 
 ##### Variables #####
 
@@ -170,12 +182,28 @@ $_latex_margin = $SDF_USER'var{'LATEX_MARGIN'} || $_LATEX_DEFAULT_MARGIN;
 $_latex_col_num = 0;
 @_latex_col_posn = ();
 
+# Current column number
+$_latex_current_col = 1;
+
+# Number of Table columns
+$_latex_tab_cols = 0;
+
+# Table column alignment
+@_latex_colaligns = ();
+
 # Location of the first line of the current row
 $_latex_first_row = 0;
 
 # The current cell text
 $_latex_cell_current = '';
-
+
+# The current verbatim escape char
+$_latex_verbatim_open  = '';
+$_latex_verbatim_close = '';
+
+# Global in example;
+$_latex_in_example = 0;
+
 ##### Routines #####
 
 #
@@ -197,7 +225,7 @@ sub LatexFormat {
     # Turn into final form and return
     return &_LatexFinalise(*result, *contents);
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexFormatSection}} formats a set of SDF paragraphs into text.
@@ -210,6 +238,7 @@ sub _LatexFormatSection {
     local($prev_tag, $prev_indent);
     local($para_tag, $para_text, %para_attrs);
     local($directive);
+
 
     # Process the paragraphs
     @result = ();
@@ -245,7 +274,7 @@ sub _LatexFormatSection {
     # Return result
     return @result;
 }
-       
+       
 #
 # >>_Description::
 # {{Y:_LatexParaAdd}} adds a paragraph.
@@ -264,6 +293,19 @@ sub _LatexParaAdd {
     # Set the example flag
     $in_example = $SDF_USER'parastyles_category{$para_tag} eq 'example';
 
+    if ($in_example) {
+       if ($_latex_in_example eq 0) {
+          $_latex_in_example = 1;
+          $para_text = "\\begin\{verbatim\}\n" . $para_text;
+       }
+    }
+    else {
+       if ($_latex_in_example eq 1) {
+        $_latex_in_example = 0;
+        &_LatexParaAppend(*result, "\n\\end\{verbatim\}\n");
+       }
+    }
+
     # Enumerated lists are the same as list paragraphs at the previous level
     if ($para_tag =~ /^LI(\d)$/) {
         $para_tag = $1 > 1 ? "L" . ($1 - 1) : 'N';
@@ -279,16 +321,9 @@ sub _LatexParaAdd {
       $SDF_USER'parastyles_attrs{$para_tag});
 
     # Build the Table of Contents as we go
-    $toc_jump = '';
-    if ($para_tag =~ /^[HAP](\d)$/) {
-        $hdg_level = $1;
-        if ($hdg_level <= $SDF_USER'var{'DOC_TOC'} && !$para_attrs{'notoc'}) {
 
-            # Build a plain list in SDF
-            $toc_jump = $para_attrs{'id'};
-            $toc_jump = "HDR" . ($#contents + 1) if $toc_jump eq '';
-            push(@contents, "L${hdg_level}[jump='#$toc_jump']$para_text");
-        }
+    if ($para_tag =~ /^[HAP](\d)$/) {
+	$para_fmt = $para_tag;
     }
 
     # Handle lists (is this needed for text format?)
@@ -304,13 +339,12 @@ sub _LatexParaAdd {
     $para_text = "{{2:$label}}$para_text" if $label ne '';
 
     # Indent examples, if necessary
-    if ($in_example && $para_attrs{'in'}) {
-        $para_text = " " x ($para_attrs{'in'} * 5) . $para_text;
-        delete $para_attrs{'in'};
+    if ($in_example) {
+# do nothing
     }
 
     # Format the paragraph body
-    if ($para_attrs{'verbatim'}) {
+    if ($para_attrs{'verbatim'} || $in_example) {
         $para = $para_text;
         delete $para_attrs{'verbatim'};
     }
@@ -341,7 +375,7 @@ sub _LatexParaAdd {
         push(@result, $para);
     }
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexParaText}} converts SDF paragraph text into LATEX.
@@ -361,7 +395,6 @@ sub _LatexParaText {
     $state = 0;
     while (($sect_type, $text, $char_tag, %sect_attrs) =
       &SdfNextSection(*para_text, *state)) {
-#print "char_tag:$char_tag.\n";
 
         # Build the paragraph
         if ($sect_type eq 'special') {
@@ -372,15 +405,65 @@ sub _LatexParaText {
             else {
                 &AppMsg("warning", "ignoring special phrase '$1' in LATEX driver");
             }
+	}
+        elsif ($sect_type eq 'phrase') {
+   
+
+	    if ($char_tag eq 'L') {
+                ($text, $url) = &SDF_USER'ExpandLink($text);
+                $sect_attrs{'jump'} = $url;
+            }
+
+            if ($char_tag ne 'E' 
+                && $SDF_USER'phrasestyles_to{$char_tag} ne 'SDF_VERBATIM') {
+	      # Escape any special characters
+	      $text = &_LatexEscape($text);
+	    }
+
+	  if ( $SDF_USER'phrasestyles_to{$char_tag} eq 'SDF_VERBATIM') {
+	    _LatexCheckVerbatim($text);
+	      $text = $_latex_verbatim_open . $text;
+	  }
+
+            # Expand non-breaking spaces, if necessary
+	  if ($char_tag eq 'S') {
+	    $text =~ s/ /~/g;
+	  }
+	  
+	  
+	  # Process formatting attributes
+            &SdfAttrMap(*sect_attrs, 'latex', *SDF_USER'phraseattrs_to,
+	       *SDF_USER'phraseattrs_map, *SDF_USER'phraseattrs_attrs,
+	       $SDF_USER'phrasestyles_attrs{$char_tag});
+
+
+            # Map the font
+            $char_font = $SDF_USER'phrasestyles_to{$char_tag};
+
+
+            # Add the text for this phrase
+            push(@char_fonts, $char_font);
+            if ($char_font ne '' && $char_font !~ /^SDF/) {
+                $para .= "$char_font$text";
+            }
+            else {
+                $para .= $text;
+            }
         }
 
+	  elsif ($sect_type eq 'phrase_end') {
+	      $char_font = pop(@char_fonts);
+	      $para .= "}}" if $char_font ne '' && $char_font !~ /^SDF/;
+              if ($char_font eq 'SDF_VERBATIM') { $para .= $_latex_verbatim_close; }
+	  }
+
+
         elsif ($sect_type eq 'string') {
+            $text = &_LatexEscape($text);
             $para .= $text;
         }
 
         elsif ($sect_type eq 'phrase') {
-            ($text) = &SDF_USER'ExpandLink($text) if $char_tag eq 'L';
-            $para .= $text;
         }
 
         elsif ($sect_type eq 'phrase_end') {
@@ -395,19 +478,8 @@ sub _LatexParaText {
     # Return result
     return $para;
 }
-
-#
-# >>_Description::
-# {{Y:_LatexFinalise}} generates the final LATEX file.
-#
-sub _LatexFinalise {
-    local(*body, *contents) = @_;
-#   local(@result);
 
-    # Return result
-    return @body;
-}
-
+
 #
 # >>_Description::
 # {{Y:_LatexElement}} formats a LATEX element from a
@@ -417,16 +489,17 @@ sub _LatexElement {
     local($tag, $text, %attr) = @_;
     local($latex);
     local($prefix, $label);
+    local($list_level, $close_list);
     local($cnt);
 
     # Handle page breaks
     if ($tag eq 'PB') {
-        return "\f";
+        return "\\newpage";
     }
 
     # For examples, don't word wrap the lines
     if ($tag eq 'E') {
-        $latex =  "$text\n";
+        $latex =  "$text";
     }
 
     # For lines, output a 'line'
@@ -436,27 +509,76 @@ sub _LatexElement {
 
     # For headings, underline the text
     elsif ($tag =~ /^[HAP](\d)/) {
-        $char = $1 == 1 ? "=" : "-";
-        $latex = "$text\n" . ($char x length($text)) . "\n";
+      while ($_LATEX_LISTLEVEL gt 0) {
+	$close_list .= "\\end\{$_LATEX_LISTTYPES[$_LATEX_LISTLEVEL]\}\n";
+	$_LATEX_LISTLEVEL--;
+      }
+        $latex = $close_list . "\n" . "$SDF_USER'parastyles_to{$tag}\{$text\}\n"; 
+#	    . ($char x length("$SDF_USER'parastyles_to{$tag}\{$text\}\n")) . "\n";
     }
+
 
     # For list items, add the necessary "label"
     elsif ($tag =~ /^(L[FUN]?)(\d)$/) {
-        $prefix = " " x ($2 * 5);
-        $label  = " " x (($2 - 1) * 5);
-        if ($1 eq 'LU') {
-            $label .= "o    ";
-        }
+      
+      $ list_level = $2;
+      #>        $prefix = " " x ($2 * 5);
+      #>        $label  = " " x (($2 - 1) * 5);
+      
+      if ($1 eq 'LU') {
+	if ($_LATEX_LISTLEVEL lt $list_level) {
+	  $label = "\\begin\{itemize\} \% Level $list_level\n";
+	  $_LATEX_LISTLEVEL = $list_level;
+	  @_LATEX_LISTTYPES[$list_level] = "itemize";
+	}
+	elsif ($_LATEX_LISTLEVEL gt $list_level) {
+	  $label = "\\end\{$_LATEX_LISTTYPES[$_LATEX_LISTLEVEL]\}\n";
+	  $_LATEX_LISTTYPES[$_LATEX_LISTLEVEL] = "";
+	  $_LATEX_LISTLEVEL = $list_level;
+	}
+      $label .= "\\item ";
+      }
         elsif ($1 eq 'L') {
-            $label .= "     ";
+	if ($_LATEX_LISTLEVEL lt $list_level) {
+	  $label = "\\begin\{list\}\{\ \}\{\} \% Level $list_level\n";
+	  $_LATEX_LISTLEVEL = $list_level;
+	  @_LATEX_LISTTYPES[$list_level] = "list";
+	}
+	elsif ($_LATEX_LISTLEVEL gt $list_level) {
+	  $label = "\\end\{$_LATEX_LISTTYPES[$_LATEX_LISTLEVEL]\}\n";
+	  $_LATEX_LISTTYPES[$_LATEX_LISTLEVEL] = "";
+	  $_LATEX_LISTLEVEL = $list_level;
+	}
+
+            $label .= "\\item ";
         }
         elsif ($1 eq 'LF') {
-            $label .= "1.   ";
-            $_latex_list_num[$2] = 1;
+	if ($_LATEX_LISTLEVEL lt $list_level) {
+	  $label = "\\begin\{enumerate\} \% Level $list_level\n";
+	  $_LATEX_LISTLEVEL = $list_level;
+	  @_LATEX_LISTTYPES[$list_level] = "enumerate";
+	}
+	elsif ($_LATEX_LISTLEVEL gt $list_level) {
+	  $label = "\\end\{$_LATEX_LISTTYPES[$_LATEX_LISTLEVEL]\}\n";
+	  $_LATEX_LISTTYPES[$_LATEX_LISTLEVEL] = "";
+	  $_LATEX_LISTLEVEL = $list_level;
+	}
+
+            $label .= "\\item ";
         }
         else {
-            $cnt = ++$_latex_list_num[$2];
-            $label .= substr("$cnt.   ", 0, 5);
+	if ($_LATEX_LISTLEVEL lt $list_level) {
+	  $label = "\\begin\{enumerate\} \% Level $list_level\n";
+	  $_LATEX_LISTLEVEL = $list_level;
+	  @_LATEX_LISTTYPES[$list_level] = "enumerate";
+	}
+	elsif ($_LATEX_LISTLEVEL gt $list_level) {
+	  $label = "\\end\{$_LATEX_LISTTYPES[$_LATEX_LISTLEVEL]\}\n";
+	  $_LATEX_LISTTYPES[$_LATEX_LISTLEVEL] = "";
+	  $_LATEX_LISTLEVEL = $list_level;
+	}
+
+            $label .= "\\item ";
         }
         $latex = &MiscTextWrap($label . $text, $_latex_margin, $prefix,
           '', 1) . "\n";
@@ -464,13 +586,17 @@ sub _LatexElement {
 
     # Otherwise, format as a plain paragraph
     else {
-        $latex = &MiscTextWrap($text, $_latex_margin, '', '', 1) . "\n";
+      while ($_LATEX_LISTLEVEL gt 0) {
+	$close_list .= "\\end\{$_LATEX_LISTTYPES[$_LATEX_LISTLEVEL]\}\n";
+	$_LATEX_LISTLEVEL--;
+      }
+        $latex = &MiscTextWrap($close_list . "\n" . $text, $_latex_margin, '', '', 1) . "\n";
     }
 
     # Handle the top attribute
     return $para{'top'} ? "\f\n$latex" : $latex;
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexParaAppend}} merges {{para}} into the last paragraph
@@ -482,7 +608,7 @@ sub _LatexParaAppend {
 
     $result[$#result] .= "$para\n";
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerTuning}} handles the 'tuning' directive.
@@ -493,7 +619,7 @@ sub _LatexHandlerTuning {
 
     # do nothing
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerEndTuning}} handles the 'endtuning' directive.
@@ -504,30 +630,68 @@ sub _LatexHandlerEndTuning {
 
     # do nothing
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerTable}} handles the 'table' directive.
 #
 sub _LatexHandlerTable {
     local(*outbuffer, $columns, %attr) = @_;
-#   local();
+    local($tmp, $close_list, $coldim);
     local($tbl_title);
+
+    $_latex_tab_cols = $columns; 
+    $coldim = (1 / $columns) - 0.02;
+
+    # Close all yet open lists
+    $close_list = "";
+    while ($_LATEX_LISTLEVEL gt 0) {
+      $close_list .= "\\end\{$_LATEX_LISTTYPES[$_LATEX_LISTLEVEL]\}\n";
+      $_LATEX_LISTLEVEL--;
+    }
+    push(@outbuffer, $close_list . "\n\n");
+    
 
     # Update the state
     push(@_latex_tbl_state, $_LATEX_INTABLE);
     push(@_latex_row_type, '');
 
     # Calculate the column positions (rounded)
+
     @_latex_col_posn = &SdfColPositions($columns, $attr{'format'}, $_latex_margin);
+    @_latex_colaligns = split(/,/, $attr{'colaligns'});
 
     # Add the title, if any
     $tbl_title = $attr{'title'};
     if ($tbl_title ne '') {
-        push(@outbuffer, "$tbl_title\n");
+        push(@outbuffer, "\\begin\{table\}\[H\]\n\\caption\[$tbl_title\]\{$tbl_title\}\n");
     }
+    else {
+        push(@outbuffer, "\\begin\{table\}\[H\]\n");
+      }
+    push(@outbuffer, "\\begin\{center\}\n\\begin\{tabular\}");
+
+    $outbuffer[$#outbuffer] .= "\{";
+    if ($attr{'style'} ne 'plain' &&  $attr{'style'} ne 'rows') {
+      $outbuffer[$#outbuffer] .= "|";
+    }
+    foreach $tmp (1..$_latex_tab_cols) {
+      $outbuffer[$#outbuffer] .= 
+	"c";
+#	"\@\{\\hspace\{.01\\linewidth\}\}p\{$coldim\\linewidth\}\@\{\\hspace\{.01\\linewidth\}\}";
+      if ($attr{'style'} ne 'plain' &&  $attr{'style'} ne 'rows') {
+	$outbuffer[$#outbuffer] .= "|";
+      }
+    }
+    $outbuffer[$#outbuffer] .= "\}";
+
+    if ($attr{'style'} ne 'plain') {
+      push(@outbuffer, "\\hline");
+    }
+    push(@outbuffer,"%% -> attribute format = $attr{'format'}");
+    push(@outbuffer,"%% -> attribute colaligns = $attr{'colaligns'}");
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerRow}} handles the 'row' directive.
@@ -539,7 +703,7 @@ sub _LatexHandlerRow {
 
     # Finalise the previous row, if any
     $current_state = $_latex_tbl_state[$#_latex_tbl_state];
-    unless ($current_state == $_LATEX_INTABLE) {
+    unless ($current_state eq $_LATEX_INTABLE) {
         &_LatexFinalisePrevRow(*outbuffer, $_latex_row_type[$#_latex_row_type]);
     }
 
@@ -551,8 +715,9 @@ sub _LatexHandlerRow {
     # Update the state
     $_latex_tbl_state[$#_latex_tbl_state] = $_LATEX_INROW;
     $_latex_row_type[$#_latex_row_type] = $text;
+#    push(@outbuffer,"%% -> Starting row type $text\n");
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerCell}} handles the 'cell' directive.
@@ -568,15 +733,15 @@ sub _LatexHandlerCell {
     $state = $_latex_tbl_state[$#_latex_tbl_state];
     if ($state eq $_LATEX_INCELL) {
         &_LatexFinishCell(*outbuffer);
-        if ($_latex_col_num > 0) {
-            foreach $tmp ($_latex_first_row .. $#outbuffer) {
-                $padding = $_latex_col_posn[$_latex_col_num - 1] -
-                  length($outbuffer[$tmp]);
-                $padding = 1 if ($padding <= 0);
-                $outbuffer[$tmp] .= " " x $padding;
-            }
-        }
-    }
+#        if ($_latex_col_num > 0) {
+#            foreach $tmp ($_latex_first_row .. $#outbuffer) {
+#                $padding = $_latex_col_posn[$_latex_col_num - 1] -
+#                  length($outbuffer[$tmp]);
+#                $padding = 1 if ($padding <= 0);
+#                $outbuffer[$tmp] .= " " x $padding;
+#            }
+#        }
+      }
 
     # Update the state
     $_latex_tbl_state[$#_latex_tbl_state] = $_LATEX_INCELL;
@@ -591,7 +756,7 @@ sub _LatexHandlerCell {
     %_latex_cell_attrs = %attr;
     $_latex_cell_current = "";
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexFinishCell}} adds the cell text to the output
@@ -602,22 +767,47 @@ sub _LatexFinishCell {
     local @lines = split(/\n/,
         &MiscTextWrap($_latex_cell_current, $_latex_cell_width,"",'',1));
     local $tmp;
-    foreach $tmp ($#outbuffer+1..$_latex_first_row+$#lines) {
-        push(@outbuffer, " " x $_latex_cell_margin);
-    }
-    foreach $tmp (0..$#lines) {
-        if ($_latex_cell_attrs{'align'} eq "Center") {
-            $outbuffer[$_latex_first_row+$tmp] .=
-                " " x (($_latex_cell_width - length($lines[$tmp]))/2);
-        } elsif ($_latex_cell_attrs{'align'} eq "Right") {
-            $outbuffer[$_latex_first_row+$tmp] .=
-                " " x ($_latex_cell_width - length($lines[$tmp]));
-        }
-        $outbuffer[$_latex_first_row+$tmp] .= $lines[$tmp];
+#    foreach $tmp ($#outbuffer+1..$_latex_first_row+$#lines) {
+#        push(@outbuffer, " " x $_latex_cell_margin);
+#    }
+
+    if ($#lines == 0) {
+	if ($_latex_cell_attrs{'align'} eq "Center") {
+	  $outbuffer[$#outbuffer] .=
+	    "\{\\centering $lines[$#lines]\}";
+	} elsif ($_latex_cell_attrs{'align'} eq "Right") {
+	  $outbuffer[$#outbuffer] .=
+	    "\{\\raggedright  $lines[$#lines]\}";
+	} else {
+	  $outbuffer[$#outbuffer] .=
+	    "\{\\raggedleft  $lines[$#lines]\}";
+	}
+	if ($_latex_col_num < $_latex_tab_cols) {
+	  $outbuffer[$#outbuffer] .= " & ";
+	}
+    } else {
+      if ($_latex_cell_attrs{'align'} eq "Center") {
+	$outbuffer[$#outbuffer] .=
+	  "\{\\centering ";
+      } elsif ($_latex_cell_attrs{'align'} eq "Right") {
+	$outbuffer[$#outbuffer] .=
+	  "\{\\raggedright ";
+      } else {
+	  $outbuffer[$#outbuffer] .=
+	    "\{\\raggedleft ";
+	}
+      foreach $tmp (0..$#lines) {
+	$outbuffer[$#outbuffer] .= " $lines[$tmp] ";
+      }
+      $outbuffer[$#outbuffer] .= "\}";
+      if ( $_latex_col_num < $_latex_tab_cols ) {
+	$outbuffer[$#outbuffer] .= " \& ";
+      }
     }
     $_latex_cell_current = "";
+    $_latex_current_col++;
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerEndTable}} handles the 'endtable' directive.
@@ -639,8 +829,13 @@ sub _LatexHandlerEndTable {
         &_LatexFinalisePrevRow(*outbuffer, $row_type);
         $outbuffer[$#outbuffer] .= "\n";
     }
+    if ($attr{'style'} ne 'plain') {
+      push(@outbuffer,"\\hline\n");
+    }
+    push(@outbuffer, "\\end\{tabular\}\n\\end\{center\}\n\\end\{table\}\n");
+    
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexFinalisePrevRow}} finalises the previous row, if any.
@@ -659,17 +854,24 @@ sub _LatexFinalisePrevRow {
     }
 
     # If the last row was a heading, underline it
-    if ($row_type eq 'Heading') {
-        $line_row = "";
-        $tmp = 0;
-        foreach (@_latex_col_posn) {
-            $line_row .= ("."x($_-$tmp-1))." ";
-            $tmp = $_;
-        }
-        push(@outbuffer, $line_row);
+    $outbuffer[$#outbuffer] .= "\\\\";
+    if ($row_type ne 'Heading') {
+#      while (< $_latex_col_num) {
+#	     $outbuffer[$#outbuffer] .= " \& \{\}";
+#	     $_latex_col_num++;
+#	   }   
+    } else {
+      $line_row = "";
+      if ($attr{'style'} ne 'plain') {
+	$line_row = "\\hline";
+	if ($attr{'style'} eq 'grid') {
+	  $line_row .= "\\hline";
+	}
+      }
+      push(@outbuffer, $line_row);
     }
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerImport}} handles the import directive.
@@ -683,7 +885,7 @@ sub _LatexHandlerImport {
     &_LatexPhraseHandlerImport(*para, $filepath, %attr);
     push(@outbuffer, "$para\n");
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerInline}} handles the inline directive.
@@ -699,7 +901,7 @@ sub _LatexHandlerInline {
     # Build the result
     push(@outbuffer, $text);
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerOutput}} handles the 'output' directive.
@@ -710,7 +912,7 @@ sub _LatexHandlerOutput {
 
     # do nothing
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexHandlerObject}} handles the 'object' directive.
@@ -724,7 +926,7 @@ sub _LatexHandlerObject {
         $_latex_margin = $attrs{'value'};
     }
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexPhraseHandlerChar}} handles the 'char' phrase directive.
@@ -741,7 +943,7 @@ sub _LatexPhraseHandlerChar {
         $para .= $text;
     }
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexPhraseHandlerImport}} handles the 'import' phrase directive.
@@ -753,7 +955,7 @@ sub _LatexPhraseHandlerImport {
 
     $para .= "** Unable to import figure $filepath **";
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexPhraseHandlerInline}} handles the 'inline' phrase directive.
@@ -765,7 +967,7 @@ sub _LatexPhraseHandlerInline {
     # Build the result
     $para .= $text;
 }
-
+
 #
 # >>_Description::
 # {{Y:_LatexPhraseHandlerVariable}} handles the 'variable' phrase directive.
@@ -776,6 +978,126 @@ sub _LatexPhraseHandlerVariable {
 
     # do nothing
 }
+
+#
+# >>_Description::
+# {{Y:_LatexFinalise}} generates the final LaTeX file.
+#
+sub _LatexFinalise {
+    local(*body, *contents) = @_;
+#   local(@result);
+    local($title, @sdf_title, @title);
+    local($version, @head);
+    local($body);
+    local($macro, @header, @footer);
+    local(@dummy);
+    local($rec, @html_contents, $toc_posn);
+
+    # Convert the title
+    $title = $SDF_USER'var{'DOC_NAME'};
+    $author = $SDF_USER'var{'DOC_AUTHOR'};
+    $date   = $SDF_USER'var{'DOC_DATE'};
+
+    # Build the HEAD element (and append BODY opening)
+    $version = $SDF_USER'var{'SDF_VERSION'};
+    @head = (
+        '%%% This file was generated using SDF $version by',
+        '%%% Ian Clatworthy (ianc@mincom.com) and the 2latex_ driver', 
+        '%%% $Id: tolatex.pl,v 1.1.1.2 1998/03/22 09:39:20 valerio Exp valerio $',
+        '%%% written by Valerio Aimale <valerio@svpop.com.dist.unige.it>.',
+        '%%% SDF is freely available from http://www.mincom.com/mtr/sdf',
+        ''
+    );
+    push(@head, '\author{'. $author . '}') if $author;
+    push(@head, '\date{'. $date . '}') if $date;
+    push(@head, '\title{'. $title . '}') if $title;
+    push(@head, '','');
+    push(@head, '\begin{document}', '');
+    push(@head, '\maketitle') if $title;
+
+
+
+
+    # If requested, provide a Table of Contents
+    if (@contents) {
+    push(@head, '\tableofcontents');
+    }
+
+    # Close eventually open lists
+      while ($_LATEX_LISTLEVEL gt 0) {
+	push(@body, '',  "\\end\{$_LATEX_LISTTYPES[$_LATEX_LISTLEVEL]\}\n");
+	$_LATEX_LISTLEVEL--;
+      }
+    # Return result
+    push(@body, '', '\end{document}');
+    return (@head, @body);
+}
+
+#
+# >>_Description::
+# {{Y:_LatexEscape}} escapes special symbols in LaTeX text.
+# 
+sub _LatexEscape {
+    local($text) = @_;
+#   local($result);
+    local($old_match_flag);
+
+    # Enable multi-line matching
+    $old_match_flag = $*;
+    $* = 1;
+
+    # Escape the special symbols. Note that it isn't exactly clear
+    # from the SGML-Tools and/or QWERTZ DTD documentation as to
+    # whether all of these are mandatory, but they shouldn't cause
+    # any harm (I hope!)
+    $text =~ s/\\/\\verb+\\+/g;
+    $text =~ s/\&/\\\&/g;
+    $text =~ s/\</\$<\$/g;
+    $text =~ s/\>/\$>\$/g;
+    $text =~ s/\"/"/g;
+    $text =~ s/\$/\\\$/g;
+    $text =~ s/\~/\\verb+~+/g;
+    $text =~ s/\^/\\verb+^+/g;
+    $text =~ s/\#/\\\#/g;
+    $text =~ s/\%/\\\%/g;
+    $text =~ s/_/\\\_/g;
+    $text =~ s/\|/\|/g;
+    $text =~ s/\[/\$[\$/g;
+    $text =~ s/\]/\$]\$/g;
+    $text =~ s/\{/\\\{/g;
+    $text =~ s/\}/\\\}/g;
+
+    # Reset multi-line matching flag
+    $* = $old_match_flag;
+
+    # Return result
+    $text;
+}
+
+#
+# >>_Description::
+# {{Y:_LatexCheckVerbatim}} checks for un unsed che in the phrase
+#
+sub _LatexCheckVerbatim {
+  local($text) = @_;
+  local($match);
+  #   local($_i);
+  for (33..127) {
+    $match = chr;
+    if ($text =~ /$match/) {
+      ;
+    }
+    else {
+      $_latex_verbatim_open  = '\verb' . $match;
+      $_latex_verbatim_close = $match;
+      return;
+    }
+  }
+      $_latex_verbatim_open  = '\begin{verbatim}';
+      $_latex_verbatim_close = '\end{verbatim}';
+      return;
+}
+
 
 # package return value
 1;

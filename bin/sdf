@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 # $Id$
-$VERSION{'PUBLIC'} = '2.001beta1';
+$VERSION{'PUBLIC'} = '2.001';
 $VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     SDF Conversion Utility
@@ -71,8 +71,11 @@ $VERSION{''.__FILE__} = '$Revision$';
 # V: !include "mytable.pl"; table
 #
 # The -p option can be used to explicitly prefilter files or to
-# override the default prefilter used. The -a option can be used
-# to specify prefilter parameters. For example:
+# override the default prefilter used. If a parameter is not provided,
+# the prefilter is assumed to be {{table}}.
+#
+# The -a option can be used to specify parameters for the prefilter.
+# For example:
 #
 # V: sdf -aformat='15,75,10' mytable.tbl
 #
@@ -87,9 +90,25 @@ $VERSION{''.__FILE__} = '$Revision$';
 # V: !include "myapp.c"; example; wide; lang='c'
 #
 # The -N option adds line numbers at the frequency given.
-# The default fequency is 1. i.e. every line.
+# The default frequency is 1. i.e. every line.
 #
-# The -r option pre-filters each input by running the nominated report.
+# The -g option prefilters the input files by executing {{CMD:sdfget}}
+# using the default report (default.sdg). To change the report used,
+# specify the report name as the parameter.
+# If the report name doesn't include an extension, sdg is assumed.
+#
+# Note: {{CMD:sdfget}} searches for reports in the current directory,
+# then in the {{stdlib}} directory within SDF's library directory.
+#
+# The -r option runs the nominated SDR report on each input before formatting.
+# In other words, SDR reports provide a mechanism for:
+#
+# * analysing the SDF just before it would be formatted, and
+# * replacing that SDF with the output of the report (also SDF)
+#   so that the final output is a nicely formatted report.
+#
+# For example, the {{sdf_dir}} report generates a directory (tree) of
+# the components (files) included in an SDF document.
 # Reports are stored in {{sdr}} files and are searched for using the
 # usual rules.
 #
@@ -147,9 +166,18 @@ $VERSION{''.__FILE__} = '$Revision$';
 # A list of modules to use can be specified via the -u option.
 #
 # The initial heading level to start on can be specified via
-# the -H option. If is useful if you want to preview how a
-# topic will be displayed without regenerating the complete
-# document.
+# the -H option. This is useful if you want to preview how a
+# topic will be displayed without regenerating the complete document.
+# If a topic begins with a level 1 heading (e.g. H1) and you wish to
+# format it as a document (i.e. the level 1 text becomes the DOC_NAME
+# for {{MAC:build_title}}), use the -H option with a value of 0.
+#
+# The look of headings can also be adjusted. By default, H-style
+# headings are numbered, A-style headings are lettered and P-style
+# headings are plain. To force a particular style for all headings,
+# the -K option can be used. Sensible parameter values are H, A and P
+# although other values may work depending on what paragraph styles
+# are configured at your site.
 #
 # The -d option is used to specify the format driver.
 # Values supported include:
@@ -277,11 +305,12 @@ push(@app_option, (
     'split_level;n|INT|heading level to autosplit into topics',
     'flag|STRHASH|define flags (i.e. DOC_* variables)',
     'include_path;I|STRLIST|search path for include files, templates, etc.',
-    'prefilter|STR|pre-filter input file from each argument',
+    'prefilter|STR;;table|pre-filter input file from each argument',
     'parameters;a|STR|parameters for the pre-filter',
     'plang;P|STR;;-|pre-filter as a programming language',
     'line_numbers;N|INT;;1|number lines in pretty-printed source code',
-    'report|STR|report to pre-filter the input with',
+    'get_report|STR;;default|pre-filter using sdfget with the report specified',
+    'report|STR|report to run on the SDF to transform it before formatting',
     'locale;L|STR|locale',
     'look;k|STR|look library',
     'style|STR|style of document',
@@ -289,6 +318,7 @@ push(@app_option, (
     'config|STR|configuration library',
     'uses|STRLIST|modules to use',
     'head_level;H|INT|initial heading level',
+    'head_look;K|STR|heading look (H, A or P)',
     'driver|STR;expand|format driver - default is expand',
     'post_filter;y|STR|filter to post-filter the output with',
     'post_process;z|STRLIST|list of post processing actions to do',
@@ -448,6 +478,7 @@ $variable{'OPT_NUMBER'} = $line_numbers;
 $variable{'OPT_REPORT'} = $report;
 $variable{'OPT_SPLIT_LEVEL'} = $split_level;
 $variable{'OPT_HEAD_LEVEL'} = $head_level;
+$variable{'OPT_HEAD_LOOK'} = $head_look;
 $variable{'OPT_PAGE_SIZE'} = $page_size if $page_size ne '';
 $variable{'OPT_WIDTH'} = $width if $width ne '';
 
@@ -508,18 +539,20 @@ sub GenerateDocument {
     local($input_str);
     local($ok_sdf, @sdf_data);
 
-    # Read SDF file or generate using build information
     $file_ext = (&NameSplit($ARGV))[2];
-    $filter = $prefilter ne '' ? $prefilter : $prefilter_for{$file_ext};
+
+    # Handle programming language and sdfget pre-filtering
     if ($plang ne '') {
         $lang = $plang eq '-' ? $file_ext : $plang;
-        @sdf_data = (
-            "!_bof_ '$ARGV'",
-            "!include '$ARGV'; example; wide; pure; lang='$lang'",
-            "!_eof_");
-        $sdf_data[1] .= "; $parameters" if $parameters ne '';
+        $prefilter = "example; wide; pure; lang='$lang'";
     }
-    elsif ($filter ne '') {
+    elsif ($get_report ne '') {
+        $prefilter = "get; report='$get_report'";
+    }
+
+    # Generate the SDF file if we're pre-filtering the input
+    $filter = $prefilter ne '' ? $prefilter : $prefilter_for{$file_ext};
+    if ($filter ne '') {
 
         # When prefiltering pod, assume the main parameter
         if ($filter eq 'pod') {
@@ -527,9 +560,13 @@ sub GenerateDocument {
         }
 
         $filter .= "; $parameters" if $parameters ne '';
-        @sdf_data = ("!_bof_ '$ARGV'");
-        push(@sdf_data, "!include '$ARGV'; $filter", "!_eof_");
+        @sdf_data = (
+          "!_bof_ '$ARGV'",
+          "!include '$ARGV'; $filter",
+          "!_eof_");
     }
+
+    # If we haven't built the SDF by now, fetch it from the file
     else {
         ($ok_sdf, @sdf_data) = &SdfFetch($ARGV);
         unless ($ok_sdf) {
@@ -568,6 +605,7 @@ sub argPostProcess {
     # Note: If post-processing is the only thing requested, the output
     # extension is taken from the input filename
     $SDF_USER'short = (&NameSplit($ARGV))[1];
+    $SDF_USER'long = &NameJoin($out_dir, $SDF_USER'short, '');
     $SDF_USER'out_ext = $out_ext eq '' ? (&NameSplit($ARGV))[2] : $out_ext;
     $SDF_USER'width = $SDF_USER'var{'OPT_WIDTH'};
     $SDF_USER'title = $SDF_USER'var{'DOC_TITLE'};

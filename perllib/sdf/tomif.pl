@@ -258,16 +258,24 @@ $_MIF_TOC_XREF_START = 2000;
     "yuml"      =>      "\\xd8 ",    #   small y, dieresis or umlaut mark
 );
 
-# Lookup table of colour values
+# Lookup table of colour values used by _MifMapColor()
 %_MIF_COLOR = (
-    'Black',    'Black',
-    'White',    'White',
-    'Red',      'Red',
-    'Green',    'Green',
-    'Blue',     'Blue',
-    'Yellow',   'Yellow',
-    'Magenta',  'Magenta',
-    'Cyan',     'Cyan',
+    'black',    'Black',
+    '000000',   'Black',
+    'white',    'White',
+    'ffffff',   'White',
+    'red',      'Red',
+    'ff0000',   'Red',
+    'green',    'Green',
+    '008000',   'Green',
+    'blue',     'Blue',
+    '0000ff',   'Blue',
+    'yellow',   'Yellow',
+    'ffff00',   'Yellow',
+    'magenta',  'Magenta',
+    'ff00ff',   'Magenta',
+    'cyan',     'Cyan',
+    '00ffff',   'Cyan',
 );
 
 # Lookup table of fill values
@@ -635,7 +643,7 @@ sub _MifAddSection {
                 &$directive(*outbuf, $para_text, %para_attrs);
             }
             else {
-                &AppMsg("warning", "ignoring internal directive '$1' in MIF driver");
+                &AppTrace("mif", 5, "ignoring internal directive '$1'");
             }
             next;
         }
@@ -1870,6 +1878,17 @@ sub _MifParaText {
 
         elsif ($sect_type eq 'phrase') {
 
+            # Map colors to safe values
+            if ($sect_attrs{'color'} ne '') {
+                my $color = &_MifMapColor($sect_attrs{'color'});
+                if ($color ne '') {
+                    $sect_attrs{'color'} = $color;
+                }
+                else {
+                    delete $sect_attrs{'color'};
+                }
+            }
+
             # Process formatting attributes
             &SdfAttrMap(*sect_attrs, 'mif', *SDF_USER'phraseattrs_to,
               *SDF_USER'phraseattrs_map, *SDF_USER'phraseattrs_attrs,
@@ -1949,6 +1968,24 @@ sub _MifParaText {
 
     # Return result
     return $para;
+}
+
+#
+# >>_Description::
+# {{Y:_MifMapColor}} maps Web (CSS) colors to MIF colors.
+#
+sub _MifMapColor {
+    local($color) = @_;
+    local($mif_color);
+
+    # Ignore leading # on rrggbb value, if any
+    $color =~ s/^#//;
+
+    # For now, if it's not in the lookup table, ignore it
+    $mif_color = $_MIF_COLOR{"\L$color"};
+
+    # Return result
+    return $mif_color;
 }
 
 #
@@ -3297,7 +3334,7 @@ sub _MifHandlerCell {
     $_mif_cell_rmargin = $attr{'rmargin'};
 
     # Get the attributes
-    $color = $_MIF_COLOR{$attr{'bgcolor'}};
+    $color = &_MifMapColor($attr{'bgcolor'});
     $fill = $attr{'fill'} ne '' ? $_MIF_FILL_CODE{$attr{'fill'}} :
             ($color ne '' ? 0 : '');
     $cols = $attr{'cols'};

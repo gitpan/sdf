@@ -2,18 +2,23 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF Guru Guide: app.pl - Application Framework Library</TITLE>
+<TITLE>SDF 2.001: SDF Guru Guide: app.pl - Application Framework Library</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="gg_sdf.html">Contents</A> | <A HREF="in_api.html">Parent Topic</A> | <A HREF="in_api.html">Previous Topic</A> | <A HREF="dict.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
 <BR CLEAR="Right">
+</DIV>
+<DIV CLASS="main">
 <H1><A NAME="app.pl">2.2. app.pl - Application Framework Library</A></H1>
 <HR>
 <H2><A NAME="Purpose">2.2.1. Purpose</A></H2>
@@ -43,13 +48,15 @@ $<A HREF="#app_app_lineno">app_lineno</A> = ...
 
 %<A HREF="#app_app_msg_index">app_msg_index</A> = ...
 
+$<A HREF="#app_app_log_strm">app_log_strm</A> = ...
+
 $<A HREF="#app_app_product_name">app_product_name</A> = ...
 
 $<A HREF="#app_app_product_version">app_product_version</A> = ...
 
 %<A HREF="#app_app_trace_level">app_trace_level</A> = ...
 
-&amp;<A HREF="#app_AppMsg">AppMsg</A>($type, $text, $calltree);
+&amp;<A HREF="#app_AppMsg">AppMsg</A>($type, $text, $calltree, $log_only);
 
 %count =
 &amp;<A HREF="#app_AppMsgCounts">AppMsgCounts</A>($start_index);
@@ -57,9 +64,9 @@ $<A HREF="#app_app_product_version">app_product_version</A> = ...
 $index =
 &amp;<A HREF="#app_AppMsgNextIndex">AppMsgNextIndex</A>();
 
-&amp;<A HREF="#app_AppExit">AppExit</A>($type, $text, $calltree);
+&amp;<A HREF="#app_AppExit">AppExit</A>($type, $text, $calltree, $log_only);
 
-&amp;<A HREF="#app_AppTrace">AppTrace</A>($group, $level, $msg);
+&amp;<A HREF="#app_AppTrace">AppTrace</A>($group, $level, $msg, $log_only);
 
 $ok =
 &amp;<A HREF="#app_AppInit">AppInit</A>($arguments, $purpose, $product, $ini_handler);
@@ -124,8 +131,8 @@ $app_err =
 <LI>AppExit exits and returns an error code to the operating system based on the severity of the messages output via AppMsg</UL>
 <H3><A NAME="Option Definitions">2.2.3.2. Option Definitions</A></H3>
 <P>Each option is defined by the fields in the table below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Field</STRONG>
 </TD>
@@ -177,8 +184,8 @@ short description of option
      opt_type&quot;-&quot;validation&quot;;&quot;initial_value&quot;;&quot;default_value
 </PRE>
 <P>Only the <EM>opt_type</EM> field is mandatory. The second semi-colon must be present to nominate the parameter as optional. Otherwise, the parameter is assumed to be required. The list of supported opt_types is given in the table below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Type</STRONG>
 </TD>
@@ -248,8 +255,8 @@ real number
 <P>The parameter, if any, is passed as a string to the nominated routine.</P>
 <H3><A NAME="Configuration Parameters">2.2.3.3. Configuration Parameters</A></H3>
 <P>The configuration parameters supported are summarised below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Parameter</STRONG>
 </TD>
@@ -341,7 +348,7 @@ sub iniProcess {
 <P><STRONG><A NAME="app_app_path">$app_path</A></STRONG>, <STRONG><A NAME="app_app_dir">$app_dir</A></STRONG> and <STRONG><A NAME="app_app_name">$app_name</A></STRONG> are the full pathname, directory and name of the application respectively.</P>
 <P><STRONG><A NAME="app_app_lib_dir">$app_lib_dir</A></STRONG> is the library directory for this application, i.e. the directory containing configuration files. The default value is the <STRONG><A NAME="app_app_dir">$app_dir</A></STRONG>. This directory is typically set by searching the Perl library path for the <EM>libdir</EM> configuration parameter, if any.</P>
 <P><STRONG><A NAME="app_app_exit_routines">@app_exit_routines</A></STRONG> is the stack of routines to be executed on program termination. If you want a routine to be called on termination (normal and abnormal), push the name of the routine onto this stack. These routines will be executed when <STRONG><A NAME="app_AppExit">AppExit</A></STRONG> is called. It is thus advisable to ensure that <STRONG><A NAME="app_AppExit">AppExit</A></STRONG> is NOT called within an exit routine.</P>
-<P><STRONG><A NAME="app_app_config">%app_config</A></STRONG> contains the application's configuration parameters. <EM>@app_option</EM> defines the options supported by the application. The default options are <EM>help</EM>, <EM>out_ext</EM> and <EM>log_ext</EM>. To append to these, push your arguments onto the array. For example:</P>
+<P><STRONG><A NAME="app_app_config">%app_config</A></STRONG> contains the application's configuration parameters. <EM>@app_option</EM> defines the options supported by the application. The default options are <EM>help</EM>, <EM>out_ext</EM>, <EM>log_ext</EM> and <EM>out_dir</EM>. To append to these, push your arguments onto the array. For example:</P>
 <PRE>
  push(@app_option,
       'report|STR|report file',
@@ -356,9 +363,10 @@ sub iniProcess {
 </PRE>
 <P>To obtain a concise description of each option, use the help option with no parameter. Alternatively, detailed help on a given option can be obtained by suppying the option name as a parameter.</P>
 <P>By default, output goes to standard output and diagnostics goes to standard error. These rules can be changed by specifying the <EM>out_ext</EM> and <EM>log_ext</EM> options respectively (and calling <STRONG><A NAME="app_AppProcess">AppProcess</A></STRONG> to process arguments). If a string is supplied to these options, it is treated as the extension of the file to send things to for each file. If supplied without a parameter, the extensions default to <EM>out</EM> and <EM>log</EM> respectively. A minus character (-) or an equals character (=) can be used to indicate standard output or standard error respectively.</P>
+<P>By default, output and log files are created in the current directory. To specify the same directory as the input file, specify the <EM>out_dir</EM> option without an argument. To specify an explicit directory, pass that directory as the argument to the <EM>out_dir</EM> option.</P>
 <P><STRONG><A NAME="app_app_msg_table">app_msg_table</A></STRONG> defines the known message types. Each type is defined by the attributes in the table below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Attribute</STRONG>
 </TD>
@@ -393,8 +401,8 @@ format of message text
 </TABLE>
 
 <P><EM>Layout</EM> can include the symbols given in the table below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Symbol</STRONG>
 </TD>
@@ -461,8 +469,8 @@ current line number (if $. is 0)
 </TABLE>
 
 <P>The standard message types are explained in the table below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Tag</STRONG>
 </TD>
@@ -473,7 +481,7 @@ current line number (if $. is 0)
 <STRONG>Description</STRONG>
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>current object:</STRONG>
 </TD>
@@ -528,7 +536,7 @@ abort
 cannot precede processing
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>whole application:</STRONG>
 </TD>
@@ -583,7 +591,7 @@ fatal
 cannot precede processing
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>non-user messages:</STRONG>
 </TD>
@@ -631,19 +639,20 @@ internal check failed - notify developer
 <P>Most applications only use <EM>fatal</EM>, <EM>abort</EM>, <EM>error</EM> and <EM>warning</EM>. <EM>fatal</EM> is used when an application decides to terminate. (e.g. when an option is illegal.) <EM>abort</EM> is used when an application decides not be precede any further on the current object (e.g. too many errors encountered). <EM>error</EM> is used when a serious error is detected in processing the current object. <EM>warning</EM> is used when a minor error or possible error is detected. Typically, an application continues processing the current object when an error or warning is encountered but errors prevent further passes on the object while warnings do not.</P>
 <P><STRONG><A NAME="app_app_context">app_context</A></STRONG> and <STRONG><A NAME="app_app_lineno">app_lineno</A></STRONG> are the context and line number used in error messages. <STRONG><A NAME="app_app_lineno">app_lineno</A></STRONG> is only used if $. is 0.</P>
 <P><STRONG><A NAME="app_app_msg_index">%app_msg_index</A></STRONG> is the index into the message table. (Most programmers have no need for this, but it's provided in case someone does want it.)</P>
+<P><STRONG><A NAME="app_app_log_strm">$app_log_strm</A></STRONG> is a stream on which all messages are logged to if it's set. If required, this stream is opened and provided by the user.</P>
 <P><STRONG><A NAME="app_app_product_name">app_product_name</A></STRONG> and <STRONG><A NAME="app_app_product_version">app_product_version</A></STRONG> are the application name and version respectively. These are typically set during execution of the <EM>AppInit</EM> routine.)</P>
 <P><STRONG><A NAME="app_app_trace_level">app_trace_level</A></STRONG> is the highest level of trace messages output by <STRONG><A NAME="app_AppTrace">AppTrace</A></STRONG> for each tracing group.</P>
-<P><STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG> outputs a message. The format of the message is determined by the <EM>type</EM> parameter which should be defined in <STRONG><A NAME="app_app_msg_table">app_msg_table</A></STRONG>. If the type is unknown, behaviour is undefined. If <EM>calltree</EM> is set, a call tree is dumped after the message is output.</P>
+<P><STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG> outputs a message. The format of the message is determined by the <EM>type</EM> parameter which should be defined in <STRONG><A NAME="app_app_msg_table">app_msg_table</A></STRONG>. If the type is unknown, behaviour is undefined. If <EM>calltree</EM> is set, a call tree is dumped after the message is output. If <EM>log_only</EM> is set, the message is only output to the <EM>$app_log_strm</EM>, if any.</P>
 <P>If a message layout includes the current line number ($.) and it is 0, <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG> uses the dot-version (e.g. &quot;.error&quot;) of the message instead.</P>
 <P>The messages output via <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG> influence the exit code returned to the operating system by <STRONG><A NAME="app_AppExit">AppExit</A></STRONG>. If you wish to influence this but not output a message, specify a <EM>type</EM> parameter without a <EM>text</EM> parameter.</P>
 <P><STRONG><A NAME="app_AppMsgCounts">AppMsgCounts</A></STRONG> returns the number of each message type found. If you are interested in the message counts since a particular point in time, a starting index to begin the counting from can be specified.</P>
 <P><STRONG><A NAME="app_AppMsgNextIndex">AppMsgNextIndex</A></STRONG> returns the next index to be used in the message log. The value returned can be used as the <EM>start_index</EM> parameter to the <STRONG><A NAME="app_AppMsgCounts">AppMsgCounts</A></STRONG> routine.</P>
-<P><STRONG><A NAME="app_AppExit">AppExit</A></STRONG> exits the current application. If a message is specified, it is first output via <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG>. The exit code returned to the operating system is dependent on the messages output by <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG>. If <EM>calltree</EM> is set, a call tree is dumped after the message is output.</P>
-<P><STRONG><A NAME="app_AppTrace">AppTrace</A></STRONG> outputs a trace message if <EM>group</EM> tracing is supported and for that group, the trace level is &gt;= <EM>level</EM>. The default group is called <EM>user</EM>.</P>
+<P><STRONG><A NAME="app_AppExit">AppExit</A></STRONG> exits the current application. If a message is specified, it is first output via <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG>. The exit code returned to the operating system is dependent on the messages output by <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG>. If <EM>calltree</EM> is set, a call tree is dumped after the message is output. If <EM>log_only</EM> is set, the message is only output to the <EM>$app_log_strm</EM>, if any.</P>
+<P><STRONG><A NAME="app_AppTrace">AppTrace</A></STRONG> outputs a trace message if <EM>group</EM> tracing is supported and for that group, the trace level is &gt;= <EM>level</EM>. The default group is called <EM>user</EM>. If <EM>log_only</EM> is set, the message is only output to the <EM>$app_log_strm</EM>, if any.</P>
 <P><STRONG><A NAME="app_AppInit">AppInit</A></STRONG> processes options and checks the argument count for a perl script. The supported options are defined by @app_option. Options must occur before arguments and begin with a - character for the short format or -- for the long format. Option processing is terminated when either an argument or the -- symbol is detected. If an environment variable of the form <EM>app_name</EM>OPTS is found, options are first processed from there.</P>
 <P>The expected number of arguments is derived from the format of the <EM>arguments</EM> parameter as illustrated by the table below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Expected</STRONG>
 </TD>
@@ -750,8 +759,12 @@ $VERSION{__FILE__} = &quot;x.y&quot;</UL>
 <HR>
 <H2><A NAME="Limitations and future directions">2.2.4. Limitations and future directions</A></H2>
 <P>On MS-DOS using BigPerl v2 or v3, redirecting STDOUT after <STRONG>AppProcess</STRONG> doesn't work.</P>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="gg_sdf.html">Contents</A> | <A HREF="in_api.html">Parent Topic</A> | <A HREF="in_api.html">Previous Topic</A> | <A HREF="dict.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

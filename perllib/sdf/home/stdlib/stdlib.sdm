@@ -27,6 +27,7 @@
 # Declare built-in paragraph styles
 !block parastyles
 Name    Category
+A0
 A1
 A2
 A3
@@ -42,6 +43,7 @@ FT
 GL
 GLD
 GLT
+H0
 H1
 H2
 H3
@@ -85,6 +87,7 @@ NB
 NE
 NV
 Note
+P0
 P1
 P2
 P3
@@ -167,9 +170,11 @@ out_style   string
 # (Handled and removed prior to validation: expand, shrink)
 !block phraseattrs
 Name        Type        Rule
+bgcolor     string
 bold        boolean
 changed     boolean
-color       string      <Black|White|Red|Green|Blue|Yellow|Cyan|Magenta>
+class       string
+color       string
 family      string
 id          string
 index       string
@@ -178,6 +183,7 @@ italics     boolean
 jump        string
 short       string
 size        string
+style       string
 underline   boolean
 verbatim    boolean
 xref        string
@@ -428,6 +434,7 @@ LOT             boolean
 IX              boolean
 TWO_SIDES       boolean
 COMPONENT       string
+PAGED           boolean
 !endblock
 
 # Export these for use in generating lists
@@ -532,6 +539,13 @@ LOT_TITLE   string
 !on phrase 'C';; $style = 'EX'
 #!on phrase 'E';; $style = 'CHAR'
 !on phrase 'F';; $style = 'FILE'
+
+# DOC_PAGED needs to be set here (rather than in *.sdn) as sdn files
+# get invoked *after* DOC_PAGED triggers the page-related stuff.
+!if $var{'OPT_DRIVER'} eq 'mif' || $var{'HTMLDOC'}
+!define DOC_PAGED 1
+!endif
+
 
 ######## Define the standard classes & objects #########
 

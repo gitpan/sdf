@@ -10,6 +10,8 @@ $VERSION{''.__FILE__} = '$Revision$';
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 12-May-99 ianc    Added $app_log_strm support
+# 28-Apr-99 ianc    Added output directory support
 # 24-Oct-98 ianc    _AppConfigLibDir() Mac patch (from David Schooley)
 # 29-Feb-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
@@ -132,7 +134,7 @@ $app_lib_dir = $app_dir;
 #
 # >>Description::
 # {{@app_option}} defines the options supported by the application.
-# The default options are {{help}}, {{out_ext}} and {{log_ext}}.
+# The default options are {{help}}, {{out_ext}}, {{log_ext}} and {{out_dir}}.
 # To append to these, push your arguments onto the array.
 # For example:
 #
@@ -167,6 +169,12 @@ $app_lib_dir = $app_dir;
 # used to indicate standard output or standard error
 # respectively.
 #
+# By default, output and log files are created in the current
+# directory. To specify the same directory as the input file,
+# specify the {{out_dir}} option without an argument.
+# To specify an explicit directory, pass that directory as the
+# argument to the {{out_dir}} option.
+#
 @app_option_core = (
     'Option|Spec|Help',
     'help|STR;;|display help on options',
@@ -175,6 +183,7 @@ $app_lib_dir = $app_dir;
     @app_option_core,
     'out_ext|STR;;out|output file extension',
     'log_ext|STR;;log|log file extension',
+    'out_dir;O|STR;.;|output to input file\'s (or explicit) directory',
 );
 
 #
@@ -290,6 +299,14 @@ $app_lineno = 0;
 @_app_msg_dupl = ();
 %app_msg_index = &TableIndex(*app_msg_table, *_app_msg_dupl, 'Type');
 
+#
+# >>Description::
+# {{Y:$app_log_strm}} is a stream on which all messages are
+# logged to if it's set. If required, this stream is opened and
+# provided by the user.
+#
+$app_log_strm = '';
+
 # Message type log and exit code
 @_app_msg_type = ();
 $_app_exit_code = 0;
@@ -342,6 +359,8 @@ $_app_test_counter = 0;
 # unknown, behaviour is undefined.
 # If {{calltree}} is set, a call tree is dumped after the
 # message is output.
+# If {{log_only}} is set, the message is only output
+# to the {{$app_log_strm}}, if any.
 #
 # If a message layout includes the current line number ($.)
 # and it is 0, {{Y:AppMsg}} uses the dot-version (e.g. ".error")
@@ -353,7 +372,7 @@ $_app_test_counter = 0;
 # specify a {{type}} parameter without a {{text}} parameter.
 #
 sub AppMsg {
-    local($type, $text, $calltree) = @_;
+    local($type, $text, $calltree, $log_only) = @_;
 #   local();
     local(%type, $msg, $code);
 
@@ -371,7 +390,8 @@ sub AppMsg {
 	if ($type eq 'tst_object') {
             printf  "%s", $msg;   # so make test output is not cluttered
         } else {
-            printf STDERR ("%s", $msg);
+            printf STDERR        ("%s", $msg) unless $log_only;
+            printf $app_log_strm ("%s", $msg) if $app_log_strm ne '';
 	}
     }
 
@@ -421,14 +441,16 @@ sub AppMsgNextIndex {
 # on the messages output by {{Y:AppMsg}}.
 # If {{calltree}} is set, a call tree is dumped after the
 # message is output.
+# If {{log_only}} is set, the message is only output
+# to the {{$app_log_strm}}, if any.
 #
 sub AppExit {
-    local($type, $text, $calltree) = @_;
+    local($type, $text, $calltree, $log_only) = @_;
 #   local();
     local($fn);
 
     # Output message, if any
-    &AppMsg($type, $text) if $type;
+    &AppMsg($type, $text, undef, $log_only) if $type;
 
     # Dump the call tree, if requested
     &AppShowCallTree() if $calltree;
@@ -440,13 +462,19 @@ sub AppExit {
         
     # Output timing info, if requested
     if ($_app_timing) {
+        my $msg;
         if ($NAME_OS eq 'unix') {
-            printf "execution time: %.2f seconds\n", (times)[0];
+            $msg = sprintf "execution time: %.2f seconds\n", (times)[0];
         }
         else {
-            printf "execution time: %d seconds\n", time - $_app_start;
+            $msg = sprintf "execution time: %d seconds\n", time - $_app_start;
         }
+        print               $msg unless $log_only;
+        print $app_log_strm $msg if $app_log_strm ne '';
     }
+
+    # Clost the log stream, if any
+    close($app_log_strm) if $app_log_strm ne '';
 
     # Note: If we're in test mode, return 0
     exit( $_app_test_counter > 0 ? 0 : $_app_exit_code);
@@ -457,14 +485,25 @@ sub AppExit {
 # {{Y:AppTrace}} outputs a trace message if {{group}} tracing is supported and
 # for that group, the trace level is >= {{level}}. The default group is
 # called {{user}}.
+# If {{log_only}} is set, the message is only output
+# to the {{$app_log_strm}}, if any.
 #
 sub AppTrace {
-    local($group, $level, $msg) = @_;
+    local($group, $level, $msg, $log_only) = @_;
 #   local();
 
-    $group = 'user' if $group eq '';
-    if ($app_trace_level{$group} >= $level) {
-        printf STDERR ("%s[%s-%d] %s\n", $app_name, $group, $level, $msg);
+    my $where = '';
+    if (group eq '' || $group eq 'user') {
+        if ($app_trace_level{'user'} >= $level) {
+            $where = $level;
+        }
+    }
+    elsif ($app_trace_level{$group} >= $level) {
+        $where = "$group-$level";
+    }
+    if ($where ne '') {
+        printf STDERR        ("[%s] %s\n", $where, $msg) unless $log_only;
+        printf $app_log_strm ("[%s] %s\n", $where, $msg) if $app_log_strm ne '';
     }
 }
 
@@ -806,7 +845,7 @@ sub _AppOptProcess {
         $required = $opt{'Parameter'};
         if ($required eq 'yes') {
             shift(@ARGV);
-            if ($rest) {
+            if ($rest ne '') {
                 $param = $rest;
             }
             elsif (@ARGV) {
@@ -820,7 +859,7 @@ sub _AppOptProcess {
         # handle optional parameter
         elsif ($required eq 'maybe') {
             shift(@ARGV);
-            if ($rest) {
+            if ($rest ne '') {
                 $param = $rest;
             }
             else {
@@ -831,7 +870,7 @@ sub _AppOptProcess {
 
         # handle no parameter
         else {
-            if ($rest) {
+            if ($rest ne '') {
                 $ARGV[0] = "-$rest";
             }
             else {
@@ -847,7 +886,6 @@ sub _AppOptProcess {
     else {
         $param = 1 if $opt{'Type'} eq 'BOOL';
         $action = &_AppAction($param, $default_used, %opt);
-
     }
 
     # Return result
@@ -1739,7 +1777,7 @@ sub AppProcess {
     local($arg_process_fn, $arg_post_process_fn, $default_ext) = @_;
     local($app_err);
     local($echo_args, $stdin_read, @stdin_args);
-    local($dir, $base, $ext, $outfile, $logfile);
+    local($in_dir, $base, $ext, $dir, $outfile, $logfile);
     local($base_ext);
     local($arg_err, $post_err);
 
@@ -1773,11 +1811,22 @@ sub AppProcess {
 
         # init the per argument stuff
         $arg_err = 0;
-        ($dir, $base, $ext) = &NameSplit($ARGV);
+        ($in_dir, $base, $ext) = &NameSplit($ARGV);
 
         # echo the argument name
         if ($echo_args || $_app_echo) {
             print STDERR "$ARGV:\n";
+        }
+
+        # decide the output directory
+        if ($out_dir eq '.') {
+            $dir = '';
+        }
+        elsif ($out_dir eq '') {
+            $dir = $in_dir;
+        }
+        else {
+            $dir = $out_dir;
         }
 
         # decide on output and log streams
@@ -1788,7 +1837,7 @@ sub AppProcess {
                 $outfile = "&STDERR";
             }
             else {
-                $outfile = &NameJoin('', $base, $out_ext);
+                $outfile = &NameJoin($dir, $base, $out_ext);
             }
         }
         if ($log_ext && -f $ARGV && $log_ext ne '=') {
@@ -1796,7 +1845,7 @@ sub AppProcess {
                 $logfile = "&STDOUT";
             }
             else {
-                $logfile = &NameJoin('', $base, $log_ext);
+                $logfile = &NameJoin($dir, $base, $log_ext);
             }
         }
             

@@ -2,18 +2,68 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF User Guide: Custom Formatting</TITLE>
+<TITLE>SDF 2.001: SDF User Guide: Custom Formatting</TITLE>
+<STYLE TYPE="text/css">
+<!--
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+.changed {background-color: teal}
+-->
+</STYLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="ug_sdf.html">Contents</A> | <A HREF="in_sdadv.html">Parent Topic</A> | <A HREF="in_event.html">Previous Topic</A> | <A HREF="in_hyper.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
 <BR CLEAR="Right">
+</DIV>
+<DIV CLASS="main">
 <H1>6.6. Custom Formatting</H1>
 <HR>
 <H2><A NAME="Overview">6.6.1. Overview</A></H2>
@@ -25,8 +75,8 @@
 <HR>
 <H2><A NAME="Custom Document Formatting">6.6.2. Custom Document Formatting</A></H2>
 <P>Document formatting can be controlled by setting variables. The commonly used ones are given below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -101,8 +151,8 @@ build a two-sided document
 <HR>
 <H2><A NAME="Custom Paragraph Formatting">6.6.3. Custom Paragraph Formatting</A></H2>
 <P>Paragraph formatting can be controlled by setting attributes. The commonly used ones are given below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -170,12 +220,12 @@ either Full, Left, Right or Center
  both margins by 1 inch.
 </PRE>
 <P>The result is:</P>
-<P>This paragraph will be indented from both margins by 1 inch.</P>
+<P STYLE="margin-left: 1in; margin-right: 1in">This paragraph will be indented from both margins by 1 inch.</P>
 <HR>
 <H2><A NAME="Custom Phrase Formatting">6.6.4. Custom Phrase Formatting</A></H2>
 <P>Phrase formatting can be controlled by setting attributes. The commonly used ones are given below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Name</STRONG>
 </TD>
@@ -246,7 +296,7 @@ enable change bars
   I love {{N[size=11.5]custom formatting}}.
 </PRE>
 <P>The result is:</P>
-<P>I love custom formatting.</P>
+<P>I love <SPAN STYLE="font-size: 11.5pt">custom formatting</SPAN>.</P>
 <HR>
 <H2><A NAME="Applying Phrase Attributes to Paragraphs">6.6.5. Applying Phrase Attributes to Paragraphs</A></H2>
 <P>Phrase attributes can also be used for paragraphs. For example, to add a change bar to a paragraph:</P>
@@ -254,7 +304,7 @@ enable change bars
   [changed] This paragraph has a change bar.
 </PRE>
 <P>The result is:</P>
-<P>This paragraph has a change bar.</P>
+<P CLASS="changed">This paragraph has a change bar.</P>
 <HR>
 <H2><A NAME="sdf Blocks">6.6.6. sdf Blocks</A></H2>
 <P>Attributes can be applied to a block of text by using the <A HREF="../ref/fsdf.html">sdf</A> filter. For example:</P>
@@ -266,11 +316,15 @@ This paragraph has custom formatting:
 !endblock
 </PRE>
 <P>The result is:</P>
-<P ALIGN="Center"><B>This paragraph has custom formatting:</B></P>
-<UL ALIGN="Center">
+<P ALIGN="Center" STYLE="font-weight: bold; font-size: 8pt"><B>This paragraph has custom formatting:</B></P>
+<UL ALIGN="Center" STYLE="font-weight: bold; font-size: 8pt">
 <LI><B>and so does this.</B></UL>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="ug_sdf.html">Contents</A> | <A HREF="in_sdadv.html">Parent Topic</A> | <A HREF="in_event.html">Previous Topic</A> | <A HREF="in_hyper.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

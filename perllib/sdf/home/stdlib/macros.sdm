@@ -104,6 +104,7 @@
 
 # include the cover (unless using this file as a book config. file)
 !if !DOC_INBOOK
+    !on paragraph '[HAP]1'; noevents_in_title; $attr{'noevents'} = 1
     !if   $macro{"build_" . $var{'OPT_DRIVER'} . "_cover"}
         !insert "build_" . $var{'OPT_DRIVER'} . "_cover"
     !elsif   $macro{"build_" . $var{'DOC_COVER'} . "_cover"}
@@ -111,6 +112,7 @@
     !elsif DOC_COVER
         !message "unable to build cover '$var{'DOC_COVER'}'"; "warning"
     !endif
+    !off paragraph noevents_in_title
 !endif
 !endmacro
 
@@ -157,61 +159,6 @@
 !macro DOC_COMPONENT_COVER_END
 PB:
 !endmacro
-
-######## EXTRACTED DOCUMENTATION MACROS #########
-
-!macro SDF_OPT_HELP
-The -h option provides help. If it is specified without a parameter,
-a brief description of each option is displayed. To display
-the attributes for an option, specify the option letter as a parameter.
-!endmacro
-
-!macro SDF_OPT_STD
-!SDF_OPT_HELP
-
-By default, generated output goes to standard output. To direct
-output to a file per input file, use the -o option to specify
-an extension for output files. If the -o option is specified
-without a parameter, an extension of {{out}} is assumed.
-
-Likewise, error messages go to standard error by default. Use
-the -l option to create a log file per input file. If the -l
-option is specified without a parameter, an extension of {{log}}
-is assumed.
-!endmacro
-
-!macro SDF_DESCRIPTION_PRE
-!if $var{'FILE_EXT'} eq 'pl'
-	H2: Interface
-	!perlapi $var{'FILE_SHORT'}; example
-	!on phrase 'Y'; _symbols; \
-          $attr{'id'} = &TextToId("$var{'FILE_BASE'}_$text"); \
-          $attr{'id'} =~ s/[\$\@\%]//g
-!elsif $var{'FILE_EXT'} eq 'sdg'
-	H2: Data
-	!getcode $var{'FILE_SHORT'}; table
-!elsif $var{'FILE_EXT'} eq ''
-	H2: Usage
-	!getusage $var{'FILE_BASE'}
-        !script %found = ()
-	!on paragraph ''; _options; if ($text =~ / \-(\w)/) {$tmpid = "$var{'FILE_BASE'}_$1";unless ($found{$tmpid}++) {$attr{'id'} = $tmpid}}
-!endif
-!endmacro
-
-!macro SDF_DESCRIPTION_POST
-!if $var{'FILE_EXT'} eq 'pl'
-	!off phrase _symbols
-!elsif $var{'FILE_EXT'} eq ''
-	!off paragraph _options
-!endif
-!endmacro
-
-!macro SDF_DEFAULT_END
-#!if $var{'OPT_TARGET'} eq 'hlp'
-#	H2:Related Topics
-#	!insert &Related($topic)
-#!endif
-!endmacro
 
 ######## Backwards compatibility stuff #########
 
@@ -221,3 +168,15 @@ is assumed.
 !define SLIDE_DOWN  "slide_down"
 !define END_TOPIC   "end_topic"
 
+!macro SDF_DEFAULT_END
+!use sdgmacs
+!SDG_END
+!endmacro
+!macro SDF_DESCRIPTION_PRE
+!use sdgmacs
+!SDG_DESCRIPTION_PRE
+!endmacro
+!macro SDF_DESCRIPTION_POST
+!use sdgmacs
+!SDG_DESCRIPTION_POST
+!endmacro

@@ -73,6 +73,7 @@ $_POD_DEFAULT_MARGIN = 70;
     'inline',           '_PodHandlerInline',
     'output',           '_PodHandlerOutput',
     'object',           '_PodHandlerObject',
+    'stylesheet',       '',
 );
 
 # Phrase directive mapping table
@@ -165,7 +166,7 @@ sub _PodFormatSection {
                 &$directive(*result, $para_text, %para_attrs);
             }
             else {
-                &AppMsg("warning", "ignoring internal directive '$1' in POD driver");
+                &AppTrace("pod", 5, "ignoring internal directive '$1'");
             }
             next;
         }

@@ -2,18 +2,23 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.001beta1 by
+<!-- This file was generated using SDF 2.001 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.001beta1: SDF Reference: Understanding Macro Interfaces</TITLE>
+<TITLE>SDF 2.001: SDF Reference: Understanding Macro Interfaces</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
+<DIV CLASS="header">
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="re_sdf.html">Contents</A> | <A HREF="re_sdf.html">Parent Topic</A> | <A HREF="in_filif.html">Previous Topic</A> | <A HREF="gl_cli.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
 <BR CLEAR="Right">
+</DIV>
+<DIV CLASS="main">
 <H1>C. Understanding Macro Interfaces</H1>
 <HR>
 <H2><A NAME="Overview">C.1. Overview</A></H2>
@@ -28,8 +33,8 @@
 <LI><EM>Rule</EM> - the pattern, if any, used to validate the value.</UL>
 <H3><A NAME="Argument Types">Argument Types</A></H3>
 <P>The supported set of argument types are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Type</STRONG>
 </TD>
@@ -37,7 +42,7 @@
 <STRONG>Description</STRONG>
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Common:</STRONG>
 </TD>
@@ -69,7 +74,7 @@ boolean
 either 1 or 0
 </TD>
 </TR>
-<TR>
+<TR CLASS="group">
 <TD>
 <STRONG>Special:</STRONG>
 </TD>
@@ -134,8 +139,8 @@ a logical expression
 <LI><A HREF="in_macif.html#General Perl Expressions">General Perl Expressions.</A></UL>
 <H3><A NAME="Patterns">Patterns</A></H3>
 <P>A <EM>pattern</EM> is a Perl regular expression which the argument value is matched against. Patterns are enclosed in angle brackets to differentiate them from normal Perl expressions. Typical patterns are given in the table below.</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Pattern</STRONG>
 </TD>
@@ -183,8 +188,8 @@ a string which begins with &quot;XMIT-&quot;
 <LI>the regular expression does not apply to the whole value
 <LI>the regular expression is case-insensitive.</UL>
 <P>In these cases, a general Perl expression can be used as the rule. Within the expression, $_ is the value of the argument. Examples are:</P>
-<TABLE BORDER>
-<TR>
+<TABLE CLASS="columns" BORDER>
+<TR CLASS="heading">
 <TD>
 <STRONG>Expression</STRONG>
 </TD>
@@ -217,8 +222,12 @@ value is either &quot;on&quot; or &quot;off&quot; (case insensitive)
 </PRE>
 <P>Pattern notation is provided as it makes rules easier to read and write. (Pattern-style validation typically covers 80% or more of validation rules so improving the readability of patterns has a large impact on the overall readability.)</P>
 <P><HR WIDTH="80%" ALIGN="Left"></P>
-<HR>
+</DIV>
+<DIV CLASS="footer">
+<DIV CLASS="navigate">
 <P ALIGN="Center"><A HREF="re_sdf.html">Contents</A> | <A HREF="re_sdf.html">Parent Topic</A> | <A HREF="in_filif.html">Previous Topic</A> | <A HREF="gl_cli.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
+</DIV>
+</DIV>
 
 </BODY>
 </HTML>

@@ -4,7 +4,7 @@ $VERSION{''.__FILE__} = '$Revision$';
 # >>Title::     HTML Format Driver
 #
 # >>Copyright::
-# Copyright (c) 1992-1996, Ian Clatworthy (ianc@mincom.com).
+# Copyright (c) 1992-1999, Ian Clatworthy (ianc@mincom.com).
 # You may distribute under the terms specified in the LICENSE file.
 #
 # >>History::
@@ -20,10 +20,6 @@ $VERSION{''.__FILE__} = '$Revision$';
 # >>Description::
 #
 # >>Limitations::
-# Center alignment of tables should probably be done via <CENTER>
-# and </CENTER> around the whole table. (The HTML 3.2 spec supports
-# align=center but most browsers do not yet?)
-#
 # Lists which have ordered items, then unordered items, then
 # ordered items all at the same level are output as three
 # separate lists. As a result, the numbering in the third list
@@ -31,8 +27,6 @@ $VERSION{''.__FILE__} = '$Revision$';
 #
 # After hypertext jumps have been added throughout a paragraph,
 # we should go back over the paragraph and unnest any nested jumps.
-#
-# Frames and other goodies are still a while off yet.
 #
 # >>Resources::
 #
@@ -78,6 +72,9 @@ $VERSION{''.__FILE__} = '$Revision$';
     'inline',           '_HtmlHandlerInline',
     'output',           '_HtmlHandlerOutput',
     'object',           '_HtmlHandlerObject',
+    'stylesheet',       '_HtmlHandlerStyleSheet',
+    'div',              '_HtmlHandlerDiv',
+    'enddiv',           '_HtmlHandlerEndDiv',
 );
 
 # Phrase directive mapping table
@@ -94,11 +91,29 @@ $_HTML_INROW   = 2;
 $_HTML_INCELL  = 3;
 
 # Attribute types - this is used to decide if an attribute is legal,
-# and if it is, whether to quote the value (string) or not
+# and if it is, whether to quote the value (string) or not.
+# 'class' types get made into a class attribute.
 %_HTML_ATTR_TYPES = (
     'align',    'string',
     'alt',      'string',
     'border',   'integer',
+    'class',    'string',
+    'changed',  'class',
+);
+
+# Attributes mapping to styles
+%_HTML_STYLE_MAP = (
+    'family',   'font-family: %s',
+    'size',     'font-size: %s',
+    'bold',     'font-weight: bold',
+    'italics',  'font-style: italic',
+    'underline','text-decoration: underline',
+    'color',    'color: %s',
+    'bgcolor',  'background-color: %s',
+#   'align',    'text-align: %s',
+    'first',    'text-indent: %s',
+    'left',     'margin-left: %s',
+    'right',    'margin-right: %s',
 );
 
 ##### Variables #####
@@ -128,6 +143,24 @@ $_html_topic_level = 0;
 
 # Topic counter for building derived topic names
 $_html_topic_cntr = 0;
+
+# Meta information for this file
+@_html_meta = ();
+
+# Links this file
+@_html_links = ();
+
+# Stylesheet for this file
+@_html_stylesheet = ();
+
+# Counts for each class attribute
+%_html_class_count = ();
+
+# Division stack (contents is the name (i.e. class) of opened divisions)
+@_html_divs = ();
+
+# Title division text
+@_html_title_div = ();
 
 ##### Routines #####
 
@@ -150,6 +183,12 @@ sub HtmlFormat {
     $_html_topic_cntr = 0;
     %_html_topic_start = ();
     %_html_jump_id = ();
+    @_html_meta = ();
+    @_html_links = ();
+    @_html_stylesheet = ();
+    %_html_class_count = ();
+    @_html_divs = ();
+    @_html_title_div = ();
 
     # If we're building topics, save the data for a second pass later
     if ($SDF_USER'var{'HTML_TOPICS_MODE'}) {
@@ -232,14 +271,16 @@ sub _HtmlBuildTopicsData {
     local($jump, $physical);
 
     # Ensure that the main topic is first and that it has the highest level
-    if ($SDF_USER'topics[0] eq $main) {
-        $SDF_USER'levels[0] = 0;
-    }
-    else {
-        unshift(@SDF_USER'topics, pop(@SDF_USER'topics));
-        pop(@SDF_USER'levels);
-        unshift(@SDF_USER'levels, 0);
-    }
+    #if ($SDF_USER'topics[0] eq $main) {
+    #    $SDF_USER'levels[0] = 0;
+    #}
+    #else {
+    #    unshift(@SDF_USER'topics, pop(@SDF_USER'topics));
+    #    pop(@SDF_USER'levels);
+    #    unshift(@SDF_USER'levels, 0);
+    #}
+    unshift(@SDF_USER'topics, $main);
+    unshift(@SDF_USER'levels, 0);
 
     # Build the topics table
     @topics_table = ("Topic|Label|Level|Next|Prev|Up");
@@ -306,10 +347,11 @@ sub _HtmlSaveTopicsData {
 # >>_Description::
 # {{Y:_HtmlFormatSection}} formats a set of SDF paragraphs into HTML.
 # If a parameter is passed to contents, then that array is populated
-# with a generated Table of Contents.
+# with a generated Table of Contents. If {{division}} is set, the
+# result is placed in a DIV element with that class.
 #
 sub _HtmlFormatSection {
-    local(*data, *contents) = @_;
+    local(*data, *contents, $division) = @_;
     local(@result);
     local($prev_tag, $prev_indent);
     local($para_tag, $para_text, %para_attrs);
@@ -321,7 +363,7 @@ sub _HtmlFormatSection {
     #$_html_in_olist = 0;
 
     # Process the paragraphs
-    @result = ();
+    @result = $division eq '' ? () : ("<DIV CLASS=\"$division\">");
     $prev_tag = '';
     $prev_indent = '';
     while (($para_text, $para_tag, %para_attrs) = &SdfNextPara(*data)) {
@@ -333,7 +375,7 @@ sub _HtmlFormatSection {
                 &$directive(*result, $para_text, %para_attrs);
             }
             else {
-                &AppMsg("warning", "ignoring internal directive '$1' in HTML driver");
+                &AppTrace("html", 5, "ignoring internal directive '$1'");
             }
             next;
         }
@@ -353,6 +395,9 @@ sub _HtmlFormatSection {
     #for ($i = 0; $i < $#result; $i++) {
     #    $result[$i] =~ s#</?xL>##g;
     #}
+
+    # Close off the DIV element, if any
+    push(@result, "</DIV>") if $division ne '';
 
     # Return result
     return @result;
@@ -544,6 +589,7 @@ sub _HtmlParaText {
     local(@char_fonts);
     local($char_font);
     local($directive);
+    local($char_attrs);
 
     # Process the text
     $para = '';
@@ -569,7 +615,7 @@ sub _HtmlParaText {
 
             # Expand non-breaking spaces, if necessary
             if ($char_tag eq 'S') {
-                $text =~ s/ /&nbsp; /g;
+                $text =~ s/ /&nbsp;/g;
             }
 
             # Empty cells look ugly so the hack below
@@ -588,15 +634,22 @@ sub _HtmlParaText {
             &SdfAttrMap(*sect_attrs, 'html', *SDF_USER'phraseattrs_to,
               *SDF_USER'phraseattrs_map, *SDF_USER'phraseattrs_attrs,
               $SDF_USER'phrasestyles_attrs{$char_tag});
+            $char_attrs = &_HtmlAttr(*sect_attrs);
+#print STDERR "char_attrs is $char_attrs<\n";
 
             # Map the font
             $char_font = $SDF_USER'phrasestyles_to{$char_tag};
             $char_font = $char_tag if $char_font eq '' && !$added_anchors;
 
+            # If attributes are specified for an SDF font, use a SPAN
+            if ($char_font =~ /^SDF/ && $char_attrs ne '') {
+                $char_font = 'SPAN';
+            }
+
             # Add the text for this phrase
             push(@char_fonts, $char_font);
             if ($char_font ne '' && $char_font !~ /^SDF/) {
-                $para .= "<$char_font>$text";
+                $para .= "<$char_font$char_attrs>$text";
             }
             else {
                 $para .= $text;
@@ -637,9 +690,6 @@ sub _HtmlFinalise {
     local($title, @sdf_title, @title);
     local($version, @head);
     local($body);
-    local($macro, @header, @footer);
-    local(@dummy);
-    local($rec, @html_contents, $toc_posn);
 
     # Build the BODY opening stuff
     $body = "BODY";
@@ -666,6 +716,13 @@ sub _HtmlFinalise {
         @title = ();
     }
 
+    # Prepend some useful things to the stylesheet, if applicable
+    if ($_html_class_count{'changed'}) {
+        my $changed_color = $SDF_USER'var{'HTML_CHANGED_COLOR'};
+        unshift(@_html_stylesheet,
+          ".changed {background-color: $changed_color}");
+    }
+
     # Build the HEAD element (and append BODY opening)
     $version = $SDF_USER'var{'SDF_VERSION'};
     @head = (
@@ -680,11 +737,70 @@ sub _HtmlFinalise {
         '<HEAD>',
     );
     push(@head, @title) if @title;
+    push(@head, @_html_meta) if @_html_meta;
+    push(@head, @_html_links) if @_html_links;
+    if (@_html_stylesheet) {
+        push(@head,
+            '<STYLE TYPE="text/css">',
+            '<!--',
+            @_html_stylesheet,
+            '-->',
+            '</STYLE>',
+        );
+    }
     push(@head, '</HEAD>', "<$body>", '');
 
-    # Add the pre-header, if any
-    my $pre_header = $SDF_USER'var{'HTML_PRE_HEADER'};
-    push(@head, $pre_header) if $pre_header ne '';
+    # Build the body contents, unless we're generating an input file for
+    # the HTMLDOC package
+    unless ($SDF_USER'var{'HTMLDOC'}) {
+        &_HtmlFinaliseBodyContents(*body, *contents);
+    }
+
+    # Return result
+    push(@body, '', '</BODY>', '</HTML>');
+    return (@head, @body);
+}
+
+#
+# >>_Description::
+# {{Y:_HtmlFinaliseBodyContents}} generates the final BODY contents.
+#
+sub _HtmlFinaliseBodyContents {
+    local(*body, *contents) = @_;
+#   local(@result);
+    local($macro, @header, @footer);
+    local(@dummy);
+    local(@html_contents);
+    #local($rec, $toc_posn);
+
+    # Wrap the main body in a main division
+    unshift(@body, '<DIV CLASS="main">');
+    push(@body, '</DIV>');
+
+    # Prepend the Table of Contents, if any
+    if (@contents) {
+
+        # Finish formatting the table of contents
+        # Note: we use a filter so that experts can override things!
+        &SDF_USER'toc_html_Filter(*contents);
+
+        # Now convert it to HTML
+        @html_contents = &_HtmlFormatSection(*contents, *dummy, 'contents');
+
+        # If this is a MAIN document, make the body the contents
+        # (i.e. ditch the contents). Otherwise, prepend it.
+        if ($SDF_USER'var{'HTML_TOPICS_MODE'}) {
+            @body = @html_contents;
+        }
+        else {
+            unshift(@body, join("\n", @html_contents));
+        }
+    }
+
+    # If this is not a topic, prepend the title division, if any
+    unless ($SDF_USER'var{'HTML_SUBTOPICS_MODE'}) {
+        unshift(@body, @_html_title_div);
+    }
 
     # Convert the header, if any, to HTML
     $macro = 'HTML_HEADER';
@@ -694,40 +810,7 @@ sub _HtmlFinalise {
     }
     if ($SDF_USER'macro{$macro} ne '') {
         @header = ("!$macro");
-        push(@head, &_HtmlFormatSection(*header, *dummy));
-    }
-
-    # If requested, provide a Table of Contents
-    if (@contents) {
-
-        # Finish formatting the table of contents
-        # Note: we use a filter so that experts can override things!
-        &SDF_USER'toc_html_Filter(*contents);
-
-        # Now convert it to HTML
-        @html_contents = &_HtmlFormatSection(*contents, *dummy);
-
-        # Insert it before the first entry in the contents so that
-        # cover page stuff remains at the top. Alternatively, place
-        # it at the top
-        $toc_posn = 0;
-        for $rec (@body) {
-            if ($rec eq '<!-- TOC -->') {
-                $rec = join("\n", $rec, @html_contents);
-                @html_contents = ();
-                last;
-            }
-            $toc_posn++;
-        }
-        if (@html_contents) {
-            $toc_posn = 0;
-            unshift(@body, join("\n", @html_contents));
-        }
-
-        # If this is a MAIN document, ditch the body after the contents.
-        if ($SDF_USER'var{'HTML_TOPICS_MODE'}) {
-            splice(@body, $toc_posn + 1);
-        }
+        unshift(@body, &_HtmlFormatSection(*header, *dummy, 'header'));
     }
 
     # Convert the footer, if any, to HTML
@@ -738,16 +821,14 @@ sub _HtmlFinalise {
     }
     if ($SDF_USER'macro{$macro} ne '') {
         @footer = ("!$macro");
-        push(@body, &_HtmlFormatSection(*footer, *dummy));
+        push(@body, &_HtmlFormatSection(*footer, *dummy, 'footer'));
     }
 
-    # Add the post-footer, if any
+    # Add the pre-header and post-footer, if any
+    my $pre_header = $SDF_USER'var{'HTML_PRE_HEADER'};
+    unshift(@body, $pre_header) if $pre_header ne '';
     my $post_footer = $SDF_USER'var{'HTML_POST_FOOTER'};
     push(@body, $post_footer) if $post_footer ne '';
-
-    # Return result
-    push(@body, '', '</BODY>', '</HTML>');
-    return (@head, @body);
 }
 
 #
@@ -784,34 +865,68 @@ sub _HtmlAttr {
     local(*attrs) = @_;
     local($html);
     local($attr, $value, $type);
+    local($style);
+    local($style_map);
+
+    # get the specified style info, if any
+    $style = $attrs{'style'};
+    delete $attr{'style'};
 
     for $attr (sort keys %attrs) {
 
         # get the attribute value
         $value = $attrs{$attr};
 
-        # get the attribute type
+        # get the attribute type & map to style info
         if ($attr =~ s/^html\.//) {
             $type = $_HTML_ATTR_TYPES{$attr};
             $type = "string" if $type eq '';
         }
         else {
             $type = $_HTML_ATTR_TYPES{$attr};
+#print STDERR "attr: $attr, type: $type<\n";
+        }
+        $style_map = $_HTML_STYLE_MAP{$attr};
+        if ($style_map ne '') {
+            $style .= '; ' if $style ne '';
+#           if ($attr eq 'align') {
+#               if ($value eq '1' || $value eq 'Full') {
+#                   $value = 'justify';
+#               }
+#               else {
+#                   $value = "\l$value";
+#               }
+#           }
+            $style .= sprintf($style_map, $value);
         }
         next unless $type;
 
-        # Map the attribute name to uppercase
-        $attr =~ tr/a-z/A-Z/;
-
-        # build the result
+        # build the result (using uppercase attribute names)
         if ($type eq 'string') {
-            $html .= " $attr=\"" . &_HtmlEscape($value) . '"';
+            $attr =~ tr/a-z/A-Z/;
+            $value = &_HtmlEscape($value);
+            $html .= " $attr=\"" . $value . '"';
+        }
+        elsif ($type eq 'class') {
+            $value = $attr;
+            $attr = 'CLASS';
+            $html .= " $attr=\"" . $value . '"';
         }
         else {
+            $attr =~ tr/a-z/A-Z/;
             $html .= " $attr=$value";
         }
+
+        # Keep some stats on classes used so we can conditionally
+        # add things to the stylesheet later
+        $_html_class_count{$value}++ if $attr eq 'CLASS';
     }
 
+    # Add the style info, if any
+    if ($style ne '') {
+            $html .= " STYLE=\"" . &_HtmlEscape($style) . '"';
+    }
+        
     # Return result
     $html;
 }
@@ -1046,7 +1161,10 @@ sub _HtmlHandlerTable {
     push(@_html_tbl_previndent, $indent);
 
     # Build the header
-    $header = $attr{'style'} eq 'plain' ? '' : " BORDER";
+    $header = ' CLASS="' . &_HtmlEscape($attr{'style'}) . '"';
+    if ($attr{'style'} ne 'plain') {
+        $header .= " BORDER";
+    }
     if (defined($attr{'cellspacing'})) {
         $header .= " CELLSPACING='$attr{'cellspacing'}'";
     }
@@ -1095,7 +1213,12 @@ sub _HtmlHandlerRow {
     $_html_tbl_state[$#_html_tbl_state] = $_HTML_INROW;
 
     # Update the output buffer
-    push(@outbuffer, "<TR>");
+    if ($text ne '' && $text ne 'Body') {
+        push(@outbuffer, "<TR CLASS=\"\l$text\">");
+    }
+    else {
+        push(@outbuffer, "<TR>");
+    }
 }
 
 #
@@ -1108,7 +1231,7 @@ sub _HtmlHandlerCell {
     local($state);
     local($header);
 
-    # Reset the paragraph conter for this cell
+    # Reset the paragraph counter for this cell
     $_html_cell_paracnt = ();
 
     # If the cell is hidden, output nothing
@@ -1261,7 +1384,58 @@ sub _HtmlHandlerObject {
     local(*outbuffer, $text, %attrs) = @_;
 #   local();
 
-    # do nothing
+    if ($text eq 'meta') {
+        push(@_html_meta, "<META " .
+            "NAME=\""    . &_HtmlEscape($attrs{'Name'})    . '" ' .
+            "CONTENT=\"" . &_HtmlEscape($attrs{'Content'}) . '">');
+    }
+    if ($text eq 'link') {
+        push(@_html_links, "<LINK " .
+            "REL=\""  . &_HtmlEscape($attrs{'Relationship'}) . '" ' .
+            "TYPE=\"" . &_HtmlEscape($attrs{'Type'})         . '" ' .
+            "HREF=\"" . &_HtmlEscape($attrs{'Jump'})         . '">');
+    }
+}
+
+#
+# >>_Description::
+# {{Y:_HtmlHandlerStyleSheet}} handles the 'stylesheet' directive.
+#
+sub _HtmlHandlerStyleSheet {
+    local(*outbuffer, $text, %attrs) = @_;
+#   local();
+
+        push(@_html_stylesheet, $text);
+}
+
+#
+# >>_Description::
+# {{Y:_HtmlHandlerDiv}} handles the 'div' directive.
+#
+sub _HtmlHandlerDiv {
+    local(*outbuffer, $text, %attrs) = @_;
+#   local();
+
+    push(@_html_divs, $text);
+    push(@outbuffer, '<DIV CLASS="' . &_HtmlEscape($text) . '">');
+}
+
+#
+# >>_Description::
+# {{Y:_HtmlHandlerEndDiv}} handles the 'enddiv' directive.
+#
+sub _HtmlHandlerEndDiv {
+    local(*outbuffer, $text, %attrs) = @_;
+#   local();
+
+    push(@outbuffer, '</DIV>');
+
+    # If we've just finished building the title, save it away
+    # and re-initialise the buffer
+    if (pop(@_html_divs) eq 'title') {
+        @_html_title_div = @outbuffer;
+        @outbuffer = ();
+    }
 }
 
 #
@@ -1384,7 +1558,7 @@ sub HtmlTopicsModeHeading {
     # * save the file each section lives in, so that
     #   section jumps work as expected
     if ($var{'HTML_TOPICS_MODE'}) {
-        if (! $topic_label{$file_base}) {
+        if (! $topic_label{$file_base} && $file_base ne $var{'DOC_BASE'}) {
             $'_html_topic = $file_base;
             push(@levels, $level);
             push(@topics, $'_html_topic);

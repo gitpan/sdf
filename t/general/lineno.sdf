@@ -9,7 +9,7 @@ UNKNOWNP[unknownp]Some text with an
 line.
 
 !macro badstuff
-H0: Heading with a bad level
+H9: Heading with a bad level
 
 Some text with an
 {{WXYZ:unknown tag}}.

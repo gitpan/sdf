@@ -75,7 +75,9 @@ doc/guru/name.html
 doc/guru/parse.html
 doc/guru/table.html
 doc/home.html
+doc/home.sdf
 doc/index.html
+doc/notes/latex.notes
 doc/paper/index.html
 doc/paper/key.gif
 doc/paper/mydoc.sdf
@@ -113,6 +115,7 @@ doc/ref/fdefine.html
 doc/ref/fend.html
 doc/ref/fexample.html
 doc/ref/ffront.html
+doc/ref/fget.html
 doc/ref/fhlp_hea.html
 doc/ref/fhlp_win.html
 doc/ref/filters/fabout.sdf
@@ -129,6 +132,7 @@ doc/ref/filters/fdefine.sdf
 doc/ref/filters/fend.sdf
 doc/ref/filters/fexample.sdf
 doc/ref/filters/ffront.sdf
+doc/ref/filters/fget.sdf
 doc/ref/filters/fhlp_hea.sdf
 doc/ref/filters/fhlp_win.sdf
 doc/ref/filters/finline.sdf
@@ -361,6 +365,8 @@ doc/release/2000b9.html
 doc/release/2000b9.sdf
 doc/release/2000b9a.html
 doc/release/2000b9a.sdf
+doc/release/2001.html
+doc/release/2001.sdf
 doc/release/2001b1.html
 doc/release/2001b1.sdf
 doc/release/index.html
@@ -468,6 +474,14 @@ doc/user/ug_sdf.sdf
 doc/user/ugasdf.html
 doc/user/ugasdf.sdf
 doc/website
+examples/2001/stylesheets/css_inline.html
+examples/2001/stylesheets/css_inline.sdf
+examples/2001/stylesheets/css_linked.html
+examples/2001/stylesheets/css_linked.sdf
+examples/2001/stylesheets/divs.css
+examples/2001/stylesheets/divs.html
+examples/2001/stylesheets/divs.sdf
+examples/2001/stylesheets/test.css
 perllib/Makefile.PL
 perllib/Pod/Diff.pm
 perllib/Pod/Sdf.pm
@@ -477,6 +491,7 @@ perllib/sdf/app.sdf
 perllib/sdf/calc.pl
 perllib/sdf/dict.pl
 perllib/sdf/filters.pl
+perllib/sdf/find.pl
 perllib/sdf/home/images/arrow.bmp
 perllib/sdf/home/images/arrow.gif
 perllib/sdf/home/images/back.bmp
@@ -560,6 +575,7 @@ perllib/sdf/home/locale/en_au.sdl
 perllib/sdf/home/locale/en_ca.sdl
 perllib/sdf/home/locale/en_uk.sdl
 perllib/sdf/home/locale/en_us.sdl
+perllib/sdf/home/locale/ru_ru.sdl
 perllib/sdf/home/look/fancy/fancy.sdm
 perllib/sdf/home/look/fancy/manual.sds
 perllib/sdf/home/look/fancy/mif.sdn
@@ -593,11 +609,13 @@ perllib/sdf/home/sdf/sdf.sdm
 perllib/sdf/home/sdfbatch.ini
 perllib/sdf/home/stdlib/A4.fm4
 perllib/sdf/home/stdlib/A4.fm5
+perllib/sdf/home/stdlib/all.sdg
 perllib/sdf/home/stdlib/bugtrack.sdm
 perllib/sdf/home/stdlib/default.sdg
 perllib/sdf/home/stdlib/defines.sdm
 perllib/sdf/home/stdlib/delphi.sdm
 perllib/sdf/home/stdlib/hlp.sdn
+perllib/sdf/home/stdlib/homepage.sdm
 perllib/sdf/home/stdlib/html.sdn
 perllib/sdf/home/stdlib/langdefs.sdm
 perllib/sdf/home/stdlib/latex.sdn
@@ -610,6 +628,7 @@ perllib/sdf/home/stdlib/pages.sdm
 perllib/sdf/home/stdlib/pod.sdn
 perllib/sdf/home/stdlib/rtf.sdn
 perllib/sdf/home/stdlib/sdf_dir.sdr
+perllib/sdf/home/stdlib/sdgmacs.sdm
 perllib/sdf/home/stdlib/settings.sdm
 perllib/sdf/home/stdlib/sgml.sdn
 perllib/sdf/home/stdlib/simple.sdp
