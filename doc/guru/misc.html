@@ -2,12 +2,12 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.000 by
+<!-- This file was generated using SDF 2.001beta1 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.000: SDF Guru Guide: misc.pl - Miscellaneous Library</TITLE>
+<TITLE>SDF 2.001beta1: SDF Guru Guide: misc.pl - Miscellaneous Library</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
@@ -22,6 +22,8 @@
 <H2><A NAME="Interface">2.5.2. Interface</A></H2>
 <PRE>
 require &quot;misc.pl&quot;;
+
+%<A HREF="#misc_misc_date_strings">misc_date_strings</A> = ...
 
 $result =
 &amp;<A HREF="#misc_MiscCheckRule">MiscCheckRule</A>($_, $rule, $type);
@@ -44,6 +46,7 @@ $upper =
 </PRE>
 <HR>
 <H2><A NAME="Description">2.5.3. Description</A></H2>
+<P><STRONG><A NAME="misc_misc_date_strings">misc_date_strings</A></STRONG> contains the string lists used by <STRONG><A NAME="misc_MiscDateFormat">MiscDateFormat</A></STRONG> indexed by the symbols (e.g. 'month') used by that routine.</P>
 <P><STRONG><A NAME="misc_MiscCheckRule">MiscCheckRule</A></STRONG> checks a <EM>rule</EM> for a value <EM>$_</EM>. If an execution error is detected, an appropriate error is output. The result of the code executed is returned as <EM>result</EM>. If <EM>rule</EM> is an empty string, <EM>type</EM> is used to lookup a default rule for that type, if any. If <EM>rule</EM> is still an empty string, 1 is returned.</P>
 <P><STRONG><A NAME="misc_MiscDoAction">MiscDoAction</A></STRONG> executes a block of Perl code (<EM>action</EM>). If an execution error is detected, an appropriate error is output using <EM>what</EM> to name the block of code that failed. The result of the code executed is returned as <EM>result</EM>. <EM>action</EM> is only executed if it exists. If it does not, 1 is returned.</P>
 <P><STRONG><A NAME="misc_MiscTextWrap">MiscTextWrap</A></STRONG> wraps a text string at a margin given by <EM>wrap</EM>. <EM>prefix</EM> is the string to begin each wrapped line. <EM>suffix</EM> is the string to terminate each wrapped line.</P>

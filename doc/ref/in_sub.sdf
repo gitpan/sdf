@@ -16,7 +16,7 @@ H2: Overview
 
 The subroutines available are summarised below.
 
-!block table; tags="SUB"
+!block table; tags="SUBR"
 Name            Purpose
 FormatTime      format a date-time value
 AppendText      within the {{MAC:on}} macro, appends text after the current line

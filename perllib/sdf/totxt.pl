@@ -1,5 +1,5 @@
 # $Id$
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     Text Format Driver
 #

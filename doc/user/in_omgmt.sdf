@@ -44,7 +44,7 @@ Class           Styles      Identifer_fields    Property_fields
 references      REF, DOC    Reference, Document Jump, Version, Status
 terms           TERM        Term, Definition    Jump
 products        PRD         Name                Jump
-organisations   ORG         Name, Long          Jump
+organisations   ORG, ORGN   Name, Long          Jump
 !endblock
 
 {{Styles}} are the tags used for objects in the class.
@@ -107,7 +107,7 @@ E:  !endblock
 
 These can then be inserted into a document as follows:
 
-E:  !block terms; data
+E:  !block terms
 E:  Term     Definition
 E:  SDF
 E:  SQL

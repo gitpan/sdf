@@ -2,12 +2,12 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.000 by
+<!-- This file was generated using SDF 2.001beta1 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.000: SDF Reference: sdf - SDF Conversion Utility</TITLE>
+<TITLE>SDF 2.001beta1: SDF Reference: sdf - SDF Conversion Utility</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
@@ -31,9 +31,11 @@ usage  : sdf [+alias] [-h[help]] [-o[out_ext]]
          [-c config] [-u uses,..] [-H head_level]
          [-d driver] [-y post_filter]
          [-z post_process,..] [-t target]
-         [-v[verbose]] [-w width] sdf_file ...
+         [-v[verbose]] [-T trace_levels,..]
+         [-w width] [-Y library_path,..]
+         sdf_file ...
 purpose: convert an sdf file to another format
-version: 2.000    (SDF 2.000)
+version: 2.001beta1    (SDF 2.001beta1)
 </PRE>
 <P>The options are:</P>
 <TABLE BORDER>
@@ -247,10 +249,26 @@ verbose mode
 </TR>
 <TR>
 <TD>
+<A HREF="#sdf_T">-T</A>
+</TD>
+<TD>
+debugging trace levels
+</TD>
+</TR>
+<TR>
+<TD>
 <A HREF="#sdf_w">-w</A>
 </TD>
 <TD>
 width for text-based outputs
+</TD>
+</TR>
+<TR>
+<TD>
+<A HREF="#sdf_Y">-Y</A>
+</TD>
+<TD>
+search path for libraries
 </TD>
 </TR>
 </TABLE>
@@ -774,7 +792,20 @@ tabloid
 <LI><EM>clean</EM> - delete the output file (must be last).</UL>
 <P>Additional actions can be configured in <TT>sdf.ini</TT>. By convention, the generated files are given the same names as the action keywords.</P>
 <P><A NAME="sdf_t">The -t option is used to specify the logical target format. If none is specified, the default is the first post processing action, if any. Otherwise, the default is the format driver name.</A></P>
-<P><A NAME="sdf_v">The -v option enables verbose mode. This is useful for debugging problems related to post processing. In particular, post processing actions containing the pattern <EM>clean</EM> are skipped in verbose mode. You can also switch off the post processing messages by using a verbose value of -1.</A></P>
+<P><A NAME="sdf_v">The -v option enables verbose mode. This is useful for debugging problems related to post processing. In particular, post processing actions containing the pattern <EM>clean</EM> are skipped in verbose mode. You can also switch off the post processing messages by using a verbose value of -1. Values higher than 1 switch on additional trace messages as follows:</A></P>
+<UL>
+2 - show how names of files and libraries are resolved
+<BR>
+3 - show the directories searched for libraries
+<BR>
+4 - show the directories searched for modules
+<BR>
+5 - show the directories searched for normal files.</UL>
+<P><A NAME="sdf_T">The -T option can be used to switch on debug tracing. The parameter is a comma-separated list of name-value pairs where each name is a <EM>tracing group</EM> and each value is the level of tracing for that group. To get the trace output provided by the -v option, one can use the <EM>user</EM> group like this:</A></P>
+<PRE>
+  sdf -Tuser=2 ...
+</PRE>
+<P>This is slightly different from the -v option in that intermediate files are not implicitly kept. Additional tracing groups will be added over time (probably one per output driver).</P>
 <P><A NAME="sdf_w">The -w option is used to specify the width for text-based outputs.</A></P>
 <P>The -z, -D, -f and -I options are list options. i.e. multiple values can be separated by commas and/or the options can be supplied multiple times.</P>
 <HR>

@@ -47,4 +47,4 @@ H2: Examples
 
 The SDG file used to format topics within the SDF documentation is:
 
-!include "default.sdg"; example; skipheader; pure
+!include "stdlib/default.sdg"; example; skipheader; pure

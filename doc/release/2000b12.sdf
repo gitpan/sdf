@@ -205,6 +205,6 @@ been changed. If the {{CMD:sdf}} command complains about
 an unknown alias, have a look in F<sdf.ini> to see what
 the new name is.
 
-The interface to {{SUB:FindFile}}, a subroutine which some users
+The interface to {{SUBR:FindFile}}, a subroutine which some users
 override to integrate SDF into their CM system, has changed.
-See the {{SUB:FindFile}} documentation for details.
+See the {{SUBR:FindFile}} documentation for details.

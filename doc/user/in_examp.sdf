@@ -15,31 +15,49 @@ H1: Example Paragraphs
 
 H2: Simple Examples
 
-The tag used for example (i.e. fixed-width) paragraphs is usually E.
+Example paragraphs are displayed in a fixed-width font (e.g. Courier).
+Unlike most other paragraphs, spaces and tabs immediately
+after the paragraph tag are not ignored in example paragraphs.
+The tags used are:
+
+* E - fixed-width text
+* V - verbatim, fixed-width text (embedded symbols are ignored).
+
 For example:
 
-E:E:sub Greeting {
-E:E:  print "Hello world\n";
-E:E:}
+>E:# {{Greeting}} outputs a friendly greeting.
+>E:sub Greeting {
+>E:    print "Hello world\n";
+>E:}
 
 The result is:
 
+E:# {{Greeting}} outputs a friendly greeting.
 E:sub Greeting {
 E:    print "Hello world\n";
 E:}
 
-As fixed-width text is very common in software documentation,
-[[SDF]] provides "=" as a shorthand for "E:". For example:
+H2: Shorthand Notation
 
-E:=sub Greeting {
-E:=    print "Hello world\n";
-E:=}
+As verbatim, fixed-width text is very common in software documentation,
+">" is provided as a shorthand for "V:". For example:
 
-Unlike most other paragraphs, spaces and tabs immediately
-after the paragraph tag are not ignored in example paragraphs.
+>># {{Greeting}} outputs a friendly greeting.
+>>sub Greeting {
+>>    print "Hello world\n";
+>>}
 
-Large examples are usually defined using the {{block}} and {{endblock}}
-macros as follows:
+The result is:
+
+># {{Greeting}} outputs a friendly greeting.
+>sub Greeting {
+>    print "Hello world\n";
+>}
+
+H2: Large Examples
+
+Large examples are usually defined using the {{example}} or {{verbatim}}
+filters like this:
 
 !block verbatim
 !block example
@@ -50,31 +68,25 @@ sub Greeting {
 !endblock
 !endblock
 
-H2: Pure Examples
-
-Example blocks support the {{pure}} parameter.
-For example:
-
-!block verbatim
-!block example; pure
-# {{Greeting}} outputs a friendly greeting.
-sub Greeting {
-    print "Hello world\n";
-}
-!endblock
-!endblock
-
-[[SDF]] uses special symbols (like E<2{> and E<2}>)
-to delimit phrases inside paragraphs.
-The {{pure}} parameter "escapes"
-these symbols so that the text is included exactly as it is.
-
 H2: Wide Examples
 
 If an example block has unwanted line breaks, the {{wide}}
 parameter should be specified. Wide examples use a wider text area
 (and a smaller font, if necessary) so that 80 characters can
-fit onto each line. A typical result is:
+fit onto each line. For example:
+
+!block verbatim; wide
+!block example; wide
+sub SaveTheWorld {                  # This routine provides world peace
+    local($param1, param2) = @_;    # Input parameters
+
+    # Do the work
+    # ...
+}
+!endblock
+!endblock
+
+The result is:
 
 !block example; wide
 sub SaveTheWorld {                  # This routine provides world peace

@@ -53,6 +53,7 @@ langdefs        define vgrind-like language definitions
 define          define a block of variables
 default         provide defaults for a block of variables
 simple          generic filter for building others
+datestrings     define strings used within dates
 Help:
 hlp_header      table of jumps at the top of a help topic
 hlp_window      contents of a help popup window
@@ -83,6 +84,7 @@ filters/fascii_g
 filters/fbox
 filters/fchanged
 filters/fcomment
+filters/fdatestr
 filters/fdefault
 filters/fdefine
 filters/fend

@@ -1,5 +1,5 @@
 # $Id$
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     Simple Document Format Library
 #
@@ -177,10 +177,14 @@ $sdf_fmext = 'fm5';
 # >>Description::
 # {{Y:sdf_include_path}} contains the list of directories searched
 # for to find files specified in {{include}} macros.
-# The current directory is searched before these directories and
+# {{Y:sdf_library_path}} contains the list of directories searched
+# for to find libraries and modules.
+# In both cases, the current directory and the document's directory
+# are searched before these directories and
 # {{Y:sdf_lib}} is searched last of all.
 #
 @sdf_include_path = ();
+@sdf_library_path = ();
 $sdf_lib = '';
 
 # Stacks containing state of if macros:
@@ -388,7 +392,7 @@ sub SdfConvert {
     # 2. Some of this is currently based on the (target) driver name.
     #    It should really be controlled by driver and/or format
     #    "flags" configured in sdf.ini. :-(
-    @sdf = ("!use 'stdlib'");
+    @sdf = ("!use 'stdlib/stdlib'");
     push(@sdf, "!_load_look_")     if     $target eq 'mif';
     push(@sdf, "!readonly 'OPT'");
     #push(@sdf, "!_load_tuning_") unless $target eq 'raw';
@@ -463,6 +467,8 @@ sub SdfInit {
     # Initialise the user variables
     %var = %'var;
     @include_path = @'sdf_include_path;
+    @library_path = @'sdf_library_path;
+    @module_path = @'sdf_library_path;
 
     # Initialise global variables within this package
     package main;

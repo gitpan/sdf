@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 # $Id$
-$VERSION{'PUBLIC'} = '2.000';
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{'PUBLIC'} = '2.001beta1';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     SDF Conversion Utility
 #
@@ -185,7 +185,25 @@ $VERSION{__FILE__} = '$Revision$';
 # problems related to post processing. In particular, post processing
 # actions containing the pattern {{clean}} are skipped in verbose mode.
 # You can also switch off the post processing messages by using a
-# verbose value of -1.
+# verbose value of -1. Values higher than 1 switch on additional
+# trace messages as follows:
+#
+# . 2 - show how names of files and libraries are resolved
+# . 3 - show the directories searched for libraries
+# . 4 - show the directories searched for modules
+# . 5 - show the directories searched for normal files.
+#
+# The -T option can be used to switch on
+# debug tracing. The parameter is a comma-separated list of name-value
+# pairs where each name is a {{tracing group}} and each value is the
+# level of tracing for that group. To get the trace output provided
+# by the -v option, one can use the {{user}} group like this:
+#
+# >  sdf -Tuser=2 ...
+#
+# This is slightly different from the -v option in that intermediate
+# files are not implicitly kept. Additional tracing groups will be
+# added over time (probably one per output driver).
 #
 # The -w option is used to specify the width for text-based outputs.
 #
@@ -276,7 +294,9 @@ push(@app_option, (
     'post_process;z|STRLIST|list of post processing actions to do',
     'target|STR|logical target format',
     'verbose|INT;;1|verbose mode',
+    'trace_levels;T|STRHASH|debugging trace levels',
     'width|INT|width for text-based outputs',
+    'library_path;Y|STRLIST|search path for libraries',
 ));
 
 # configuration tables
@@ -364,8 +384,13 @@ sub LoadPreFilters {
 &AppInit('sdf_file ...', 'convert an sdf file to another format', 'SDF',
   'iniProcess') || &AppExit();
 
-# Initialise the SDF module to use the correct search path
+# Initialise the tracing levels
+%app_trace_level = %trace_levels;
+$app_trace_level{"user"} = $verbose if $verbose > $app_trace_level{"user"};
+
+# Initialise the SDF module to use the correct search paths
 @sdf_include_path = @include_path;
+@sdf_library_path = @library_path;
 $sdf_lib = $app_lib_dir;
 
 # Check the page size is defined or in the form width"x"height

@@ -2,12 +2,12 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.000 by
+<!-- This file was generated using SDF 2.001beta1 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.000: SDF User Guide: Example Paragraphs</TITLE>
+<TITLE>SDF 2.001beta1: SDF User Guide: Example Paragraphs</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
@@ -17,26 +17,43 @@
 <H1>3.2. Example Paragraphs</H1>
 <HR>
 <H2><A NAME="Simple Examples">3.2.1. Simple Examples</A></H2>
-<P>The tag used for example (i.e. fixed-width) paragraphs is usually E. For example:</P>
+<P>Example paragraphs are displayed in a fixed-width font (e.g. Courier). Unlike most other paragraphs, spaces and tabs immediately after the paragraph tag are not ignored in example paragraphs. The tags used are:</P>
+<UL>
+<LI>E - fixed-width text
+<LI>V - verbatim, fixed-width text (embedded symbols are ignored).</UL>
+<P>For example:</P>
 <PRE>
+E:# {{Greeting}} outputs a friendly greeting.
 E:sub Greeting {
-E:  print &quot;Hello world\n&quot;;
+E:    print &quot;Hello world\n&quot;;
 E:}
 </PRE>
 <P>The result is:</P>
 <PRE>
+# <EM>Greeting</EM> outputs a friendly greeting.
 sub Greeting {
     print &quot;Hello world\n&quot;;
 }
 </PRE>
-<P>As fixed-width text is very common in software documentation, <A HREF="http://www.mincom.com/mtr/sdf/">SDF</A> provides &quot;=&quot; as a shorthand for &quot;E:&quot;. For example:</P>
+<HR>
+<H2><A NAME="Shorthand Notation">3.2.2. Shorthand Notation</A></H2>
+<P>As verbatim, fixed-width text is very common in software documentation, &quot;&gt;&quot; is provided as a shorthand for &quot;V:&quot;. For example:</P>
 <PRE>
-=sub Greeting {
-=    print &quot;Hello world\n&quot;;
-=}
+&gt;# {{Greeting}} outputs a friendly greeting.
+&gt;sub Greeting {
+&gt;    print &quot;Hello world\n&quot;;
+&gt;}
 </PRE>
-<P>Unlike most other paragraphs, spaces and tabs immediately after the paragraph tag are not ignored in example paragraphs.</P>
-<P>Large examples are usually defined using the <EM>block</EM> and <EM>endblock</EM> macros as follows:</P>
+<P>The result is:</P>
+<PRE>
+# {{Greeting}} outputs a friendly greeting.
+sub Greeting {
+    print &quot;Hello world\n&quot;;
+}
+</PRE>
+<HR>
+<H2><A NAME="Large Examples">3.2.3. Large Examples</A></H2>
+<P>Large examples are usually defined using the <EM>example</EM> or <EM>verbatim</EM> filters like this:</P>
 <PRE>
 !block example
 # {{Greeting}} outputs a friendly greeting.
@@ -46,20 +63,19 @@ sub Greeting {
 !endblock
 </PRE>
 <HR>
-<H2><A NAME="Pure Examples">3.2.2. Pure Examples</A></H2>
-<P>Example blocks support the <EM>pure</EM> parameter. For example:</P>
+<H2><A NAME="Wide Examples">3.2.4. Wide Examples</A></H2>
+<P>If an example block has unwanted line breaks, the <EM>wide</EM> parameter should be specified. Wide examples use a wider text area (and a smaller font, if necessary) so that 80 characters can fit onto each line. For example:</P>
 <PRE>
-!block example; pure
-# {{Greeting}} outputs a friendly greeting.
-sub Greeting {
-    print &quot;Hello world\n&quot;;
+!block example; wide
+sub SaveTheWorld {                  # This routine provides world peace
+    local($param1, param2) = @_;    # Input parameters
+
+    # Do the work
+    # ...
 }
 !endblock
 </PRE>
-<P><A HREF="http://www.mincom.com/mtr/sdf/">SDF</A> uses special symbols (like {{ and }}) to delimit phrases inside paragraphs. The <EM>pure</EM> parameter &quot;escapes&quot; these symbols so that the text is included exactly as it is.</P>
-<HR>
-<H2><A NAME="Wide Examples">3.2.3. Wide Examples</A></H2>
-<P>If an example block has unwanted line breaks, the <EM>wide</EM> parameter should be specified. Wide examples use a wider text area (and a smaller font, if necessary) so that 80 characters can fit onto each line. A typical result is:</P>
+<P>The result is:</P>
 <PRE>
 sub SaveTheWorld {                  # This routine provides world peace
     local($param1, param2) = @_;    # Input parameters
@@ -69,7 +85,7 @@ sub SaveTheWorld {                  # This routine provides world peace
 }
 </PRE>
 <HR>
-<H2><A NAME="Formatting Source Code">3.2.4. Formatting Source Code</A></H2>
+<H2><A NAME="Formatting Source Code">3.2.5. Formatting Source Code</A></H2>
 <P>Blocks of source code can be nicely formatted via the <EM>lang</EM> parameter to the <A HREF="../ref/fexample.html">example</A> filter. For example:</P>
 <PRE>
 !block example; lang='Perl'
@@ -87,13 +103,13 @@ sub hello {
     <B>local</B>($planet) = @_;
 
     <I># Output a nice message</I>
-    print <TT>&quot;hello $planet!\n&quot;</TT>;
+    <B>print</B> <TT>&quot;hello $planet!\n&quot;</TT>;
 }
 </PRE>
 <P>For convenience, if a programming language is used as a filter (and a filter of that name doesn't exist), SDF implicitly calls the example filter for you with the relevant lang parameter.</P>
 <P>There is built-in support for numerous languages including <A HREF="http://www.perl.com/perl/index.html">Perl</A>, C, C++, <A HREF="http://java.sun.com/">Java</A>, <A HREF="http://www.borland.com/Product/Lang/delphi2/">Delphi</A>, CORBA IDL and shell. New language definitions can be easily added (<CMD>vgrind</CMD> definitions are used).</P>
 <HR>
-<H2><A NAME="File Pretty Printing">3.2.5. File Pretty Printing</A></H2>
+<H2><A NAME="File Pretty Printing">3.2.6. File Pretty Printing</A></H2>
 <P>Pretty printing of source code files is directly supported by <A HREF="../ref/sdf.html">sdf</A>'s -P option. For example:</P>
 <PRE>
   sdf -2ps -Psh myscript

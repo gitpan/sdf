@@ -57,4 +57,4 @@ call sdf -2raw -.test sdf.sdf
 call sdf -2raw -.test table.sdf
 cd ..
 echo If any tests failed, the unexpected .out or .log file
-echo can be found in test\general, test\macro or test\filter.
+echo can be found in t\general, t\macro or t\filter.

@@ -2,22 +2,22 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.000 by
+<!-- This file was generated using SDF 2.001beta1 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.000: SDF Release Notes: 2.000beta8</TITLE>
+<TITLE>SDF 2.001beta1: SDF Release Notes: 2.000beta8</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
 <P><IMG SRC="../sdflogo.gif" ALIGN="Right"></P>
 <P ALIGN="Center"><A HREF="rn_sdf.html">Contents</A> | <A HREF="rn_sdf.html">Parent Topic</A> | <A HREF="2000b8a.html">Previous Topic</A> | <A HREF="2000b7c.html">Next Topic</A> <BR><A HREF="../index.html">Home</A> | <A HREF="../catalog.html">Catalog</A></P>
 <BR CLEAR="Right">
-<H1>8. 2.000beta8</H1>
+<H1>9. 2.000beta8</H1>
 <P ALIGN="Left"><A HREF="#2.000beta8 - Enhancements">Enhancements</A> | <A HREF="#2.000beta8 - Fixes">Fixes</A> | <A HREF="#2.000beta8 - Incompatibilities">Incompatibilities</A></P>
 <HR>
-<H2><A NAME="2.000beta8 - Enhancements">8.1. Enhancements</A></H2>
+<H2><A NAME="2.000beta8 - Enhancements">9.1. Enhancements</A></H2>
 <P>There are lots of new things in this version. The general enhancements are:</P>
 <UL>
 <A HREF="2000b8.html#Easier enumerated values">Easier enumerated values</A>
@@ -70,7 +70,7 @@
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG>For <EM>html</EM> and <EM>txt</EM> targets, this release is slightly faster than the previous one. For <EM>mif</EM> (and <EM>ps</EM>), this release may be slightly slower (as SDF templates, not FrameMaker ones, are now used).
 <HR WIDTH="80%" ALIGN="Left"></P>
-<H3><A NAME="Easier enumerated values">8.1.1. Easier enumerated values</A></H3>
+<H3><A NAME="Easier enumerated values">9.1.1. Easier enumerated values</A></H3>
 <P>Enumerated values no longer need to be quoted. In a set of name-value pairs, if an expression is a single word where:</P>
 <UL>
 <LI>the first character is uppercase
@@ -80,7 +80,7 @@
    P1[align=&quot;Center&quot;] My Title
    P1[align=Center] My Title
 </PRE>
-<H3><A NAME="Look improvements">8.1.2. Look improvements</A></H3>
+<H3><A NAME="Look improvements">9.1.2. Look improvements</A></H3>
 <P>The overall appearance (i.e. look) of an SDF document can be controlled via the -k option or the OPT_LOOK variable. SDF now supports the following looks:</P>
 <UL>
 <LI><EM>simple</EM> - the default look, useful for general documentation
@@ -90,7 +90,7 @@
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG>For backwards compatibility, <EM>plain</EM> is now an alias for <EM>simple</EM>.
 <HR WIDTH="80%" ALIGN="Left"></P>
-<H3><A NAME="Style rationalisation">8.1.3. Style rationalisation</A></H3>
+<H3><A NAME="Style rationalisation">9.1.3. Style rationalisation</A></H3>
 <P>SDF now supports the styles (i.e. document types) below.</P>
 <TABLE BORDER>
 <TR>
@@ -201,7 +201,7 @@ a source code listing
 
 <P>The <A HREF="../ref/mbuild_t.html">build_title</A> macro is used to build the cover page for the general styles. The <A HREF="../ref/ftitle.html">title</A> filter is used to build the title block for the administation styles. The miscellaneous styles do not have a title.</P>
 <P>Adding new styles for a look is now much easier than it was previously. Furthermore, <EM>manual</EM> is now just another style rather than a special mode.</P>
-<H3><A NAME="More build_title control variables">8.1.4. More build_title control variables</A></H3>
+<H3><A NAME="More build_title control variables">9.1.4. More build_title control variables</A></H3>
 <P><A HREF="../ref/mbuild_t.html">build_title</A> now supports the following variable:</P>
 <UL>
 <LI><EM>DOC_COVER</EM> - the logical name of the cover page to use.</UL>
@@ -250,7 +250,7 @@ the cover page used when OPT_STYLE is paper
 </TABLE>
 
 <P>The <EM>manual</EM> cover supports a new macro called <EM>DOC_OFFICES</EM>, i.e. if DOC_OFFICES is defined, its contents are appended after the inside cover page.</P>
-<H3><A NAME="Miscellaneous things">8.1.5. Miscellaneous things</A></H3>
+<H3><A NAME="Miscellaneous things">9.1.5. Miscellaneous things</A></H3>
 <P>The <EM>SDF What's Planned</EM> document and <EM>bugs.html</EM> have been replaced by the <A HREF="http://www.mincom.com/mtr/sdf/bugs/index.html">SDF Bug Database</A>. In fact, the organisation of the documentation has been improved quite a bit.</P>
 <P>Any document can now be converted to a FrameMaker book, i.e. it is no longer necessary to specially organise files in order to create a FrameMaker book.</P>
 <P>Tables of style <EM>columns</EM> (the default) now have a thin line above group rows.</P>
@@ -285,7 +285,7 @@ the cover page used when OPT_STYLE is paper
 !namevalues 'bugs'; 'sd0001'; 'Priority,Status,Type'
 </PRE>
 <P>Finer control over object catalog formatting is now available via the new <EM>style</EM> and <EM>headings</EM> attributes. <EM>style</EM> is the table style to use. The default value is <EM>plain</EM>. If <EM>headings</EM> is set, column headings are output. (By default, they are not.)</P>
-<H3><A NAME="Easier column widths">8.1.6. Easier column widths</A></H3>
+<H3><A NAME="Easier column widths">9.1.6. Easier column widths</A></H3>
 <P>SDF now supports <EM>dynamic</EM> column widths for paper documentation, i.e. if a width is not specified for a column, then the column is sized based on the text within it and the space available. Proportional column widths are also supported.</P>
 <P>The <EM>format</EM> attribute of the <A HREF="../ref/ftable.html">table</A> filter is either:</P>
 <UL>
@@ -598,7 +598,7 @@ Z
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG>As previously, the <EM>format</EM> parameter has no impact on HTML generation, i.e. all columns in HTML remain dynamically sized. Dynamic sizing is also ignored for <EM>txt</EM> and <EM>pod</EM> targets.
 <HR WIDTH="80%" ALIGN="Left"></P>
-<H3><A NAME="Heading/footing rows for tables">8.1.7. Heading/footing rows for tables</A></H3>
+<H3><A NAME="Heading/footing rows for tables">9.1.7. Heading/footing rows for tables</A></H3>
 <P>The <A HREF="../ref/ftable.html">table</A> filter now supports the following attributes:</P>
 <UL>
 <LI><EM>headings</EM> - the number of heading rows at the top of the table
@@ -634,7 +634,7 @@ Sally       23
 <LI>heading rows can now include non-alphanumeric characters
 <LI>macros (e.g. change bars) can be applied to heading rows
 <LI>multi-line heading and footing rows are now supported.</UL>
-<H3><A NAME="Table positioning">8.1.8. Table positioning</A></H3>
+<H3><A NAME="Table positioning">9.1.8. Table positioning</A></H3>
 <P>The horizontal alignment and vertical placement of a table can be controlled by setting the <EM>align</EM> and <EM>placement</EM> parameters of the <A HREF="../ref/ftable.html">table</A> filter respectively. The permitted <EM>align</EM> values are:</P>
 <TABLE BORDER>
 <TR>
@@ -742,7 +742,7 @@ top of the next right-hand page
 </TR>
 </TABLE>
 
-<H3><A NAME="Table filtering and sorting">8.1.9. Table filtering and sorting</A></H3>
+<H3><A NAME="Table filtering and sorting">9.1.9. Table filtering and sorting</A></H3>
 <P>Tables can now be filtered and sorted by using the new <EM>where</EM> and <EM>sort</EM> attributes of the <A HREF="../ref/ftable.html">table</A> filter. These attributes are also supported by the class filters (e.g. terms, references). In either case, filtering is done before sorting.</P>
 <P>The <EM>where</EM> attribute takes an expression which is evaluated for each record. Special symbols available are:</P>
 <TABLE BORDER>
@@ -773,7 +773,7 @@ the value of column xyz
 </TABLE>
 
 <P><EM>sort</EM> takes a comma-separated list of column names to sort on. If no columns are specified, the data is sorted using all columns in the order in which they appear. All sorting is done alphabetically - numeric sorting is not supported.</P>
-<H3><A NAME="Landscape tables">8.1.10. Landscape tables</A></H3>
+<H3><A NAME="Landscape tables">9.1.10. Landscape tables</A></H3>
 <P>Landscape tables are now supported via the <EM>landscape</EM> parameter of the <A HREF="../ref/ftable.html">table</A> filter. The value is the height allocated to the area in which the table is placed. If a unit is not specified, the value is assumed to be a percentage of the text column height. For convenience, a value of 1 implies a full page table. Some examples are given below.</P>
 <TABLE BORDER>
 <TR>
@@ -829,7 +829,7 @@ full page table (syntactic shorthand for above)
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG>This feature is currently <B>use at your own risk</B>. In particular, long tables and table titles confuse it badly. Furthermore, the <EM>align</EM> and <EM>placement</EM> parameters are effectively ignored for landscape tables.
 <HR WIDTH="80%" ALIGN="Left"></P>
-<H3><A NAME="Column alignment">8.1.11. Column alignment</A></H3>
+<H3><A NAME="Column alignment">9.1.11. Column alignment</A></H3>
 <P>The <EM>colaligns</EM> parameter of the <A HREF="../ref/ftable.html">table</A> filter can now be used to control the alignment of text within columns of a table. For example:</P>
 <PRE>
 !block  table; colaligns=&quot;LCCR&quot;
@@ -892,7 +892,7 @@ A       B                   C           1.0
 X       Hello dear world    Y           10.2
 !endblock
 </PRE>
-<H3><A NAME="Cell attributes">8.1.12. Cell attributes</A></H3>
+<H3><A NAME="Cell attributes">9.1.12. Cell attributes</A></H3>
 <P>Cells within a table can now be given attributes by preceding the cell value with a semicolon-separated list of name-value pairs enclosed in square brackets. For example:</P>
 <PRE>
 !block  table; colaligns=&quot;LCCR&quot;
@@ -1123,7 +1123,7 @@ paragraph style to apply to cell text
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG><EM>paratag</EM> is not yet implemented.
 <HR WIDTH="80%" ALIGN="Left"></P>
-<H3><A NAME="Spreadsheet calculations">8.1.13. Spreadsheet calculations</A></H3>
+<H3><A NAME="Spreadsheet calculations">9.1.13. Spreadsheet calculations</A></H3>
 <P><EM>The spreadsheet expression evaluator and the documentation below was written by Tim Hudson (<A HREF="mailto:tjh@cryptsoft.com">tjh@cryptsoft.com</A>)</EM>.</P>
 <P>Spreadsheet style calculations have been introduced into SDF using the standard <EM>[[ ]]</EM> syntax with a prefix of <EM>+</EM> (or <EM>=</EM>) indicating that the expression is to be evaluated by the calculation routines.</P>
 <P>This extension has been loosely modelled on <A HREF="http://www.microsoft.com">Microsoft</A> <EM>Excel</EM>&#174;  in terms of the initial functions supported and the syntax used.</P>
@@ -1316,7 +1316,7 @@ Count         Price        Total
 <STRONG>Note: </STRONG>values are available until the next table is processed so you can refer to data inside <EM>normal</EM> paragraphs after the table like this [\[=A1]\] which evaluates to 10.00</P>
 <P><HR WIDTH="80%" ALIGN="Left"></P>
 <P>A spreadsheet expression will recursively evaluate any expressions contained in <EM>cells</EM> that are used in an expression. In the example above, the expression in <EM>cell</EM> <EM>C3</EM> depends on the results of the expression in <EM>cell</EM> <EM>C1</EM> and <EM>C2</EM>.</P>
-<H3><A NAME="Arbitrary page sizes">8.1.14. Arbitrary page sizes</A></H3>
+<H3><A NAME="Arbitrary page sizes">9.1.14. Arbitrary page sizes</A></H3>
 <P>Generally speaking, SDF can now support arbitrary page sizes. The catch is that the page size must now be specified up front via the OPT_PAGE_SIZE variable on the <A HREF="../ref/minit.html">init</A> line or via <A HREF="../ref/sdf.html">sdf</A>'s -S option. (Previously, the (no longer supported) DOC_PAGE_SIZE variable could be specified anywhere in the document.)</P>
 <P>The supported values of OPT_PAGE_SIZE are given below. The default page size is <EM>global</EM>.</P>
 <TABLE BORDER>
@@ -1466,7 +1466,7 @@ tabloid
 <STRONG>Note: </STRONG><EM>global</EM> is 0.23&quot; narrower than <EM>letter</EM> and 1.76cm shorter than <EM>A4</EM>.
 <HR WIDTH="80%" ALIGN="Left"></P>
 <P>New page sizes can be defined in <TT>sdf.ini</TT>. A rotated version is also available for each page size. Rotated sizes are named with an appended R. For example, the rotated A4 size is called A4R.</P>
-<H3><A NAME="Headers and footers">8.1.15. Headers and footers</A></H3>
+<H3><A NAME="Headers and footers">9.1.15. Headers and footers</A></H3>
 <P>SDF now provides 3 ways of controlling headers and footers:</P>
 <UL>
 <LI>The OPT_HEADINGS variable (high level control)
@@ -1566,7 +1566,7 @@ two line header and four line footer
 </TR>
 </TABLE>
 
-<H3><A NAME="Header/footer special tags">8.1.16. Header/footer special tags</A></H3>
+<H3><A NAME="Header/footer special tags">9.1.16. Header/footer special tags</A></H3>
 <P>The following special tags are supported within headers and footers:</P>
 <TABLE BORDER>
 <TR>
@@ -1641,7 +1641,7 @@ text of last paragraph on page with the nominated style
   H1[short='Getting started'] Getting started with SDF
 </PRE>
 <P>The <EM>PARALAST</EM> tag is useful for producing dictionary-like headers.</P>
-<H3><A NAME="Header/footer borders">8.1.17. Header/footer borders</A></H3>
+<H3><A NAME="Header/footer borders">9.1.17. Header/footer borders</A></H3>
 <P>High level control over header/footer borders is provided by the OPT_BORDERS variable. The supported values and their meanings are given below:</P>
 <TABLE BORDER>
 <TR>
@@ -1714,7 +1714,7 @@ border specification string
 <LI><EM>box</EM> - a box around the area
 <LI><EM>radius</EM> - for a box, the radius of the corner.</UL>
 <P>For <EM>top</EM>, <EM>bottom</EM> and <EM>box</EM>, the value of the attribute is the line width in points.</P>
-<H3><A NAME="Page backgrounds">8.1.18. Page backgrounds</A></H3>
+<H3><A NAME="Page backgrounds">9.1.18. Page backgrounds</A></H3>
 <P>In order to support fancy background images, SDF supports the following variables:</P>
 <TABLE BORDER>
 <TR>
@@ -1740,7 +1740,7 @@ the logical image name
 <P><HR WIDTH="80%" ALIGN="Left">
 <STRONG>Note: </STRONG>At the moment, objects from the master page (excluding TextRects) are directly transferred to the generated MIF file. This means that objects in the lower right hand corner of an A4 master page will not will be positioned nicely if the paper size is changed to A5, say.
 <HR WIDTH="80%" ALIGN="Left"></P>
-<H3><A NAME="Page layout variables">8.1.19. Page layout variables</A></H3>
+<H3><A NAME="Page layout variables">9.1.19. Page layout variables</A></H3>
 <P>Page margins can now be controlled via the following variables:</P>
 <TABLE BORDER>
 <TR>
@@ -1935,7 +1935,7 @@ width of a text column
 </TABLE>
 
 <P>All the information variables are in units of points. The text area is the area allocated to text, excluding the header and footer (if any) on the RIGHT page.</P>
-<H3><A NAME="Page control within a book">8.1.20. Page control within a book</A></H3>
+<H3><A NAME="Page control within a book">9.1.20. Page control within a book</A></H3>
 <P>When a book is being generated, each component of the book may have its own FIRST, RIGHT and LEFT pages, i.e. all of the macros and variables above support an extended set of <EM>page</EM> values <EM>component</EM>_<EM>FRL</EM> where:</P>
 <UL>
 <LI><EM>component</EM> is the name of the component
@@ -2033,7 +2033,7 @@ the index
 </TABLE>
 
 <P>If a component does not have a component-specific macro/variable defined, then the generic macro/variable is used.</P>
-<H3><A NAME="FrameMaker templates are no longer required">8.1.21. FrameMaker templates are no longer required</A></H3>
+<H3><A NAME="FrameMaker templates are no longer required">9.1.21. FrameMaker templates are no longer required</A></H3>
 <P>Previously, SDF produced MIF documents by merging generated MIF paragraphs into FrameMaker templates. This approach was easy to implement but maintaining the FrameMaker templates was difficult as every look required several templates for <EM>each</EM> page size!</P>
 <P>FrameMaker templates can still be used but are no longer needed, nor recommended. Instead, the definitions of paragraph styles, phrase styles, table styles and graphic (border) frames is now done via <EM>SDF templates</EM>. SDF templates have the following advantages:</P>
 <OL>
@@ -2042,7 +2042,7 @@ the index
 <LI>Templates can inherit definitions from other templates, making it much easier to create and maintain templates.
 <LI>Each definition supports inheritance, so a new paragraph style, say, can be defined in terms of the differences between it and a parent style.</OL>
 <P>The new <EM>sdtgen</EM> command can be used to build an SDF template from a FrameMaker one. Typically, <EM>sdtgen</EM> is used to create an initial template which is then simplified via definition inheritance and template inheritance.</P>
-<H3><A NAME="Event processing enhancements">8.1.22. Event processing enhancements</A></H3>
+<H3><A NAME="Event processing enhancements">9.1.22. Event processing enhancements</A></H3>
 <P>The following new symbols are now available within event processing for paragraphs:</P>
 <TABLE BORDER>
 <TR>
@@ -2092,7 +2092,7 @@ the attributes of the previous paragraph
 !on paragraph '[HAP]2';; if ($level != 1) {$attr{'top'} = 1}
 </PRE>
 <HR>
-<H2><A NAME="2.000beta8 - Fixes">8.2. Fixes</A></H2>
+<H2><A NAME="2.000beta8 - Fixes">9.2. Fixes</A></H2>
 <P>Tim Hudson has contributed a number of fixes to this release including:</P>
 <UL>
 <LI>this version should now work with Perl 5 again - the previous version triggered a Perl 5 syntax error
@@ -2106,7 +2106,7 @@ the attributes of the previous paragraph
 <LI>headings containing a ? character should no longer cause problems
 <LI>some bugs in <A HREF="../ref/sdfget.html">sdfget</A>'s extraction of documentation from C code have been fixed (thanks to Keith Ponting).</UL>
 <HR>
-<H2><A NAME="2.000beta8 - Incompatibilities">8.3. Incompatibilities</A></H2>
+<H2><A NAME="2.000beta8 - Incompatibilities">9.3. Incompatibilities</A></H2>
 <P>As the default page size is now <EM>global</EM> rather than <EM>A4</EM>, page breaks may occur slightly earlier than they previously did. The advantage of changing to <EM>global</EM> is that documents should now print successfully on US letter paper.</P>
 <P>Memos, faxes, minutes and newsletters no longer have the company address in the top right hand corner. (I'll fix this soon, but it is not a high priority at the moment.)</P>
 <P>As <EM>txt</EM> and <EM>pod</EM> outputs use a different algorithm for deciding column widths when a table does not have a format parameter, some table cells may no longer fit when these output formats are used.</P>

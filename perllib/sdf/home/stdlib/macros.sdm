@@ -43,6 +43,7 @@
 # DOC_APPROVE3
 # DOC_URL           e.g. "http://mtr.mincom.oz.au/sdf/doc/0002"
 # DOC_OWNER         the person or company owning the copyright
+# DOC_ID_SEP        the string within DOC_ID separating DOC_CODE & DOC_VERSION
 # !endblock
 #
 # It also uses the macros below.
@@ -58,6 +59,11 @@
 # Build a title page
 !macro build_title
 
+# If the code is set, but the name isn't, lookup the name
+!if $var{'DOC_CODE'} ne '' && $var{'DOC_NAME'} eq ''
+!define DOC_NAME $obj_short{'references',&Var('DOC_CODE'),'Document'}
+!endif
+
 # Build the document title
 !if DOC_TYPE
 !define DOC_TITLE join(' ', &Var('DOC_NAME'), &Var('DOC_TYPE'))
@@ -68,13 +74,16 @@
 
 # If not already set, lookup the document properties, if possible
 !default DOC_CODE     $obj_long{'references',&Var('DOC_TITLE'),'Reference'}
-!default DOC_VERSION  $obj_long{'references',&Var('DOC_TITLE'),'Version'}
-!default DOC_STATUS   $obj_long{'references',&Var('DOC_TITLE'),'Status'}
+!default DOC_VERSION  $obj_long{'references',&Var('DOC_TITLE'),'Version'} ||\
+                      $obj_short{'references',&Var('DOC_CODE'),'Version'}
+!default DOC_STATUS   $obj_long{'references',&Var('DOC_TITLE'),'Status'} ||\
+                      $obj_short{'references',&Var('DOC_CODE'),'Status'}
 !if !DOC_URL
-!default DOC_URL      $obj_long{'references',&Var('DOC_TITLE'),'Jump'}
-!if DOC_URL
-!define  DOC_URL      &'NameSubExt($var{'DOC_URL'}, "ps")
-!endif
+!default DOC_URL      $obj_long{'references',&Var('DOC_TITLE'),'Jump'} ||\
+                      $obj_short{'references',&Var('DOC_CODE'),'Jump'}
+#!if DOC_URL
+#!define  DOC_URL      &'NameSubExt($var{'DOC_URL'}, "ps")
+#!endif
 !endif
 
 # Provide defaults for key variables (to eliminate warnings)
@@ -83,10 +92,11 @@
 !default DOC_STATUS       ''
 !default DOC_CODE         ''
 !default DOC_OWNER        'The author'
+!default DOC_ID_SEP       '.'
 
 # Build the document identifier
 !if DOC_VERSION
-!define DOC_ID join('.', &Var('DOC_CODE'), &Var('DOC_VERSION'))
+!define DOC_ID join($var{'DOC_ID_SEP'}, &Var('DOC_CODE'), &Var('DOC_VERSION'))
 !else
 !define DOC_ID DOC_CODE
 !endif

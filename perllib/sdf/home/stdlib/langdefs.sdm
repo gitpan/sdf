@@ -9,6 +9,8 @@
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 12-Oct-98 ianc    fixed Java keywords, removed case-sensitive names,
+#                   improved Perl keywords (thanks to Colin Jitlal)
 # 29-Feb-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
 #
@@ -17,6 +19,7 @@
 # documents.
 #
 # >>Description::
+# Language names are case insensitive.
 #
 # >>Limitations::
 #
@@ -25,41 +28,77 @@
 # For SDF, treat the built-in macros as keywords.
 # We also need to put all the keywords on one line to get around
 # parsing problems related to lines beginning with !.
-SDF|sdf|sdm|sde|sdn:\
+sdf|sdm|sds|sdn|sdl|sde:\
     :cb=#:ce=$:sb=":se=\e":lb=':\
     :le=\e':\
     :kw=!build_title !block !endblock !include !execute !import !use !inherit !on !off !if !elsif !elseif !else !endif !init !define !default !undef !restrict !export !class !macro !endmacro !message !line !script !insert !getdoc !getcode !getusage !perlapi
 
 # From the Perl FAQ
-PERL|perl|Perl|pl|pm:\
+# The list of keywords is taken from cperl-mode.el
+perl|pl|pm|sdp|sdr:\
     :pb=^\d?(sub|package)\d\p\d:\
     :bb={:be=}:cb=#:ce=$:sb=":se=\e":lb=':\
     :le=\e':tl:\
     :id=_:\
     :kw=\
-    if for foreach unless until while continue else elsif \
-    do eval require \
-    die exit \
-    defined delete reset \
-    goto last redo next dump \
-    local undef return  \
-    write format  \
-    sub package
+           AUTOLOAD BEGIN DESTROY END __END__ chomp \
+           chop defined delete do each else elsif \
+           eval exists for foreach format goto \
+           grep if keys last local map my next \
+           no package pop pos print printf push \
+           q qq qw qx redo return scalar shift \
+           sort splice split study sub tie tr \
+           undef unless unshift untie until use \
+           while y \
+           CORE __FILE__ __LINE__ abs accept alarm \
+           and atan2 bind binmode bless caller \
+           chdir chmod chown chr chroot close \
+           closedir cmp connect continue cos crypt \
+           dbmclose dbmopen die dump endgrent \
+           endhostent endnetent endprotoent endpwent \
+           endservent eof eq exec exit exp fcntl \
+           fileno flock fork formline ge getc \
+           getgrent getgrgid getgrnam gethostbyaddr \
+           gethostbyname gethostent getlogin \
+           getnetbyaddr getnetbyname getnetent \
+           getpeername getpgrp getppid getpriority \
+           getprotobyname getprotobynumber getprotoent \
+           getpwent getpwnam getpwuid getservbyname \
+           getservbyport getservent getsockname \
+           getsockopt glob gmtime gt hex index int \
+           ioctl join kill lc lcfirst le length \
+           link listen localtime log lstat lt \
+           mkdir msgctl msgget msgrcv msgsnd ne \
+           not oct open opendir or ord pack pipe \
+           quotemeta rand read readdir readline \
+           readlink readpipe recv ref rename require \
+           reset reverse rewinddir rindex rmdir seek \
+           seekdir select semctl semget semop send \
+           setgrent sethostent setnetent setpgrp \
+           setpriority setprotoent setpwent setservent \
+           setsockopt shmctl shmget shmread shmwrite \
+           shutdown sin sleep socket socketpair \
+           sprintf sqrt srand stat substr symlink \
+           syscall sysread system syswrite tell \
+           telldir time times truncate uc ucfirst \
+           umask unlink unpack utime values vec \
+           wait waitpid wantarray warn write x xor
 
-# From Kent Sandvik (sandvik@sgi.com)
+# From Kent Sandvik (sandvik@sgi.com) and Sect 3.9 of the language spec.
+# Note: null and super are treated as keywords.
 java:\
         :pb=^\d?*?\d?\p\d?\(\a?\)(\d|{):bb={:be=}:cb=/*:ce=*/:ab=//:\
         :ae=$:sb=":se=\e":lb=':\
         :le=\e':tl:\
-        :kw=asm auto break case char const continue default do double else enum\
-        extern float for goto if int long register return short signed\
-        sizeof static struct switch typedef union unsigned void volatile while\
-        class delete friend inline new operator overload private\
-        protected public template this virtual import boolean extends\
-        implements final
+        :kw=abstract boolean break byte case catch char class const continue\
+        default do double else extends final finally float for goto\
+        if implements import instanceof int interface long native new null\
+        package private protected public return short\
+        static super switch synchronized this throw throws transient try\
+        void volatile while
 
 # From Prachin Ranavat (prachin@mincom.com)
-C|c:\
+c:\
     :pb=^\d?*?\d?\p\d?\(\a?\)(\d|{):bb={:be=}:cb=/*:ce=*/:sb=":se=\e":lb=':\
     :le=\e':tl:\
     :kw=asm auto break case char continue default do double else enum\
@@ -67,7 +106,8 @@ C|c:\
     sizeof static struct switch typedef union unsigned void while #define\
     #else #endif #if #ifdef #ifndef #include #undef # define endif\
     ifdef ifndef include undef defined:
-C++|c++|cpp|hpp|CC|cc|h:\
+
+c++|cpp|hpp|cc|h:\
     :pb=^\d?*?\d?\p\d?\(\a?\)(\d|{):bb={:be=}:cb=/*:ce=*/:ab=//:\
     :ae=$:sb=":se=\e":lb=':\
     :le=\e':tl:\
@@ -78,16 +118,19 @@ C++|c++|cpp|hpp|CC|cc|h:\
     ifdef ifndef include undef defined\
     catch class const delete friend inline new operator overload private\
     protected public throw try virtual:
-IDL|idl:\
+
+# Note: extensible is a Visibroker extension to the OMG standard
+idl:\
 	:pb=^\d?*?\d?\p\d?\(\a?\)(\d|{):bb={:be=}:cb=/*:ce=*/:ab=//:\
 	:ae=$:sb=":se=\e":lb=':\
 	:le=\e':tl:\
 	:kw=any attribute boolean case char const context default double\
-	enum exception float in inout interface long module octet oneway\
+	enum exception extensible float in inout interface long module octet oneway\
 	out raises readonly sequence short string struct switch typedef\
 	unsigned union void FALSE Object TRUE #define #undef #include #if\
 	#ifdef #ifndef #elif #else #endif #defined #error #pragma:
-fortran|FORTRAN|f77|fc|f|for:\
+
+fortran|f77|fc|f|for:\
     :pb=(function|subroutine|program)\d\p\d?\(\a?\):\
     :bb=(function|subroutine|program)\d\p\d?\(\a?\):be=^\dend:\
     :cb=^c:\
@@ -99,7 +142,8 @@ fortran|FORTRAN|f77|fc|f|for:\
     end endif equivalence format function\
     goto if include integer \
     parameter precision real return stop subroutine:
-Delphi|Pascal|pas|int:\
+
+delphi|pascal|pas|int:\
     :pb=(^\d?procedure|function|program\d\p\d|\(|;|\:)|(=\d?record\d):\
     :bb=\dcase|begin\d:be=\dend|forward\d|;:\
     :cb={:ce=}:\
@@ -114,7 +158,8 @@ Delphi|Pascal|pas|int:\
     program property protected public published raise read record repeat\
     resident set shl shr stored string then to try type unit until uses\
     var virtual while with write xor
-SH|sh:\
+
+sh:\
     :pb=(;|^)\d?\p\(\)(\d|{):\
     :ab=\$#:ae=(\d?|\a?):\
     :bb={:be=}:cb=#:ce=$:sb=":se=\e":lb=':\
@@ -123,7 +168,8 @@ SH|sh:\
     elif else esac eval exec exit export \
     fi for if in then while until \
     read readonly set shift test trap umask wait:
-CSH|csh:\
+
+csh:\
     :cb=#:ce=$:sb=":se=\e":lb=':\
     :ab=\$\a?#:ae=(\d?|\a?):\
     :le=\e':tl:\
@@ -134,16 +180,24 @@ CSH|csh:\
     while umask unalias unset wait while @ env \
     argv child home ignoreeof noclobber noglob \
     nomatch path prompt shell status verbose :
-#
+
+# From Programming Python
+python|jpython|py:\
+        :pb=^\d?\p\d?\(\a?\)(\d|\:):cb=""":ce=""":ab=#:\
+        :ae=$:sb=":se=\e":lb=':\
+        :le=\e':tl:\
+        :kw=print del pass break continue return raise import from \
+            global access exec in if elif else while for try finally \
+            except class def or and not is lambda:
+
 # TJH added in a quick set of COBOL things ... why not!
-#
-COBOL|cobol:\
+cobol:\
     :ab=*:ae=$:
     :kw=SECTION CALL PERFORM VARYING FROM BY UNTIL\
     IF END-IF ELSE NOT LESS AND OR EQUAL COMPUTE ADD SUBTRACT\
     MOVE TO EXIT SEARCH DIVISION AUTHOR GO TO GOTO\
     PIC COMP COMP-5 STRING PROGRAM-ID
-MIMSCOBOL|mimscobol|PCOM|pcom|precom|PRECOM:\
+mimscobol|pcom|precom:\
     :ab=*:ae=$:
     :kw=SECTION CALL PERFORM VARYING FROM BY UNTIL\
     IF END-IF ELSE NOT LESS AND OR EQUAL COMPUTE ADD SUBTRACT\
@@ -151,4 +205,3 @@ MIMSCOBOL|mimscobol|PCOM|pcom|precom|PRECOM:\
     PIC COMP COMP-5 STRING PROGRAM-ID\
     EXEC END-EXEC MACRO MEND
 !endblock
-

@@ -1,5 +1,5 @@
 # $Id$
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     Miscellaneous Library
 #
@@ -29,12 +29,6 @@ $VERSION{__FILE__} = '$Revision$';
 
 ##### Constants #####
 
-# Lookup tables for {{Y:MiscDateFormat}}
-@_MISC_MONTHS = ("January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December");
-@_MISC_DAYS = ("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-  "Friday", "Saturday");
-
 # Default rules indexed on type
 %_MISC_DEFAULT_RULE = (
     'boolean',      '<[01]>',
@@ -42,6 +36,26 @@ $VERSION{__FILE__} = '$Revision$';
 );
 
 ##### Variables #####
+
+#
+# >>Description::
+# {{Y:misc_date_strings}} contains the string lists used by 
+# {{Y:MiscDateFormat}} indexed by the symbols (e.g. 'month') used
+# by that routine.
+#
+%misc_date_strings = (
+  "month" =>    ["January", "February", "March", "April",
+                 "May", "June", "July", "August",
+                 "September", "October", "November", "December"],
+  "smonth" =>   ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+  "weekday" =>  ["Sunday", "Monday", "Tuesday", "Wednesday",
+                 "Thursday", "Friday", "Saturday"],
+  "sweekday" => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  "ampm" =>     ["am", "pm"],
+  "AMPM" =>     ["AM", "PM"]
+);
+
 
 ##### Routines #####
 
@@ -194,18 +208,19 @@ sub MiscDateFormat {
     ($second, $minute, $hour, $day, $_month, $syear, $_wday) =
       localtime($main'time);
     $day0 = sprintf("%02d", $day);
-    $month = $main'_MISC_MONTHS[$_month];
-    $smonth = substr($month, 0, 3);
+    $month = $main::misc_date_strings{"month"}[$_month];
+    $smonth = $main::misc_date_strings{"smonth"}[$_month];
     $monthnum = $_month + 1;
     $monthnum0 = sprintf("%02d", $monthnum);
     $year = $syear + 1900;
     $syear = sprintf("%02d", $syear % 100) if $syear > 99;
-    $weekday = $main'_MISC_DAYS[$_wday];
-    $sweekday = substr($weekday, 0, 3);
+    $weekday = $main::misc_date_strings{'weekday'}[$_wday];
+    $sweekday = $main::misc_date_strings{'sweekday'}[$_wday];
     $hour0 = sprintf("%02d", $hour);
     $shour = $hour - 12 if $hour > 12;
-    $ampm = $hour > 12 ? 'pm' : 'am';
-    $AMPM = $hour > 12 ? 'PM' : 'AM';
+    $shour = 12 if $shour == 0;
+    $ampm = $main::misc_date_strings{'ampm'}[$hour >= 12];
+    $AMPM = $main::misc_date_strings{'AMPM'}[$hour >= 12];
     $shour0 = sprintf("%02d", $shour);
     $minute0 = sprintf("%02d", $minute);
     $second0 = sprintf("%02d", $second);

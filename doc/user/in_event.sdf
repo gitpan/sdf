@@ -38,11 +38,11 @@ E:  !on paragraph 'H\d';; $attr{'id'} = $text
 H2: Event Types
 
 The types supported and the symbols available in the respective actions
-are given below.
+include:
 
 !block table
 Type        Symbols
-paragraph   $style, $text, %attr, &PrependText, &AppendText
+paragraph   $style, $text, %attr
 phrase      $style, $text, %attr
 macro       $name, $args
 filter      $name, $params

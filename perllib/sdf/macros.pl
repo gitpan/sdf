@@ -1,5 +1,5 @@
 # $Id$
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     SDF Macros Library
 #
@@ -10,6 +10,7 @@ $VERSION{__FILE__} = '$Revision$';
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 24-Oct-98 ianc    added jump macro, variables parameter for classes
 # 29-Feb-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
 #
@@ -74,6 +75,7 @@ package SDF_USER;
     'colaligns  string',
     'colvaligns string',
     'wrap       integer',
+    'variables  boolean',
 );
 
 ##### Variables #####
@@ -293,6 +295,7 @@ sub _ClassHandler {
     local($params);
     local($tbl_style);
     local($view);
+    local($make_vars, $var_name);
 
     @tbl = &'TableParse(@text);
     @text = ();
@@ -313,6 +316,10 @@ sub _ClassHandler {
     else {
         $process = 'display';
     }
+
+    # Get the 'make variables' flag
+    $make_vars = $param{'variables'};
+    $var_name = '';
 
     # For display tables, get the fields to be output
     @out_fields = ();
@@ -354,6 +361,12 @@ sub _ClassHandler {
         $jump = $root . $jump if $jump ne '';
         $jump = $obj_name{$class,$name,'Jump'} if $jump eq '';
 
+        # Convert the name to a legal variable name, if necessary
+        if ($make_vars) {
+            $var_name = $name;
+            $var_name =~ s/\W/_/g;
+        }
+
         # Store the data - we call an internal macro to do this (rather
         # than doing it directly) as this approach ensures that macros
         # embedded in the original data table (e.g. !if) have the
@@ -361,6 +374,7 @@ sub _ClassHandler {
         $values{'Jump'} = $jump;
         push(@text, "!_store_ " . join("\000", $class, $process ne 'data',
             $name_fld, $name, $long_fld, $long, %values));
+        push(@text, "!define $var_name '{{$name_style:$name}}'") if $var_name ne '';
 
         # For display tables, build the output
         if ($process eq 'display') {
@@ -632,7 +646,7 @@ sub use_Macro {
     $filename .= ".sdm" unless $filename =~ /\.\w+$/;
 
     # Get the file location
-    $fullname = &FindFile($filename);
+    $fullname = &FindModule($filename);
     if ($fullname eq '') {
         &'AppMsg("warning", "unable to find '$filename'");
         return ();
@@ -668,7 +682,7 @@ sub inherit_Macro {
     local($library, $dos_library);
     local($module);
 
-    # Add the library to the include path
+    # Add the library to the include and module paths
     $library = $arg{'library'};
     $dos_library = $library;
     $dos_library =~ s#/#\\#g;
@@ -679,11 +693,20 @@ sub inherit_Macro {
     }
     elsif (&'NameIsAbsolute($library)) {
         push(@include_path, $library);
+        push(@module_path, $library);
         $var{'HLP_OPTIONS_ROOT'} .= ", $dos_library";
     }
     else {
-        push(@include_path, "$'sdf_lib/$library");
-        $var{'HLP_OPTIONS_ROOT'} .= ", $var{'SDF_DOSHOME'}\\$dos_library";
+        my $lib_dir = &FindLibrary($library);
+        if ($lib_dir ne '') {
+            push(@include_path, $lib_dir);
+            push(@module_path, $lib_dir);
+            $var{'HLP_OPTIONS_ROOT'} .= ", $var{'SDF_DOSHOME'}\\$dos_library";
+        }
+        else {
+            &'AppMsg("warning", "unable to find library '$library'");
+            return ();
+        }
     }
 
     # Load the matching module
@@ -741,12 +764,50 @@ sub import_Macro {
     return (&'SdfJoin('__import', $filename, %params));
 }
 
+# jumps - create jump lines
+@_jumps_MacroArgs = (
+    'Name       Type        Default     Rule',
+    'labels     string',
+    'layout     string      Center      <Left|Center|Right|left|center|right>',
+);
+sub jumps_Macro {
+    local(%arg) = @_;
+    local(@text);
+    local(@subs, $sub, $jump);
+    local($sep);
+    local($layout);
+
+    # Build the jumps
+    @subs = split(/,/, $arg{'labels'});
+    $sep = '';
+    for $sub (@subs) {
+        if ($sub eq '') {
+            $sub = "{{CHAR:nl}}";
+            $sep = '';
+        }
+        else {
+            $jump = &TextToId($sub);
+            $sub = $sep . "{{[jump='#$jump']$sub}}";
+            $sep = ' | ';
+        }
+    }
+
+    # Build the output
+    @text = ();
+    $layout = $arg{'layout'};
+    substr($layout, 0, 1) =~ tr/a-z/A-Z/;
+    @text = ("[align='$layout']" . join("", @subs));
+
+    # Return result
+    return @text;
+}
+
 # subsections - list topic subsections (and create a jump line for HTML)
 @_subsections_MacroArgs = (
     'Name       Type        Default     Rule',
     'labels     string',
     'prefix     string      Topic       <Topic|Noprefix|noprefix>',
-    'layout     string      Left        <Left|Center|Right|None|center|right|none>',
+    'layout     string      Left        <Left|Center|Right|None|left|center|right|none>',
 );
 sub subsections_Macro {
     local(%arg) = @_;
@@ -2201,7 +2262,7 @@ sub _bor__Macro {
     push(@'sdf_report_names, $name);
 
     # Load the report
-    $rpt_file = &FindFile(&'NameJoin('', $name, 'sdr'));
+    $rpt_file = &FindModule(&'NameJoin('', $name, 'sdr'));
     if ($rpt_file) {
         unless (require $rpt_file) {
             &'AppMsg("error", "unable to load report '$rpt_file'");
@@ -2411,7 +2472,7 @@ sub _load_tuning__Macro {
     @text = (&'SdfJoin("__tuning", $name));
 
     # Add the driver-specific stuff, if any
-    $target_module = &FindFile(&'NameJoin('', $var{'OPT_DRIVER'}, 'sdn'));
+    $target_module = &FindModule(&'NameJoin('', $var{'OPT_DRIVER'}, 'sdn'));
     if ($target_module) {
         push(@text, "!include '$target_module'");
     }

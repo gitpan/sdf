@@ -66,6 +66,7 @@ getcode             extract source code (i.e. non-documentation) from a file
 getcli              extract command-line interface information
 perlapi             extract API information from a [[Perl]] library
 Miscellaneous:
+jumps               generates lines of jumps
 subsections         specify the subsections for a topic
 continued           continue a heading from a previous page
 end_topic           mark the end of a topic
@@ -114,6 +115,7 @@ macros/minclude
 macros/minherit
 macros/minit
 macros/minsert
+macros/mjumps
 macros/mline
 macros/mmacro
 macros/mmessage

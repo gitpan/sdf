@@ -1,5 +1,5 @@
 # $Id$
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     Name Processing Library
 #
@@ -42,12 +42,12 @@ $NAME_OS = 'mac' if $^O =~ /Mac/;
 %NAME_DIR_TABLE  = (
     'unix', '/',
     'dos', '\\',
-	'mac', ':',
+    'mac', ':',
 );
 %NAME_PATH_TABLE = (
     'unix', ':',
     'dos', ';',
-	'mac', ':',
+    'mac', ';',
 );
 $NAME_DIR_SEP = $NAME_DIR_TABLE{$NAME_OS};
 $NAME_PATH_SEP = $NAME_PATH_TABLE{$NAME_OS};
@@ -65,10 +65,8 @@ $NAME_PATH_SEP = $NAME_PATH_TABLE{$NAME_OS};
 # {{Y:NameOS}} returns the SDF version of the OS name.
 #
 sub NameOS {
-	return $NAME_OS;
+        return $NAME_OS;
 }
-
-
 #
 # >>Description::
 # {{Y:NameIsAbsolute}} returns 1 if the name is in absolute (or
@@ -78,12 +76,12 @@ sub NameIsAbsolute {
     local($name) = @_;
     local($result);
 
-	SWITCH: {
-		$result = $name =~ m#^\/#, last SWITCH if $NAME_OS eq 'unix';
-		$result = $name =~ m#^([A-Za-z]:)?[\\/]#, last SWITCH if $NAME_OS eq 'dos';
-		$result = $name =~ m#^[^:]+:#, last SWITCH if $NAME_OS eq 'mac';
-		die "Unknown OS: $NAME_OS";
-	}
+    SWITCH: {
+        $result = $name =~ m#^\/#, last SWITCH if $NAME_OS eq 'unix';
+        $result = $name =~ m#^([A-Za-z]:)?[\\/]#, last SWITCH if $NAME_OS eq 'dos';
+        $result = $name =~ m#^[^:]+:#, last SWITCH if $NAME_OS eq 'mac';
+        die "Unknown OS: $NAME_OS";
+    }
     return $result;
 }
 #
@@ -129,19 +127,25 @@ sub NameFind {
             return "";
         }
     }
-	$DB::single = 1;
-	if($NAME_OS eq 'mac') {
-		$name =~ s#/#:#g ;
-		$name =~ s#^:##;
-	}
+    $DB::single = 1;
+    if($NAME_OS eq 'mac') {
+        $name =~ s#/#:#g ;
+        $name =~ s#^:##;
+    }
+
     # Otherwise, search for the name
     foreach $dir (@dirs) {
-		if ($NAME_OS eq 'mac') {
-			$dir = "" if $dir eq '.';
-			$dir =~ s#/#:#g;
-			$dir =~ s#:$##;
-		}
-        $full = $dir . $NAME_DIR_SEP . $name;
+        if ($NAME_OS eq 'mac') {
+            $dir = "" if $dir eq '.';
+            $dir =~ s#/#:#g;
+            $dir =~ s#:$##;
+        }
+        if ($dir eq $NAME_DIR_SEP) {
+            $full = $dir . $name;
+        }
+        else {
+            $full = $dir . $NAME_DIR_SEP . $name;
+        }
         if (-r $full) {
             return $full;
         }
@@ -189,13 +193,13 @@ sub NameSplit {
 # Returns a list of the parts.
 #
 sub NamePathComponentSplit {
-	my $sep;
-	my $path = shift @_;
-	
-	$sep = '/';
-	$sep = '\\' if $NAME_OS eq 'dos';
-	$sep = ':' if $NAME_OS eq 'mac';
-	return split $sep, $path;
+    my $sep;
+    my $path = shift @_;
+    
+    $sep = '/';
+    $sep = '\\' if $NAME_OS eq 'dos';
+    $sep = ':' if $NAME_OS eq 'mac';
+    return split $sep, $path;
 }
 
 
@@ -320,9 +324,9 @@ sub NameFindOrGenerate {
 
     # Otherwise, search for the name
     foreach $dir (@$dir_list_ref) {
-		$dir =~ s#/#:#g if $NAME_OS eq 'mac';
- 		$dir = "" if $dir eq '.' && $NAME_OS eq 'mac';
-       $full = &NameFindInDirectory($dir, $name, $ext_list_ref, $context);
+        $dir =~ s#/#:#g if $NAME_OS eq 'mac';
+        $dir = "" if $dir eq '.' && $NAME_OS eq 'mac';
+        $full = &NameFindInDirectory($dir, $name, $ext_list_ref, $context);
         return $full if $full ne '';
     }
 

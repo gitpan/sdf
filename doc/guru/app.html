@@ -2,12 +2,12 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.000 by
+<!-- This file was generated using SDF 2.001beta1 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.000: SDF Guru Guide: app.pl - Application Framework Library</TITLE>
+<TITLE>SDF 2.001beta1: SDF Guru Guide: app.pl - Application Framework Library</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
@@ -47,6 +47,8 @@ $<A HREF="#app_app_product_name">app_product_name</A> = ...
 
 $<A HREF="#app_app_product_version">app_product_version</A> = ...
 
+%<A HREF="#app_app_trace_level">app_trace_level</A> = ...
+
 &amp;<A HREF="#app_AppMsg">AppMsg</A>($type, $text, $calltree);
 
 %count =
@@ -56,6 +58,8 @@ $index =
 &amp;<A HREF="#app_AppMsgNextIndex">AppMsgNextIndex</A>();
 
 &amp;<A HREF="#app_AppExit">AppExit</A>($type, $text, $calltree);
+
+&amp;<A HREF="#app_AppTrace">AppTrace</A>($group, $level, $msg);
 
 $ok =
 &amp;<A HREF="#app_AppInit">AppInit</A>($arguments, $purpose, $product, $ini_handler);
@@ -628,12 +632,14 @@ internal check failed - notify developer
 <P><STRONG><A NAME="app_app_context">app_context</A></STRONG> and <STRONG><A NAME="app_app_lineno">app_lineno</A></STRONG> are the context and line number used in error messages. <STRONG><A NAME="app_app_lineno">app_lineno</A></STRONG> is only used if $. is 0.</P>
 <P><STRONG><A NAME="app_app_msg_index">%app_msg_index</A></STRONG> is the index into the message table. (Most programmers have no need for this, but it's provided in case someone does want it.)</P>
 <P><STRONG><A NAME="app_app_product_name">app_product_name</A></STRONG> and <STRONG><A NAME="app_app_product_version">app_product_version</A></STRONG> are the application name and version respectively. These are typically set during execution of the <EM>AppInit</EM> routine.)</P>
+<P><STRONG><A NAME="app_app_trace_level">app_trace_level</A></STRONG> is the highest level of trace messages output by <STRONG><A NAME="app_AppTrace">AppTrace</A></STRONG> for each tracing group.</P>
 <P><STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG> outputs a message. The format of the message is determined by the <EM>type</EM> parameter which should be defined in <STRONG><A NAME="app_app_msg_table">app_msg_table</A></STRONG>. If the type is unknown, behaviour is undefined. If <EM>calltree</EM> is set, a call tree is dumped after the message is output.</P>
 <P>If a message layout includes the current line number ($.) and it is 0, <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG> uses the dot-version (e.g. &quot;.error&quot;) of the message instead.</P>
 <P>The messages output via <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG> influence the exit code returned to the operating system by <STRONG><A NAME="app_AppExit">AppExit</A></STRONG>. If you wish to influence this but not output a message, specify a <EM>type</EM> parameter without a <EM>text</EM> parameter.</P>
 <P><STRONG><A NAME="app_AppMsgCounts">AppMsgCounts</A></STRONG> returns the number of each message type found. If you are interested in the message counts since a particular point in time, a starting index to begin the counting from can be specified.</P>
 <P><STRONG><A NAME="app_AppMsgNextIndex">AppMsgNextIndex</A></STRONG> returns the next index to be used in the message log. The value returned can be used as the <EM>start_index</EM> parameter to the <STRONG><A NAME="app_AppMsgCounts">AppMsgCounts</A></STRONG> routine.</P>
 <P><STRONG><A NAME="app_AppExit">AppExit</A></STRONG> exits the current application. If a message is specified, it is first output via <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG>. The exit code returned to the operating system is dependent on the messages output by <STRONG><A NAME="app_AppMsg">AppMsg</A></STRONG>. If <EM>calltree</EM> is set, a call tree is dumped after the message is output.</P>
+<P><STRONG><A NAME="app_AppTrace">AppTrace</A></STRONG> outputs a trace message if <EM>group</EM> tracing is supported and for that group, the trace level is &gt;= <EM>level</EM>. The default group is called <EM>user</EM>.</P>
 <P><STRONG><A NAME="app_AppInit">AppInit</A></STRONG> processes options and checks the argument count for a perl script. The supported options are defined by @app_option. Options must occur before arguments and begin with a - character for the short format or -- for the long format. Option processing is terminated when either an argument or the -- symbol is detected. If an environment variable of the form <EM>app_name</EM>OPTS is found, options are first processed from there.</P>
 <P>The expected number of arguments is derived from the format of the <EM>arguments</EM> parameter as illustrated by the table below.</P>
 <TABLE BORDER>

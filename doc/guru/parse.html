@@ -2,12 +2,12 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.000 by
+<!-- This file was generated using SDF 2.001beta1 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.000: SDF Guru Guide: parse.pl - Simple Document Format Library</TITLE>
+<TITLE>SDF 2.001beta1: SDF Guru Guide: parse.pl - Simple Document Format Library</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
@@ -36,6 +36,8 @@ $<A HREF="#parse_sdf_subtopic_cnt">sdf_subtopic_cnt</A> = ...
 $<A HREF="#parse_sdf_fmext">sdf_fmext</A> = ...
 
 @<A HREF="#parse_sdf_include_path">sdf_include_path</A> = ...
+
+@<A HREF="#parse_sdf_library_path">sdf_library_path</A> = ...
 
 $<A HREF="#parse_sdf_lib">sdf_lib</A> = ...
 
@@ -148,7 +150,7 @@ $exit_code =
 <P><STRONG><A NAME="parse_sdf_pagesize">sdf_pagesize</A></STRONG> is a lookup table of valid page sizes. This table is build by <STRONG><A NAME="parse_SdfLoadPageSizes">SdfLoadPageSizes</A></STRONG>.</P>
 <P><STRONG><A NAME="parse_sdf_subtopic_cnt">sdf_subtopic_cnt</A></STRONG> is the counter of subtopics left during topics mode processing.</P>
 <P><STRONG><A NAME="parse_sdf_fmext">sdf_fmext</A></STRONG> is the extension of FrameMaker template files. Typically values are 'fm5' and 'fm4'.</P>
-<P><STRONG><A NAME="parse_sdf_include_path">sdf_include_path</A></STRONG> contains the list of directories searched for to find files specified in <EM>include</EM> macros. The current directory is searched before these directories and <STRONG><A NAME="parse_sdf_lib">sdf_lib</A></STRONG> is searched last of all.</P>
+<P><STRONG><A NAME="parse_sdf_include_path">sdf_include_path</A></STRONG> contains the list of directories searched for to find files specified in <EM>include</EM> macros. <STRONG><A NAME="parse_sdf_library_path">sdf_library_path</A></STRONG> contains the list of directories searched for to find libraries and modules. In both cases, the current directory and the document's directory are searched before these directories and <STRONG><A NAME="parse_sdf_lib">sdf_lib</A></STRONG> is searched last of all.</P>
 <P><STRONG><A NAME="parse_SdfLoadDrivers">SdfLoadDrivers</A></STRONG> loads a configuration table of drivers. The columns are:</P>
 <UL>
 <LI><EM>Name</EM> - the driver name

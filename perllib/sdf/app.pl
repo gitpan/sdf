@@ -1,5 +1,5 @@
 # $Id$
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     Application Framework Library
 #
@@ -10,6 +10,7 @@ $VERSION{__FILE__} = '$Revision$';
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 24-Oct-98 ianc    _AppConfigLibDir() Mac patch (from David Schooley)
 # 29-Feb-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
 #
@@ -318,6 +319,13 @@ $_app_noecho = 0;
 $app_product_name = '';
 $app_product_version = '';
 
+#
+# >>Description::
+# {{Y:app_trace_level}} is the highest level of trace messages output by
+# {{Y:AppTrace}} for each tracing group.
+#
+%app_trace_level = ();
+
 # Initialisation file handler
 $_app_ini_handler = '';
 
@@ -442,6 +450,22 @@ sub AppExit {
 
     # Note: If we're in test mode, return 0
     exit( $_app_test_counter > 0 ? 0 : $_app_exit_code);
+}
+
+#
+# >>Description::
+# {{Y:AppTrace}} outputs a trace message if {{group}} tracing is supported and
+# for that group, the trace level is >= {{level}}. The default group is
+# called {{user}}.
+#
+sub AppTrace {
+    local($group, $level, $msg) = @_;
+#   local();
+
+    $group = 'user' if $group eq '';
+    if ($app_trace_level{$group} >= $level) {
+        printf STDERR ("%s[%s-%d] %s\n", $app_name, $group, $level, $msg);
+    }
 }
 
 #
@@ -1208,11 +1232,14 @@ sub _AppConfigLibDir {
     local($value) = @_;
 #   local();
     local($inc);
+    my $nom_path;
 
     # Search the library path for the nominated directory
     for $inc (@INC) {
-        if (-d "$inc/$value") {
-            $app_lib_dir = "$inc/$value";
+	$nom_path = "$inc/$value";
+	$nom_path =~ s#:*/+#:#g if $^O eq 'MacOS';
+        if (-d $nom_path) {
+            $app_lib_dir = $nom_path;
             return;
         }
     }

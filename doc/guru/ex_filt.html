@@ -2,12 +2,12 @@
 
 <HTML>
 
-<!-- This file was generated using SDF 2.000 by
+<!-- This file was generated using SDF 2.001beta1 by
      Ian Clatworthy (ianc@mincom.com). SDF is freely
      available from http://www.mincom.com/mtr/sdf. -->
 
 <HEAD>
-<TITLE>SDF 2.000: SDF Guru Guide: Creating New Filters</TITLE>
+<TITLE>SDF 2.001beta1: SDF Guru Guide: Creating New Filters</TITLE>
 </HEAD>
 <BODY BGCOLOR="ffffff">
 
@@ -38,8 +38,8 @@
     <B>local</B>(*text, %param) = @_;
 
     <I># change headings</I>
-    unshift(@text, <TT>'!on paragraph \'H\d\'</TT>; __appendix; $style =~ s/H/A/');
-    push   (@text, <TT>'!off paragraph __appendix'</TT>);
+    <B>unshift</B>(@text, <TT>'!on paragraph \'H\d\'</TT>; __appendix; $style =~ s/H/A/');
+    <B>push</B>   (@text, <TT>'!off paragraph __appendix'</TT>);
 }
 </PRE>
 <P>The <TT>perllib/sdf/filters.pl</TT> file within the SDF distribution contains lots of examples of filters implemented as Perl subroutines.</P>
@@ -126,14 +126,14 @@ The parameter validation rule, if any
 
     <I># Process the data</I>
     $family = $param{'family'};
-    $family .= <TT>'_'</TT> <B>if</B> $family ne <TT>''</TT>;
+    $family .= <TT>'_'</TT> <B>if</B> $family <B>ne</B> <TT>''</TT>;
     $export = $param{'export'};
-    (@flds) = &amp;'TableFields(shift @tbl);
+    (@flds) = &amp;'TableFields(<B>shift</B> @tbl);
     <B>for</B> $rec (@tbl) {
         %values = &amp;'TableRecSplit(*flds, $rec);
         $name = $family . $values{'Name'};
-        push(@text, <TT>&quot;!define $name $values{'Value'}&quot;</TT>);
-        push(@text, <TT>&quot;!export $name&quot;</TT>) <B>if</B> $export;
+        <B>push</B>(@text, <TT>&quot;!define $name $values{'Value'}&quot;</TT>);
+        <B>push</B>(@text, <TT>&quot;!export $name&quot;</TT>) <B>if</B> $export;
     }
 }
 </PRE>

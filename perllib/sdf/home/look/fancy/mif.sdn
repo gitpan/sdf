@@ -9,6 +9,7 @@
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 15-May-98 ianc    Commented out generated list headings
 # 01-Oct-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
 #
@@ -98,59 +99,59 @@
 
 ############# Override the generated list paragraph formats ################
 
-!targetobject "Para"; "h1_HeadingTOC"; "b0_Body"; \
-  BlockSize=1; \
-  FIndent='0.5"'; \
-  FontPairKern=0; \
-  FontSize="11.5 pt"; \
-  HyphenMinPrefix=2; \
-  HyphenMinSuffix=2; \
-  Hyphenate=Yes; \
-  LIndent='0.625"'; \
-  MaxWordSpace=125; \
-  MinWordSpace=75; \
-  PlacementStyle=Straddle; \
-  RIndent='0.246"'; \
-  SpAfter="0.0 pt"; \
-  SpBefore="4.0 pt"; \
-  TabStop="$var{'_TABR'}/Right/. "
-
-!targetobject "Para"; "h2_HeadingTOC"; "h1_HeadingTOC"; \
-  BlockSize=2; \
-  FIndent='0.75"'; \
-  LIndent='0.875"'; \
-  SpBefore="0.0 pt"
-
-!targetobject "Para"; "h3_HeadingTOC"; "h2_HeadingTOC"; \
-  BlockSize=1; \
-  FIndent='1.0"'; \
-  LIndent='1.125"'
-
-!targetobject "Para"; "h4_HeadingTOC"; "h3_HeadingTOC"; \
-  BlockSize=2; \
-  FIndent='0.0"'; \
-  FontPairKern=Yes; \
-  LIndent='0.0"'; \
-  MaxWordSpace=110; \
-  MinWordSpace=90; \
-  RIndent='0.0"'; \
-  SpBefore="2.0 pt"; \
-  TabStop="1.0in,$var{'_TABR'}/Right/. "
-
-!targetobject "Para"; "h5_HeadingTOC"; "h4_HeadingTOC"; \
-  TabStop="1.25in,$var{'_TABR'}/Right/. "
-
-!targetobject "Para"; "a1_AppendixTOC"; "h1_HeadingTOC"
-!targetobject "Para"; "a2_AppendixTOC"; "h2_HeadingTOC"
-!targetobject "Para"; "a3_AppendixTOC"; "h3_HeadingTOC"
-!targetobject "Para"; "a4_AppendixTOC"; "h4_HeadingTOC"
-!targetobject "Para"; "a5_AppendixTOC"; "h5_HeadingTOC"
-
-!targetobject "Para"; "p1_PlainHeadingTOC"; "h1_HeadingTOC"
-!targetobject "Para"; "p2_PlainHeadingTOC"; "h2_HeadingTOC"
-!targetobject "Para"; "p3_PlainHeadingTOC"; "h3_HeadingTOC"
-!targetobject "Para"; "p4_PlainHeadingTOC"; "h4_HeadingTOC"
-!targetobject "Para"; "p5_PlainHeadingTOC"; "h5_HeadingTOC"
+#!targetobject "Para"; "h1_HeadingTOC"; "b0_Body"; \
+#  BlockSize=1; \
+#  FIndent='0.5"'; \
+#  FontPairKern=0; \
+#  FontSize="11.5 pt"; \
+#  HyphenMinPrefix=2; \
+#  HyphenMinSuffix=2; \
+#  Hyphenate=Yes; \
+#  LIndent='0.625"'; \
+#  MaxWordSpace=125; \
+#  MinWordSpace=75; \
+#  PlacementStyle=Straddle; \
+#  RIndent='0.246"'; \
+#  SpAfter="0.0 pt"; \
+#  SpBefore="4.0 pt"; \
+#  TabStop="$var{'_TABR'}/Right/. "
+#
+#!targetobject "Para"; "h2_HeadingTOC"; "h1_HeadingTOC"; \
+#  BlockSize=2; \
+#  FIndent='0.75"'; \
+#  LIndent='0.875"'; \
+#  SpBefore="0.0 pt"
+#
+#!targetobject "Para"; "h3_HeadingTOC"; "h2_HeadingTOC"; \
+#  BlockSize=1; \
+#  FIndent='1.0"'; \
+#  LIndent='1.125"'
+#
+#!targetobject "Para"; "h4_HeadingTOC"; "h3_HeadingTOC"; \
+#  BlockSize=2; \
+#  FIndent='0.0"'; \
+#  FontPairKern=Yes; \
+#  LIndent='0.0"'; \
+#  MaxWordSpace=110; \
+#  MinWordSpace=90; \
+#  RIndent='0.0"'; \
+#  SpBefore="2.0 pt"; \
+#  TabStop="1.0in,$var{'_TABR'}/Right/. "
+#
+#!targetobject "Para"; "h5_HeadingTOC"; "h4_HeadingTOC"; \
+#  TabStop="1.25in,$var{'_TABR'}/Right/. "
+#
+#!targetobject "Para"; "a1_AppendixTOC"; "h1_HeadingTOC"
+#!targetobject "Para"; "a2_AppendixTOC"; "h2_HeadingTOC"
+#!targetobject "Para"; "a3_AppendixTOC"; "h3_HeadingTOC"
+#!targetobject "Para"; "a4_AppendixTOC"; "h4_HeadingTOC"
+#!targetobject "Para"; "a5_AppendixTOC"; "h5_HeadingTOC"
+#
+#!targetobject "Para"; "p1_PlainHeadingTOC"; "h1_HeadingTOC"
+#!targetobject "Para"; "p2_PlainHeadingTOC"; "h2_HeadingTOC"
+#!targetobject "Para"; "p3_PlainHeadingTOC"; "h3_HeadingTOC"
+#!targetobject "Para"; "p4_PlainHeadingTOC"; "h4_HeadingTOC"
+#!targetobject "Para"; "p5_PlainHeadingTOC"; "h5_HeadingTOC"
 
 ################ Other paragraph formats overrides ###################
 

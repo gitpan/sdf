@@ -7,6 +7,7 @@
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 06-Mar-98 ianc    2.001beta1 release
 # 07-Oct-97 ianc    2.000 release
 # 18-Jul-97 ianc    2.000beta12 release
 # 08-Jul-97 ianc    2.000beta11 release
@@ -39,6 +40,7 @@
 # Build the title page
 !build_title
 
+!include "2001b1.sdf"
 !include "2000.sdf"
 !include "2000b12.sdf"
 !include "2000b11.sdf"

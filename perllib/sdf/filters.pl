@@ -1,5 +1,5 @@
 # $Id$
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     SDF Filters Library
 #
@@ -10,6 +10,7 @@ $VERSION{__FILE__} = '$Revision$';
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 23-Oct-98 ianc    Add datestrings filter
 # 29-Jul-97 peterh  Add 'noslide' parameter to topics filter.
 # 29-Feb-96 ianc    SDF 2.000
 # -----------------------------------------------------------------------
@@ -427,7 +428,7 @@ sub _FmtLang {
     $state = '';
     for $line (@text) {
         $prefix = $state ? "$lang_style{$state}<" : '';
-    	$line =~ s/([^ \r\t\f\(\)\[\]\,\;\=\+]+)/&_WordFmt($1, *state)/eg;
+    	$line =~ s/([^ \r\t\f\(\)\[\]\,\;\=\+\:]+)/&_WordFmt($1, *state)/eg;
 
         if ($state) {
             $line .= '>';
@@ -636,6 +637,7 @@ sub example_Filter {
     # implies pure processing, so that special characters within the
     # source code are protected.
     my $lang = $param{'lang'};
+    $lang = "\L$lang";
     &_SkipHeader(*text, $lang) if $param{'skipheader'};
     &_Pure(*text)              if $param{'pure'} || $lang ne '';
     &_FmtLang(*text, $lang)    if $lang ne '';
@@ -2191,6 +2193,33 @@ sub targetobjects_Filter {
         $attrs{'Name'} = $values{'Name'};
         $attrs{'Parent'} = $values{'Parent'};
         push(@text, &'SdfJoin("__object", $type, %attrs));
+    }
+}
+
+# datestrings - date strings for month, weekday, etc.
+@_datestrings_FilterParams = (
+);
+@_datestrings_FilterModel = (
+    'Field      Category    Rule',
+    'Symbol     key         <month|smonth|weekday|sweekday|ampm|AMPM>',
+    'Values     optional',
+);
+sub datestrings_Filter {
+    local(*text, %param) = @_;
+    local(@tbl, @flds, $rec, %values);
+    local($strings);
+
+    # Parse and validate the data
+    @tbl = &'TableParse(@text);
+    @text = ();
+    &_FilterValidate(*tbl, *_datestrings_FilterModel) if $validate;
+
+    # Process the data
+    (@flds) = &'TableFields(shift @tbl);
+    for $rec (@tbl) {
+        %values = &'TableRecSplit(*flds, $rec);
+        $strings = [ split(/\s+/, eval $values{'Values'}) ];
+        $main::misc_date_strings{$values{'Symbol'}} = $strings;
     }
 }
 

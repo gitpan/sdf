@@ -793,7 +793,6 @@ t/macro/checked/table.log
 t/macro/checked/table.out
 t/macro/checked/undef.log
 t/macro/checked/undef.out
-t/macro/class.raw
 t/macro/class.sdf
 t/macro/class.t
 t/macro/default.sdf

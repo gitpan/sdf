@@ -32,7 +32,7 @@
 Reference    Version Status  Jump                 Document
 MTR-SDF-0001 001     Final   paper/sdfintro.html  The SDF Document Development System
 MTR-SDF-0002 001     Final   user/ug_sdf.html     SDF User Guide
-MTR-SDF-0003 001     Final   quickref/qr_sdf.html SDF Quick Reference
+MTR-SDF-0003 002     Draft   quickref/qr_sdf.html SDF Quick Reference
 MTR-SDF-0004 001     Final   ref/re_sdf.html      SDF Reference
 MTR-SDF-0005 001     Final   guru/gg_sdf.html     SDF Guru Guide
 MTR-SDF-0008 001     Final   release/rn_sdf.html  SDF Release Notes

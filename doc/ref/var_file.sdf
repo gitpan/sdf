@@ -22,10 +22,10 @@ H2: Interface
 
 !block table; format=325
 Name            Type        Purpose
-FILE_PATH       string      current pathname (e.g. {{E:/doc/sdf/mydoc.sdf}})
-FILE_DIR        string      directory of current filename (e.g. {{E:/doc/sdf}})
-FILE_BASE       string      base component of current filename (e.g. {{E:mydoc}})
-FILE_EXT        string      extension of current filename (e.g. {{E:sdf}})
+FILE_PATH       string      current pathname (e.g. {{/doc/sdf/mydoc.sdf}})
+FILE_DIR        string      directory of current filename (e.g. {{/doc/sdf}})
+FILE_BASE       string      base component of current filename (e.g. {{mydoc}})
+FILE_EXT        string      extension of current filename (e.g. {{sdf}})
 FILE_MODIFIED   datetime    time when this file was last modified
 !endblock
 

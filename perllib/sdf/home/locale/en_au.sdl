@@ -5,6 +5,7 @@
 # >>History::
 # -----------------------------------------------------------------------
 # Date      Who     Change
+# 23-Oct-98 ianc    Added date strings
 # 19-Aug-97 ianc
 # -----------------------------------------------------------------------
 #
@@ -22,3 +23,14 @@
 !define HTML_TEXT_HOME          "Home"
 !define HTML_TEXT_CATALOG       "Catalog"
 !define HTML_TEXT_SEARCH        "Search"
+
+# Date string values
+!block datestrings
+Symbol   Values
+month    "January February March April May June July August September October November December"
+smonth   "Jan     Feb      Mar   Apr   May Jun  Jul  Aug    Sep       Oct     Nov      Dec"
+weekday  "Monday Tuesday Wednesday Thursday Friday Saturday Sunday"
+sweekday "Mon    Tue     Wed       Thu      Fri    Sat      Sun"
+ampm     "am pm"
+AMPM     "AM PM"
+!endblock

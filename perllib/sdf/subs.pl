@@ -1,5 +1,5 @@
 # $Id$
-$VERSION{__FILE__} = '$Revision$';
+$VERSION{''.__FILE__} = '$Revision$';
 #
 # >>Title::     SDF Subroutines Library
 #
@@ -193,17 +193,91 @@ sub FindFile {
     my @dirs = ('.');
     my $dir = $var{'DOC_DIR'};
     push(@dirs, $dir) if $dir ne cwd();
-    push(@dirs, @include_path, "$'sdf_lib/stdlib", $'sdf_lib);
+    push(@dirs, @include_path, $'sdf_lib);
 
     # Do the search
     if ($image) {
         my $context = $var{'OPT_TARGET'};
         my @exts = @{$'SDF_IMAGE_EXTS{$context} || $'SDF_IMAGE_EXTS{'ps'}};
-        return &'NameFindOrGenerate($filename, \@dirs, \@exts, $context);
+        &'AppTrace("user", 5, "searching for image '$filename' in directories (" .
+          join(",", @dirs) . ") with $context extensions (" .
+          join(",", @exts) . ")");
+        $fullname = &'NameFindOrGenerate($filename, \@dirs, \@exts, $context);
     }
     else {
-        return &'NameFind($filename, @dirs);
+        &'AppTrace("user", 5, "searching for file '$filename' in directories (" .
+          join(",", @dirs) . ")");
+        $fullname = &'NameFind($filename, @dirs);
     }
+
+    # Return results
+    &'AppTrace("user", 2, "file '$filename' -> '$fullname'") if
+      $fullname ne '';
+    return $fullname;
+}
+
+#
+# >>Description::
+# {{Y:FindModule}} searches the module path for the nominated file.
+# If the file is found, the pathname of the file is returned,
+# otherwise the empty string is returned.
+#
+sub FindModule {
+    local($filename) = @_;
+    local($fullname);
+
+    # Get the list of directories to search
+    use Cwd;
+    my @dirs = ('.');
+    my $dir = $var{'DOC_DIR'};
+    push(@dirs, $dir) if $dir ne cwd();
+    push(@dirs, @module_path, $'sdf_lib, "$'sdf_lib/stdlib");
+
+    # Do the search
+    &'AppTrace("user", 4, "searching for module '$filename' in directories (" .
+      join(",", @dirs) . ")");
+    $fullname = &'NameFind($filename, @dirs);
+
+    # Return results
+    &'AppTrace("user", 2, "module '$filename' -> '$fullname'") if
+      $fullname ne '';
+    return $fullname;
+}
+
+#
+# >>Description::
+# {{Y:FindLibrary}} searches the library path for a library and
+# returns the directory name of the library. If the library is not
+# found, an empty string is returned.
+#
+sub FindLibrary {
+    local($lib) = @_;
+    local($fullname);
+    local($lib_path);
+
+    # Get the list of directories to search
+    use Cwd;
+    my @dirs = ('.');
+    my $dir = $var{'DOC_DIR'};
+    push(@dirs, $dir) if $dir ne cwd();
+    push(@dirs, @library_path, $'sdf_lib);
+
+    # Do the search
+    &'AppTrace("user", 3, "searching for library '$lib' in directories (" .
+      join(",", @dirs) . ")");
+    $fullname = '';
+    for $dir (@dirs) {
+        $lib_path = $dir eq $'NAME_DIR_SEP ? "$dir$lib" : "$dir$'NAME_DIR_SEP$lib";
+        if (-d $lib_path) {
+            $fullname = $lib_path;
+            last;
+        }
+    }
+
+    # Return results
+    &'AppTrace("user", 2, "library '$lib' -> '$fullname'") if
+      $fullname ne '';
+    return $fullname;
 }
 
 #
@@ -306,7 +380,7 @@ sub ExecFilter {
         # do nothing
     }
     else {
-        $plug_in = &FindFile(&'NameJoin('', $name, 'sdp'));
+        $plug_in = &FindModule(&'NameJoin('', $name, 'sdp'));
         if ($plug_in) {
             unless (require $plug_in) {
                 &'AppMsg("warning", "unable to load plug-in '$plug_in'");
@@ -315,11 +389,11 @@ sub ExecFilter {
     }
 
     # Call the filter. If a function is not defined for the filter,
-    # it may be a prgramming language.
+    # it may be a programming language.
     if (defined &$filter_fn) {
         &$filter_fn(*text, &SdfFilterParams($name, $params));
     }
-    elsif ($lang_aliases{$name}) {
+    elsif ($lang_aliases{"\L$name"}) {
         $params .= "; lang='$name'";
         &example_Filter(*text, &SdfFilterParams('example', $params));
     }

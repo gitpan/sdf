@@ -1,5 +1,5 @@
-Welcome to SDF (Simple Document Format)
-=======================================
+Welcome to SDF (Simple Document Format) 2.001beta1
+==================================================
 
 What is SDF?
 ------------
@@ -85,4 +85,4 @@ message body of "subscribe sdf-users" or "subscribe sdf-bugs".
 Share and enjoy,
 Ian Clatworthy
 ianc@mincom.com
-02-Mar-98
+27-Oct-98
