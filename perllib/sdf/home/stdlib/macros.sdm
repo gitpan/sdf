@@ -81,9 +81,7 @@
 !if !DOC_URL
 !default DOC_URL      $obj_long{'references',&Var('DOC_TITLE'),'Jump'} ||\
                       $obj_short{'references',&Var('DOC_CODE'),'Jump'}
-#!if DOC_URL
-#!define  DOC_URL      &'NameSubExt($var{'DOC_URL'}, "ps")
-#!endif
+#!message "DOC_URL is $var{'DOC_URL'}."
 !endif
 
 # Provide defaults for key variables (to eliminate warnings)

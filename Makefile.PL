@@ -20,7 +20,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
 	'NAME'		=> 'SDF',
 	'DISTNAME'	=> 'sdf',
-	'VERSION'	=> '2.001b1',
+	'VERSION'	=> '2.001beta1',
 
 	'DIR'		=> [ qw(bin perllib) ],
 

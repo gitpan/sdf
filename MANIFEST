@@ -74,7 +74,6 @@ doc/guru/misc.html
 doc/guru/name.html
 doc/guru/parse.html
 doc/guru/table.html
-doc/guru/xx
 doc/home.html
 doc/index.html
 doc/paper/index.html
@@ -108,6 +107,7 @@ doc/ref/fascii_g.html
 doc/ref/fbox.html
 doc/ref/fchanged.html
 doc/ref/fcomment.html
+doc/ref/fdatestr.html
 doc/ref/fdefault.html
 doc/ref/fdefine.html
 doc/ref/fend.html
@@ -123,6 +123,7 @@ doc/ref/filters/fascii_g.sdf
 doc/ref/filters/fbox.sdf
 doc/ref/filters/fchanged.sdf
 doc/ref/filters/fcomment.sdf
+doc/ref/filters/fdatestr.sdf
 doc/ref/filters/fdefault.sdf
 doc/ref/filters/fdefine.sdf
 doc/ref/filters/fend.sdf
@@ -230,6 +231,7 @@ doc/ref/macros/minclude.sdf
 doc/ref/macros/minherit.sdf
 doc/ref/macros/minit.sdf
 doc/ref/macros/minsert.sdf
+doc/ref/macros/mjumps.sdf
 doc/ref/macros/mline.sdf
 doc/ref/macros/mmacro.sdf
 doc/ref/macros/mmessage.sdf
@@ -270,6 +272,7 @@ doc/ref/minclude.html
 doc/ref/minherit.html
 doc/ref/minit.html
 doc/ref/minsert.html
+doc/ref/mjumps.html
 doc/ref/mline.html
 doc/ref/mmacro.html
 doc/ref/mmessage.html
@@ -290,7 +293,6 @@ doc/ref/re_sdf.html
 doc/ref/re_sdf.sdf
 doc/ref/reasdf.html
 doc/ref/reasdf.sdf
-doc/ref/refsdf.sdm
 doc/ref/sappendt.html
 doc/ref/sappendt.sdf
 doc/ref/sdf.html
@@ -359,6 +361,8 @@ doc/release/2000b9.html
 doc/release/2000b9.sdf
 doc/release/2000b9a.html
 doc/release/2000b9a.sdf
+doc/release/2001b1.html
+doc/release/2001b1.sdf
 doc/release/index.html
 doc/release/rn_sdf.html
 doc/release/rn_sdf.sdf
@@ -463,7 +467,6 @@ doc/user/ug_sdf.html
 doc/user/ug_sdf.sdf
 doc/user/ugasdf.html
 doc/user/ugasdf.sdf
-doc/user/ugfsdf.sdm
 doc/website
 perllib/Makefile.PL
 perllib/Pod/Diff.pm
@@ -551,6 +554,7 @@ perllib/sdf/home/images/square_b.gif
 perllib/sdf/home/images/text.gif
 perllib/sdf/home/images/triangle.gif
 perllib/sdf/home/images/txt.gif
+perllib/sdf/home/locale/cz_cz.sdl
 perllib/sdf/home/locale/de_de.sdl
 perllib/sdf/home/locale/en_au.sdl
 perllib/sdf/home/locale/en_ca.sdl
